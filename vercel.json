@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/fetch-news",
+      "schedule": "0 9,13,18 * * *"
+    },
+    {
+      "path": "/api/cron/fetch-licitacoes",
+      "schedule": "0 8,14 * * 1-5"
+    }
+  ]
+}

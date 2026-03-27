@@ -1,0 +1,332 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USERS ====================
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  name           String?
+  role           String   @default("FREE") // FREE, PREMIUM, ADMIN
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  cookieConsent  Boolean  @default(false) @map("cookie_consent")
+
+  savedArticles   SavedArticle[]
+  savedLicitacoes SavedLicitacao[]
+  licitacaoAlerts LicitacaoAlert[]
+
+  @@map("users")
+}
+
+// ==================== NEWS ====================
+
+model NewsArticle {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  summary     String
+  imageUrl    String?  @map("image_url")
+  originalUrl String   @unique @map("original_url")
+  sourceId    String   @map("source_id")
+  source      NewsSource @relation(fields: [sourceId], references: [id])
+  categoryId  String   @map("category_id")
+  category    Category @relation(fields: [categoryId], references: [id])
+  isPremium   Boolean  @default(false) @map("is_premium")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  publishedAt DateTime @map("published_at")
+  fetchedAt   DateTime @default(now()) @map("fetched_at")
+  viewCount   Int      @default(0) @map("view_count")
+  status      String   @default("PUBLISHED") // DRAFT, PUBLISHED, HIDDEN
+
+  savedBy SavedArticle[]
+  tags    TagOnArticle[]
+
+  @@index([publishedAt])
+  @@index([categoryId])
+  @@index([sourceId])
+  @@index([status, publishedAt])
+  @@map("news_articles")
+}
+
+model NewsSource {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  url         String
+  feedUrl     String?  @map("feed_url")
+  scrapeUrl   String?  @map("scrape_url")
+  logoUrl     String?  @map("logo_url")
+  fetchMethod String   @map("fetch_method") // RSS, WP_API, HTML_SCRAPE, MANUAL
+  isActive    Boolean  @default(true) @map("is_active")
+  lastFetchAt DateTime? @map("last_fetch_at")
+  fetchConfig String?  @map("fetch_config") // JSON string with CSS selectors
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  articles NewsArticle[]
+  agency   RegulatoryAgency?
+
+  @@map("news_sources")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?
+  icon        String?
+
+  articles NewsArticle[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String @unique
+  slug String @unique
+
+  articles TagOnArticle[]
+
+  @@map("tags")
+}
+
+model TagOnArticle {
+  articleId String      @map("article_id")
+  article   NewsArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tagId     String      @map("tag_id")
+  tag       Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@map("tags_on_articles")
+}
+
+// ==================== USER ENGAGEMENT ====================
+
+model SavedArticle {
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  articleId String      @map("article_id")
+  article   NewsArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  savedAt   DateTime    @default(now()) @map("saved_at")
+
+  @@id([userId, articleId])
+  @@map("saved_articles")
+}
+
+// ==================== MARKETING ====================
+
+model MarketingBanner {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  imageUrl    String   @map("image_url")
+  linkUrl     String   @map("link_url")
+  placement   String   // HERO, SIDEBAR, INLINE_FEED, FOOTER, NEWS_DETAIL
+  isActive    Boolean  @default(true) @map("is_active")
+  priority    Int      @default(0)
+  startsAt    DateTime? @map("starts_at")
+  endsAt      DateTime? @map("ends_at")
+  clickCount  Int      @default(0) @map("click_count")
+  viewCount   Int      @default(0) @map("view_count")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("marketing_banners")
+}
+
+// ==================== FETCH LOG ====================
+
+model FetchLog {
+  id            String   @id @default(uuid())
+  sourceId      String   @map("source_id")
+  sourceName    String   @map("source_name")
+  status        String   // success, error, partial
+  articlesFound Int      @default(0) @map("articles_found")
+  articlesNew   Int      @default(0) @map("articles_new")
+  errorMessage  String?  @map("error_message")
+  duration      Int      // milliseconds
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("fetch_logs")
+}
+
+// ==================== LICITACOES (PUBLIC PROCUREMENT) ====================
+
+model Licitacao {
+  id             String    @id @default(uuid())
+  slug           String    @unique
+  title          String
+  description    String
+  process        String?
+  modalidade     String    // PREGAO_ELETRONICO, CONCORRENCIA, TOMADA_PRECO, CONVITE, LEILAO, DISPENSA, INEXIGIBILIDADE
+  status         String    @default("ABERTA") // ABERTA, ENCERRADA, SUSPENSA, ANULADA, HOMOLOGADA, DESERTA
+  estimatedValue Float?    @map("estimated_value")
+  currency       String    @default("BRL")
+  uf             String?
+  city           String?
+  organ          String?
+  organCnpj      String?   @map("organ_cnpj")
+  originalUrl    String    @unique @map("original_url")
+  editalUrl      String?   @map("edital_url")
+  sourceId       String    @map("source_id")
+  source         LicitacaoSource @relation(fields: [sourceId], references: [id])
+  categoryId     String?   @map("category_id")
+  category       LicitacaoCategory? @relation(fields: [categoryId], references: [id])
+  openDate       DateTime? @map("open_date")
+  closeDate      DateTime? @map("close_date")
+  publishedAt    DateTime  @map("published_at")
+  fetchedAt      DateTime  @default(now()) @map("fetched_at")
+  viewCount      Int       @default(0) @map("view_count")
+  relevanceScore Float     @default(0) @map("relevance_score")
+
+  savedBy SavedLicitacao[]
+
+  @@index([publishedAt])
+  @@index([status, publishedAt])
+  @@index([uf])
+  @@index([modalidade])
+  @@index([categoryId])
+  @@index([sourceId])
+  @@map("licitacoes")
+}
+
+model LicitacaoSource {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  baseUrl     String    @map("base_url")
+  fetchMethod String    @map("fetch_method") // PNCP_API, COMPRAS_GOV_API, HTML_SCRAPE
+  fetchConfig String?   @map("fetch_config")
+  isActive    Boolean   @default(true) @map("is_active")
+  lastFetchAt DateTime? @map("last_fetch_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  licitacoes Licitacao[]
+
+  @@map("licitacao_sources")
+}
+
+model LicitacaoCategory {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  slug        String  @unique
+  description String?
+  color       String?
+  keywords    String?
+
+  licitacoes Licitacao[]
+
+  @@map("licitacao_categories")
+}
+
+model SavedLicitacao {
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licitacaoId String    @map("licitacao_id")
+  licitacao   Licitacao @relation(fields: [licitacaoId], references: [id], onDelete: Cascade)
+  savedAt     DateTime  @default(now()) @map("saved_at")
+
+  @@id([userId, licitacaoId])
+  @@map("saved_licitacoes")
+}
+
+model LicitacaoAlert {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  keywords   String   // JSON array
+  uf         String?
+  modalidade String?
+  minValue   Float?   @map("min_value")
+  maxValue   Float?   @map("max_value")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("licitacao_alerts")
+}
+
+model LicitacaoFetchLog {
+  id              String   @id @default(uuid())
+  sourceId        String   @map("source_id")
+  sourceName      String   @map("source_name")
+  status          String
+  licitacoesFound Int      @default(0) @map("licitacoes_found")
+  licitacoesNew   Int      @default(0) @map("licitacoes_new")
+  errorMessage    String?  @map("error_message")
+  duration        Int
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("licitacao_fetch_logs")
+}
+
+// ==================== LEGISLATION & STANDARDS ====================
+
+model Legislation {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  title       String
+  shortTitle  String?   @map("short_title")
+  description String
+  type        String    // LEI, DECRETO, NORMA_REGULAMENTADORA, NBR, RESOLUCAO, PORTARIA
+  number      String?
+  issuingBody String?   @map("issuing_body")
+  documentUrl String?   @map("document_url")
+  publishedAt DateTime  @map("published_at")
+  effectiveAt DateTime? @map("effective_at")
+  categoryId  String?   @map("category_id")
+  category    LegislationCategory? @relation(fields: [categoryId], references: [id])
+  isActive    Boolean   @default(true) @map("is_active")
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@index([categoryId])
+  @@map("legislation")
+}
+
+model LegislationCategory {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  slug        String  @unique
+  description String?
+  color       String?
+  icon        String?
+
+  items Legislation[]
+
+  @@map("legislation_categories")
+}
+
+// ==================== REGULATORY AGENCIES ====================
+
+model RegulatoryAgency {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  fullName     String   @map("full_name")
+  slug         String   @unique
+  region       String   // NACIONAL, SUDESTE, SUL, NORDESTE, CENTRO_OESTE, NORTE, INTERMUNICIPAL
+  uf           String?
+  websiteUrl   String   @map("website_url")
+  logoUrl      String?  @map("logo_url")
+  description  String?
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  newsSourceId String?  @unique @map("news_source_id")
+  newsSource   NewsSource? @relation(fields: [newsSourceId], references: [id])
+
+  @@index([region])
+  @@map("regulatory_agencies")
+}

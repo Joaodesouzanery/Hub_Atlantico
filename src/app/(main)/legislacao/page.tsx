@@ -1,0 +1,111 @@
+import { Suspense } from "react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { prisma } from "@/lib/db";
+import { LegislationGrid } from "@/components/legislation/legislation-grid";
+import { LegislationTypeFilter } from "@/components/legislation/legislation-type-filter";
+
+interface PageProps {
+  searchParams: Promise<{
+    page?: string;
+    type?: string;
+    search?: string;
+  }>;
+}
+
+export const metadata = {
+  title: "Legislacao",
+  description:
+    "Legislacoes, normas e regulamentacoes do setor de saneamento.",
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function LegislacaoPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const page = parseInt(params.page || "1");
+  const limit = 12;
+
+  const where: Record<string, unknown> = {
+    isActive: true,
+  };
+
+  if (params.type) {
+    where.type = params.type;
+  }
+
+  if (params.search) {
+    where.OR = [
+      { title: { contains: params.search } },
+      { description: { contains: params.search } },
+    ];
+  }
+
+  const [items, total] = await Promise.all([
+    prisma.legislation.findMany({
+      where,
+      include: {
+        category: {
+          select: { name: true, slug: true, color: true },
+        },
+      },
+      orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }],
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.legislation.count({ where }),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return (
+    <div className="p-4 lg:p-8">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-text-primary">Legislacao</h1>
+        <p className="mt-1 text-sm text-text-muted">
+          {total} {total === 1 ? "legislacao encontrada" : "legislacoes encontradas"}
+        </p>
+      </div>
+
+      {/* Filters */}
+      <div className="mb-6 space-y-3">
+        <Suspense>
+          <LegislationTypeFilter />
+        </Suspense>
+      </div>
+
+      {/* Legislation Grid */}
+      <LegislationGrid items={items} />
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-center gap-2">
+          {page > 1 && (
+            <Link
+              href={`/legislacao?page=${page - 1}${params.type ? `&type=${params.type}` : ""}${params.search ? `&search=${params.search}` : ""}`}
+              className="flex items-center gap-1 rounded-lg border border-dark-border bg-dark-card px-4 py-2 text-sm font-medium text-text-secondary hover:bg-dark-hover"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Anterior
+            </Link>
+          )}
+
+          <span className="px-4 py-2 text-sm text-text-muted">
+            {page} de {totalPages}
+          </span>
+
+          {page < totalPages && (
+            <Link
+              href={`/legislacao?page=${page + 1}${params.type ? `&type=${params.type}` : ""}${params.search ? `&search=${params.search}` : ""}`}
+              className="flex items-center gap-1 rounded-lg border border-dark-border bg-dark-card px-4 py-2 text-sm font-medium text-text-secondary hover:bg-dark-hover"
+            >
+              Proxima
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

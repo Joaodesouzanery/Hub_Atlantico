@@ -1,0 +1,51 @@
+{
+  "name": "hub-atlantico",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "npx tsx prisma/seed.ts",
+    "db:reset": "prisma migrate reset",
+    "db:studio": "prisma studio",
+    "fetch-news": "npx tsx src/lib/news/run-fetch.ts",
+    "fetch-licitacoes": "npx tsx src/lib/licitacoes/run-fetch.ts"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cheerio": "^1.2.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "exceljs": "^4.4.0",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.7.0",
+    "next": "^16.2.1",
+    "prisma": "^5.22.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^3.8.1",
+    "rss-parser": "^3.13.0",
+    "slugify": "^1.6.8",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^20",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

@@ -18,36 +18,47 @@ import { categories } from "@/config/navigation";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [articleCount, sourceCount, categoryCount, latestArticles, topSources] =
-    await Promise.all([
-      prisma.newsArticle.count({ where: { status: "PUBLISHED" } }),
-      prisma.newsSource.count({ where: { isActive: true } }),
-      prisma.category.count(),
-      prisma.newsArticle.findMany({
-        where: { status: "PUBLISHED" },
-        include: {
-          source: { select: { name: true, slug: true, logoUrl: true } },
-          category: { select: { name: true, slug: true, color: true } },
-        },
-        orderBy: { publishedAt: "desc" },
-        take: 6,
-      }),
-      prisma.newsSource.findMany({
-        where: { isActive: true },
-        include: { _count: { select: { articles: true } } },
-        orderBy: { name: "asc" },
-        take: 8,
-      }),
-    ]);
+  let articleCount = 0;
+  let sourceCount = 0;
+  let categoryCount = 0;
+  let todayCount = 0;
+  let latestArticles: any[] = [];
+  let topSources: any[] = [];
 
-  const todayCount = await prisma.newsArticle.count({
-    where: {
-      status: "PUBLISHED",
-      fetchedAt: {
-        gte: new Date(new Date().setHours(0, 0, 0, 0)),
+  try {
+    [articleCount, sourceCount, categoryCount, latestArticles, topSources] =
+      await Promise.all([
+        prisma.newsArticle.count({ where: { status: "PUBLISHED" } }),
+        prisma.newsSource.count({ where: { isActive: true } }),
+        prisma.category.count(),
+        prisma.newsArticle.findMany({
+          where: { status: "PUBLISHED" },
+          include: {
+            source: { select: { name: true, slug: true, logoUrl: true } },
+            category: { select: { name: true, slug: true, color: true } },
+          },
+          orderBy: { publishedAt: "desc" },
+          take: 6,
+        }),
+        prisma.newsSource.findMany({
+          where: { isActive: true },
+          include: { _count: { select: { articles: true } } },
+          orderBy: { name: "asc" },
+          take: 8,
+        }),
+      ]);
+
+    todayCount = await prisma.newsArticle.count({
+      where: {
+        status: "PUBLISHED",
+        fetchedAt: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Database query error:", error);
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -58,7 +69,7 @@ export default async function HomePage() {
           {/* Welcome */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-text-primary">
-              Bom dia, Administrador
+              Bem-vindo ao HuB - Atlântico
             </h2>
             <p className="mt-1 text-sm text-text-muted">
               Acompanhe as últimas notícias do setor de saneamento.
@@ -77,7 +88,7 @@ export default async function HomePage() {
             <StatCard
               title="Fontes Ativas"
               value={sourceCount}
-              change="Atualizando 3x/dia"
+              change="Atualização diária"
               changeType="neutral"
               icon={Globe}
             />
@@ -113,7 +124,7 @@ export default async function HomePage() {
               </div>
               <NewsGrid
                 articles={latestArticles}
-                emptyMessage="Nenhuma notícia ainda. Execute o fetcher para carregar notícias."
+                emptyMessage="Nenhuma notícia ainda. As notícias serão carregadas automaticamente."
               />
             </div>
 
@@ -121,10 +132,10 @@ export default async function HomePage() {
             <div className="space-y-6">
               {/* Sources */}
               <RecentSources
-                sources={topSources.map((s) => ({
+                sources={topSources.map((s: any) => ({
                   name: s.name,
                   slug: s.slug,
-                  articleCount: s._count.articles,
+                  articleCount: s._count?.articles || 0,
                 }))}
               />
 

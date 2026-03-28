@@ -21,9 +21,9 @@ export const newsSources = [
   { name: "Instituto Trata Brasil", slug: "trata-brasil", url: "https://tratabrasil.org.br", feedUrl: "https://tratabrasil.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
   { name: "Instituto Água e Saneamento", slug: "ias", url: "https://www.aguaesaneamento.org.br", feedUrl: "https://www.aguaesaneamento.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
   { name: "Engenharia 360", slug: "engenharia360", url: "https://engenharia360.com", feedUrl: "https://engenharia360.com/feed/", fetchMethod: "RSS", fetchConfig: null },
-  { name: "Inovação Tecnológica", slug: "inovacao-tecnologica", url: "https://www.inovacaotecnologica.com.br", feedUrl: "https://www.inovacaotecnologica.com.br/boletim/rss.php", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Inovação Tecnológica", slug: "inovacao-tecnologica", url: "https://www.inovacaotecnologica.com.br", feedUrl: "https://www.inovacaotecnologica.com.br/boletim/feed.rss", fetchMethod: "RSS", fetchConfig: null },
   { name: "Revista Hydro", slug: "revista-hydro", url: "https://www.revistashydro.com.br", feedUrl: "https://www.revistashydro.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
-  { name: "ABES", slug: "abes", url: "https://abes-dn.org.br", feedUrl: "https://abes-dn.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "ABES", slug: "abes", url: "https://abes.org.br", feedUrl: "https://abes.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
   { name: "Saneamento Hoje", slug: "saneamento-hoje", url: "https://saneamentohoje.com.br", feedUrl: "https://saneamentohoje.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
   { name: "Portal Digital Water", slug: "digital-water", url: "https://portaldigitalwater.com", feedUrl: "https://portaldigitalwater.com/feed/", fetchMethod: "RSS", fetchConfig: null },
   // HTML scraping

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchAllLicitacoes } from "@/lib/licitacoes/fetcher";
 
-export async function GET(request: NextRequest) {
-  // Verify cron secret in production
+async function handler(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 
@@ -12,22 +11,18 @@ export async function GET(request: NextRequest) {
 
   try {
     const summary = await fetchAllLicitacoes();
-
-    return NextResponse.json({
-      success: true,
-      ...summary,
-    });
+    return NextResponse.json({ success: true, ...summary });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("Cron fetch-licitacoes error:", message);
-
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
-// Vercel cron uses GET
+// GET: used by Vercel cron scheduler
+// POST: used for manual triggers (Vercel dashboard "Run" button or curl)
+export const GET = handler;
+export const POST = handler;
+
 export const dynamic = "force-dynamic";
-export const maxDuration = 60; // Allow up to 60 seconds
+export const maxDuration = 60;

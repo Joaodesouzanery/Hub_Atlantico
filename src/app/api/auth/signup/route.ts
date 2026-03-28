@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     email,
     password,
     user_metadata: { name },
-    email_confirm: false, // Supabase enviará e-mail de confirmação
+    email_confirm: true, // Confirma automaticamente — sem necessidade de clicar em link
   });
 
   if (authError) {

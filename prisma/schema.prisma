@@ -4,8 +4,10 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  // POSTGRES_PRISMA_URL é gerado automaticamente pela integração Vercel-Supabase
+  // Para dev local, crie .env.local com DATABASE_URL e DIRECT_URL apontando para seu Supabase
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // ==================== USERS ====================

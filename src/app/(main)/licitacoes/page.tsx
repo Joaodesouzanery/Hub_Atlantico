@@ -28,7 +28,7 @@ export const dynamic = "force-dynamic";
 export default async function LicitacoesPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = parseInt(params.page || "1");
-  const limit = 12;
+  const limit = 20;
 
   // Build filter query
   const where: Record<string, unknown> = {};
@@ -68,7 +68,21 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
       await Promise.all([
         prisma.licitacao.findMany({
           where,
-          include: {
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            description: true,
+            process: true,
+            status: true,
+            organ: true,
+            uf: true,
+            city: true,
+            modalidade: true,
+            estimatedValue: true,
+            currency: true,
+            closeDate: true,
+            editalUrl: true,
             source: { select: { name: true, slug: true } },
             category: { select: { name: true, slug: true, color: true } },
           },

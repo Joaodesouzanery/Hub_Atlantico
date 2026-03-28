@@ -2,8 +2,8 @@ import type { RawLicitacao, LicitacaoFetchConfig } from "../types";
 
 const PNCP_BASE_URL = "https://pncp.gov.br/api/consulta";
 const FETCH_TIMEOUT = 30_000; // 30 seconds
-const DEFAULT_PAGE_SIZE = 50;
-const MAX_PAGES_PER_MODALIDADE = 3;
+const DEFAULT_PAGE_SIZE = 100;
+const MAX_PAGES_PER_MODALIDADE = 8;
 
 /** Modalidade codes to search across */
 const MODALIDADE_CODES = [8, 6, 1, 2, 4, 5, 7];
@@ -62,8 +62,8 @@ export async function fetchFromPNCP(
   const pageSize = Math.max(config.defaultPageSize || DEFAULT_PAGE_SIZE, 10);
   const keywords = config.keywords || DEFAULT_SANITATION_KEYWORDS;
 
-  // Use 30-day window on initial fetch, 7-day rolling otherwise
-  const dayWindow = isInitialFetch ? 30 : 7;
+  // Use 90-day window on initial fetch (to populate DB), 7-day rolling otherwise
+  const dayWindow = isInitialFetch ? 90 : 7;
   const { dataInicial, dataFinal } = getDateRange(dayWindow);
 
   const allResults: RawLicitacao[] = [];

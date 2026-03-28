@@ -22,6 +22,13 @@ function LoginForm() {
     setError(null);
     setLoading(true);
 
+    // Silently confirm email for legacy unconfirmed accounts (best-effort)
+    await fetch("/api/auth/pre-confirm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    }).catch(() => {});
+
     const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
 

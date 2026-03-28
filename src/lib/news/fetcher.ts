@@ -113,6 +113,10 @@ async function storeArticles(
   const categories = await prisma.category.findMany();
   const categoryMap = new Map(categories.map((c) => [c.slug, c.id]));
 
+  // Fallback category: "Saneamento Básico" — ensures articles are never silently dropped
+  const fallbackCategoryId =
+    categoryMap.get("saneamento-basico") ?? categories[0]?.id;
+
   // Get existing URLs to avoid duplicates
   const existingUrls = new Set(
     (
@@ -131,9 +135,9 @@ async function storeArticles(
     const sourceId = sourceMap.get(article.sourceName);
     if (!sourceId) continue;
 
-    // Auto-categorize
+    // Auto-categorize — fall back to "Saneamento Básico" if no match
     const categorySlug = categorizeArticle(article.title, article.summary);
-    const categoryId = categoryMap.get(categorySlug);
+    const categoryId = categoryMap.get(categorySlug) ?? fallbackCategoryId;
     if (!categoryId) continue;
 
     // Generate unique slug

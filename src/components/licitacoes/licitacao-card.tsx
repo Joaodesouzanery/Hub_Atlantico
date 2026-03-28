@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { MapPin, Building2, Clock, DollarSign } from "lucide-react";
+import { MapPin, Building2, Clock, DollarSign, FileText, ExternalLink } from "lucide-react";
 import { LicitacaoStatusBadge } from "./licitacao-status-badge";
 import { formatDate } from "@/lib/utils";
 
 interface LicitacaoCardProps {
   slug: string;
   title: string;
+  description?: string | null;
+  process?: string | null;
   status: string;
   organ?: string | null;
   uf?: string | null;
@@ -14,6 +16,8 @@ interface LicitacaoCardProps {
   estimatedValue?: number | null;
   currency?: string;
   closeDate?: string | Date | null;
+  editalUrl?: string | null;
+  source?: { name: string; slug: string } | null;
   category?: {
     name: string;
     slug: string;
@@ -31,6 +35,8 @@ function formatBRL(value: number): string {
 export function LicitacaoCard({
   slug,
   title,
+  description,
+  process,
   status,
   organ,
   uf,
@@ -38,13 +44,19 @@ export function LicitacaoCard({
   modalidade,
   estimatedValue,
   closeDate,
+  editalUrl,
+  source,
   category,
 }: LicitacaoCardProps) {
+  const descriptionPreview = description
+    ? description.replace(/\s+/g, " ").trim().slice(0, 120) + (description.length > 120 ? "…" : "")
+    : null;
+
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-dark-border bg-dark-card transition-all hover:border-dark-hover hover:bg-dark-elevated">
       <div className="flex flex-1 flex-col p-4">
         {/* Status & Category */}
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
           <LicitacaoStatusBadge status={status} />
           {category && (
             <>
@@ -60,14 +72,34 @@ export function LicitacaoCard({
               </span>
             </>
           )}
+          {source && (
+            <span className="ml-auto rounded-md bg-dark-surface px-2 py-0.5 text-[11px] text-text-muted">
+              {source.name}
+            </span>
+          )}
         </div>
 
         {/* Title */}
         <Link href={`/licitacoes/${slug}`}>
-          <h3 className="mb-3 text-[15px] font-semibold leading-snug text-text-primary line-clamp-2 group-hover:text-accent transition-colors">
+          <h3 className="mb-1.5 text-[15px] font-semibold leading-snug text-text-primary line-clamp-2 group-hover:text-accent transition-colors">
             {title}
           </h3>
         </Link>
+
+        {/* Process number */}
+        {process && (
+          <p className="mb-2 flex items-center gap-1 text-[11px] text-text-muted">
+            <FileText className="h-3 w-3 flex-shrink-0" />
+            Processo: {process}
+          </p>
+        )}
+
+        {/* Description preview */}
+        {descriptionPreview && (
+          <p className="mb-3 text-xs leading-relaxed text-text-secondary line-clamp-2">
+            {descriptionPreview}
+          </p>
+        )}
 
         {/* Organ */}
         <div className="mb-2 flex items-center gap-1.5 text-xs text-text-secondary">
@@ -83,11 +115,23 @@ export function LicitacaoCard({
           </span>
         </div>
 
-        {/* Modalidade badge */}
-        <div className="mb-4">
+        {/* Modalidade badge + Edital button */}
+        <div className="mb-4 flex items-center gap-2">
           <span className="rounded-lg bg-dark-surface px-2.5 py-1 text-[11px] font-medium text-text-secondary">
             {modalidade}
           </span>
+          {editalUrl && (
+            <a
+              href={editalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 rounded-lg border border-accent/30 px-2.5 py-1 text-[11px] font-medium text-accent transition-colors hover:bg-accent/10"
+            >
+              <ExternalLink className="h-3 w-3" />
+              Ver Edital
+            </a>
+          )}
         </div>
 
         {/* Footer */}

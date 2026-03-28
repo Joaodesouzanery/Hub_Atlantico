@@ -178,9 +178,6 @@ export function Sidebar() {
 
       {/* Bottom section */}
       <div className="border-t p-4 space-y-3" style={{ borderColor: "#2E2E33" }}>
-        {/* Anúncio Engelfer */}
-        <AdEngelferSidebar />
-
         {/* Upgrade para Pro */}
         <div className="rounded-xl p-4" style={{ background: "#1F1F23" }}>
           <p className="text-sm font-semibold text-white">
@@ -221,6 +218,9 @@ export function Sidebar() {
             <LogOut className="h-4 w-4" />
           </button>
         </div>
+
+        {/* Anúncio Engelfer — após o usuário para não bloquear navegação */}
+        <AdEngelferSidebar />
       </div>
     </aside>
   );

@@ -5,6 +5,8 @@ interface Licitacao {
   id: string;
   slug: string;
   title: string;
+  description?: string | null;
+  process?: string | null;
   status: string;
   organ?: string | null;
   uf?: string | null;
@@ -13,6 +15,8 @@ interface Licitacao {
   estimatedValue?: number | null;
   currency?: string;
   closeDate?: string | Date | null;
+  editalUrl?: string | null;
+  source?: { name: string; slug: string } | null;
   category?: {
     name: string;
     slug: string;

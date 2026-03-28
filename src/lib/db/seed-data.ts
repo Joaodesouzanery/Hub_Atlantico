@@ -48,6 +48,13 @@ export const newsSources = [
   // Portais especializados
   { name: "Sanear Magazine", slug: "sanear-magazine", url: "https://revistasanear.com.br", feedUrl: "https://revistasanear.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
   { name: "GovTech Saneamento", slug: "govtech-saneamento", url: "https://www.gov.br/sesan", scrapeUrl: "https://www.gov.br/sesan/pt-br/assuntos/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: ".tileItem, article, .summary", titleSelector: ".tileHeadline a, h2 a", summarySelector: ".tileBody, p", imageSelector: "img", linkSelector: "a.summary-url, .tileHeadline a" }) },
+  // Mais fontes especializadas
+  { name: "SINDAE", slug: "sindae", url: "https://www.sindae.org.br", feedUrl: "https://www.sindae.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Tratamento de Água", slug: "tratamento-de-agua", url: "https://tratamentodeagua.com.br", feedUrl: "https://tratamentodeagua.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Agência Brasil — Meio Ambiente", slug: "agencia-brasil-meio-ambiente", url: "https://agenciabrasil.ebc.com.br", feedUrl: "https://agenciabrasil.ebc.com.br/medio-ambiente/feed/atom", fetchMethod: "RSS", fetchConfig: null },
+  { name: "CEDAE", slug: "cedae", url: "https://www.cedae.com.br", scrapeUrl: "https://www.cedae.com.br/imprensa/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-item, .card, li.item", titleSelector: "h2 a, h3 a, .titulo a, .card-title a", summarySelector: ".resumo, .excerpt, p", imageSelector: "img", linkSelector: "h2 a, h3 a, a.leia-mais" }) },
+  { name: "Corsan", slug: "corsan", url: "https://www.corsan.com.br", scrapeUrl: "https://www.corsan.com.br/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-item, .card, .views-row", titleSelector: "h2 a, h3 a, .card-title a", summarySelector: ".views-field-body, .card-text, p", imageSelector: "img", linkSelector: "h2 a, h3 a, a.btn" }) },
+  { name: "Casan", slug: "casan", url: "https://www.casan.com.br", scrapeUrl: "https://www.casan.com.br/menu-conteudo/index/url/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-item, .card", titleSelector: "h2 a, h3 a, .titulo a", summarySelector: ".resumo, p", imageSelector: "img", linkSelector: "h2 a, h3 a" }) },
 ];
 
 export const licitacaoSources = [
@@ -61,6 +68,9 @@ export const licitacaoSources = [
   { name: "ComprasRJ", slug: "compras-rj", baseUrl: "https://riocompras.rio.rj.gov.br", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ keywords: ["saneamento","água","esgoto"] }), isActive: false },
   // PNCP específico para cada tipo de objeto de saneamento
   { name: "PNCP — Obras Hídricas", slug: "pncp-obras-hidricas", baseUrl: "https://pncp.gov.br/api/consulta", fetchMethod: "PNCP_API", fetchConfig: JSON.stringify({ searchEndpoint: "/v1/contratacoes/publicacao", keywords: ["obras hídricas","adutora","ETA","ETE","elevatória","reservatório","rede de distribuição","rede coletora","interceptor de esgoto"] }), isActive: true },
+  // Portais agregadores de licitações
+  { name: "Portal de Compras Públicas", slug: "portal-compras-publicas", baseUrl: "https://www.portaldecompraspublicas.com.br", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ keywords: ["saneamento","água","esgoto","drenagem","resíduos","tubulação","bomba","ETA","ETE"] }), isActive: false },
+  { name: "BLL Compras", slug: "bll-compras", baseUrl: "https://bllcompras.com", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ keywords: ["saneamento","água","esgoto","drenagem","resíduos","tubulação"] }), isActive: false },
 ];
 
 export const licitacaoCategories = [

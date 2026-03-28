@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Newspaper,
@@ -15,8 +16,10 @@ import {
   Info,
   Search,
   Droplets,
+  LogOut,
 } from "lucide-react";
 import { AdEngelferSidebar } from "@/components/ads/ad-engelfer-sidebar";
+import { createClient } from "@/lib/supabase/client";
 
 const iconMap: Record<string, typeof LayoutDashboard> = {
   "layout-dashboard": LayoutDashboard,
@@ -66,6 +69,25 @@ const navSections = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserName(user.user_metadata?.name ?? null);
+        setUserEmail(user.email ?? null);
+      }
+    });
+  }, []);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
 
   return (
     <aside
@@ -169,6 +191,34 @@ export function Sidebar() {
           </p>
           <button className="mt-3 w-full rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-500">
             Assinar Agora
+          </button>
+        </div>
+
+        {/* User info + logout */}
+        <div
+          className="flex items-center gap-3 rounded-xl p-3"
+          style={{ background: "#1F1F23" }}
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+            {userName ? userName.charAt(0).toUpperCase() : "?"}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-white">
+              {userName ?? "Usuário"}
+            </p>
+            <p className="truncate text-xs" style={{ color: "#6B6B73" }}>
+              {userEmail ?? ""}
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="rounded-lg p-1.5 transition-colors"
+            style={{ color: "#6B6B73" }}
+            title="Sair"
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#F97316"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#6B6B73"; }}
+          >
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>

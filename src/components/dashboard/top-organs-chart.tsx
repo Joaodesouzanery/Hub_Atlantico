@@ -21,7 +21,7 @@ function CustomTooltip({ active, payload, label }: any) {
     <div className="rounded-lg border border-dark-border bg-dark-elevated px-3 py-2 shadow-lg">
       <p className="text-xs text-text-secondary">{label}</p>
       <p className="text-sm font-semibold text-text-primary">
-        {payload[0].value} licitacoes
+        {payload[0].value} licitações
       </p>
     </div>
   );

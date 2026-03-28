@@ -14,9 +14,9 @@ interface PageProps {
 }
 
 export const metadata = {
-  title: "Legislacao",
+  title: "Legislação",
   description:
-    "Legislacoes, normas e regulamentacoes do setor de saneamento.",
+    "Legislações, normas e regulamentações do setor de saneamento.",
 };
 
 export const dynamic = "force-dynamic";
@@ -70,9 +70,9 @@ export default async function LegislacaoPage({ searchParams }: PageProps) {
     <div className="p-4 lg:p-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-text-primary">Legislacao</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Legislação</h1>
         <p className="mt-1 text-sm text-text-muted">
-          {total} {total === 1 ? "legislacao encontrada" : "legislacoes encontradas"}
+          {total} {total === 1 ? "legislação encontrada" : "legislações encontradas"}
         </p>
       </div>
 
@@ -108,7 +108,7 @@ export default async function LegislacaoPage({ searchParams }: PageProps) {
               href={`/legislacao?page=${page + 1}${params.type ? `&type=${params.type}` : ""}${params.search ? `&search=${params.search}` : ""}`}
               className="flex items-center gap-1 rounded-lg border border-dark-border bg-dark-card px-4 py-2 text-sm font-medium text-text-secondary hover:bg-dark-hover"
             >
-              Proxima
+              Próxima
               <ChevronRight className="h-4 w-4" />
             </Link>
           )}

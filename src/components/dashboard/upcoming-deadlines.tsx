@@ -37,12 +37,12 @@ export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
   return (
     <div className="rounded-xl border border-dark-border bg-dark-card">
       <div className="border-b border-dark-border p-5">
-        <h3 className="font-semibold text-text-primary">Prazos Proximos</h3>
+        <h3 className="font-semibold text-text-primary">Prazos Próximos</h3>
       </div>
       <div className="p-4">
         {sorted.length === 0 ? (
           <p className="py-6 text-center text-sm text-text-muted">
-            Nenhuma licitacao com prazo proximo
+            Nenhuma licitação com prazo próximo
           </p>
         ) : (
           <ul className="space-y-3">

@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.100.1",
     "@types/leaflet": "^1.9.21",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",

@@ -52,7 +52,7 @@ export function RecentActivityFeed({ activities }: RecentActivityFeedProps) {
                             : "bg-blue-500/10 text-blue-400"
                         }`}
                       >
-                        {isLicitacao ? "Licitacao" : "Noticia"}
+                        {isLicitacao ? "Licitação" : "Notícia"}
                       </span>
                       <span className="text-xs text-text-muted">
                         {formatRelativeDate(activity.date)}

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/db";
 import {
   newsCategories,
   newsSources,
@@ -7,45 +7,49 @@ import {
   legislationCategories,
   legislationItems,
   regulatoryAgencies,
-} from "../src/lib/db/seed-data";
+} from "./seed-data";
 
-const prisma = new PrismaClient();
+export interface SeedResult {
+  newsCategoriesUpserted: number;
+  newsSourcesUpserted: number;
+  licitacaoSourcesUpserted: number;
+  licitacaoCategoriesUpserted: number;
+  legislationCategoriesUpserted: number;
+  legislationItemsUpserted: number;
+  agenciesUpserted: number;
+}
 
-async function main() {
-  console.log("Seeding database...");
-
+/**
+ * Executa o seed completo do banco de dados via upsert.
+ * Seguro para rodar múltiplas vezes — nunca duplica dados.
+ */
+export async function runSeed(): Promise<SeedResult> {
+  // 1. Categorias de notícias
   for (const cat of newsCategories) {
     await prisma.category.upsert({ where: { slug: cat.slug }, update: cat, create: cat });
   }
-  console.log(`✓ ${newsCategories.length} categorias de notícias`);
 
+  // 2. Fontes de notícias
   for (const source of newsSources) {
     await prisma.newsSource.upsert({ where: { slug: source.slug }, update: source, create: source });
   }
-  console.log(`✓ ${newsSources.length} fontes de notícias`);
 
-  await prisma.user.upsert({
-    where: { email: "admin@hubatlantico.com.br" },
-    update: {},
-    create: { email: "admin@hubatlantico.com.br", name: "Administrador", role: "ADMIN" },
-  });
-  console.log("✓ Usuário admin");
-
+  // 3. Fontes de licitações
   for (const src of licitacaoSources) {
     await prisma.licitacaoSource.upsert({ where: { slug: src.slug }, update: src, create: src });
   }
-  console.log(`✓ ${licitacaoSources.length} fontes de licitações`);
 
+  // 4. Categorias de licitações
   for (const cat of licitacaoCategories) {
     await prisma.licitacaoCategory.upsert({ where: { slug: cat.slug }, update: cat, create: cat });
   }
-  console.log(`✓ ${licitacaoCategories.length} categorias de licitações`);
 
+  // 5. Categorias de legislação
   for (const cat of legislationCategories) {
     await prisma.legislationCategory.upsert({ where: { slug: cat.slug }, update: cat, create: cat });
   }
-  console.log(`✓ ${legislationCategories.length} categorias de legislação`);
 
+  // 6. Itens de legislação (dependem das categorias acima)
   const legCats = await prisma.legislationCategory.findMany();
   const legCatMap = new Map(legCats.map((c) => [c.slug, c.id]));
 
@@ -58,16 +62,19 @@ async function main() {
       create: { ...rest, categoryId },
     });
   }
-  console.log(`✓ ${legislationItems.length} itens de legislação`);
 
+  // 7. Agências reguladoras
   for (const agency of regulatoryAgencies) {
     await prisma.regulatoryAgency.upsert({ where: { slug: agency.slug }, update: agency, create: agency });
   }
-  console.log(`✓ ${regulatoryAgencies.length} agências reguladoras`);
 
-  console.log("\nSeed concluído!");
+  return {
+    newsCategoriesUpserted: newsCategories.length,
+    newsSourcesUpserted: newsSources.length,
+    licitacaoSourcesUpserted: licitacaoSources.length,
+    licitacaoCategoriesUpserted: licitacaoCategories.length,
+    legislationCategoriesUpserted: legislationCategories.length,
+    legislationItemsUpserted: legislationItems.length,
+    agenciesUpserted: regulatoryAgencies.length,
+  };
 }
-
-main()
-  .catch((e) => { console.error(e); process.exit(1); })
-  .finally(async () => { await prisma.$disconnect(); });

@@ -1,0 +1,99 @@
+/**
+ * Seed data constants — usável programaticamente (API routes, scripts, etc.)
+ * Não depende de `process.exit` ou ambiente de CLI.
+ */
+
+export const newsCategories = [
+  { name: "Saneamento Básico", slug: "saneamento-basico", color: "#0077B6", description: "Notícias gerais sobre saneamento básico no Brasil", icon: "droplets" },
+  { name: "Tratamento de Água", slug: "tratamento-agua", color: "#00B4D8", description: "Tecnologias e processos de tratamento de água", icon: "glass-water" },
+  { name: "Tratamento de Esgoto", slug: "tratamento-esgoto", color: "#48CAE4", description: "Sistemas e tecnologias de tratamento de esgoto", icon: "waves" },
+  { name: "Regulação e Política", slug: "regulacao-politica", color: "#90E0EF", description: "Marco regulatório, leis e políticas públicas", icon: "landmark" },
+  { name: "Tecnologia e Inovação", slug: "tecnologia-inovacao", color: "#2E7D32", description: "Inovações tecnológicas aplicadas ao setor", icon: "cpu" },
+  { name: "Engenharia", slug: "engenharia", color: "#F9A825", description: "Engenharia sanitária, civil e ambiental", icon: "hard-hat" },
+  { name: "Meio Ambiente", slug: "meio-ambiente", color: "#43A047", description: "Sustentabilidade e impacto ambiental", icon: "leaf" },
+  { name: "Mercado e Negócios", slug: "mercado-negocios", color: "#EF6C00", description: "Concessões, privatizações e mercado do setor", icon: "trending-up" },
+  { name: "Infraestrutura", slug: "infraestrutura", color: "#6D4C41", description: "Obras, projetos e infraestrutura de saneamento", icon: "building" },
+];
+
+export const newsSources = [
+  // RSS feeds (WordPress)
+  { name: "Saneamento Básico", slug: "saneamento-basico", url: "https://www.saneamentobasico.com.br", feedUrl: "https://www.saneamentobasico.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Instituto Trata Brasil", slug: "trata-brasil", url: "https://tratabrasil.org.br", feedUrl: "https://tratabrasil.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Instituto Água e Saneamento", slug: "ias", url: "https://www.aguaesaneamento.org.br", feedUrl: "https://www.aguaesaneamento.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Engenharia 360", slug: "engenharia360", url: "https://engenharia360.com", feedUrl: "https://engenharia360.com/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Inovação Tecnológica", slug: "inovacao-tecnologica", url: "https://www.inovacaotecnologica.com.br", feedUrl: "https://www.inovacaotecnologica.com.br/boletim/rss.php", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Revista Hydro", slug: "revista-hydro", url: "https://www.revistashydro.com.br", feedUrl: "https://www.revistashydro.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "ABES", slug: "abes", url: "https://abes-dn.org.br", feedUrl: "https://abes-dn.org.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Saneamento Hoje", slug: "saneamento-hoje", url: "https://saneamentohoje.com.br", feedUrl: "https://saneamentohoje.com.br/feed/", fetchMethod: "RSS", fetchConfig: null },
+  { name: "Portal Digital Water", slug: "digital-water", url: "https://portaldigitalwater.com", feedUrl: "https://portaldigitalwater.com/feed/", fetchMethod: "RSS", fetchConfig: null },
+  // HTML scraping
+  { name: "Aegea", slug: "aegea", url: "https://www.aegea.com.br", scrapeUrl: "https://www.aegea.com.br/noticias/", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-card, .post-item", titleSelector: "h2 a, h3 a, .titulo a", summarySelector: ".resumo, .excerpt, p", imageSelector: "img", linkSelector: "h2 a, h3 a, a.read-more" }) },
+  { name: "Sabesp", slug: "sabesp", url: "https://www.sabesp.com.br", scrapeUrl: "https://www.sabesp.com.br/o-que-fazemos/noticias-e-comunicados", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-item, li.item", titleSelector: "h2 a, h3 a, .titulo", summarySelector: ".resumo, p", imageSelector: "img", linkSelector: "h2 a, h3 a, a" }) },
+  { name: "Copasa", slug: "copasa", url: "https://www.copasa.com.br", scrapeUrl: "https://www.copasa.com.br/wps/portal/internet/imprensa/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-item, .ibm-card", titleSelector: "h2 a, h3 a, .ibm-card__title a", summarySelector: ".resumo, p", imageSelector: "img", linkSelector: "a.ibm-forward-link, h2 a" }) },
+  { name: "Sanepar", slug: "sanepar", url: "https://site.sanepar.com.br", scrapeUrl: "https://site.sanepar.com.br/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .views-row, .card", titleSelector: "h2 a, h3 a, .card-title a", summarySelector: ".views-field-body, .card-text", imageSelector: "img", linkSelector: "h2 a, .card-title a" }) },
+  { name: "Iguá Saneamento", slug: "igua", url: "https://www.igua.com.br", scrapeUrl: "https://www.igua.com.br/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .noticia-item, .card", titleSelector: "h2 a, h3 a, .card-title a", summarySelector: ".resumo, .excerpt, p", imageSelector: "img", linkSelector: "h2 a, h3 a, a" }) },
+  { name: "Caesb", slug: "caesb", url: "https://www.caesb.df.gov.br", scrapeUrl: "https://www.caesb.df.gov.br/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .tileItem, .summary", titleSelector: "h2 a, h3 a, .tileHeadline a", summarySelector: ".tileBody, p", imageSelector: "img", linkSelector: "a.summary-url, h2 a" }) },
+  { name: "ANA - Agência Nacional de Águas", slug: "ana", url: "https://www.gov.br/ana", scrapeUrl: "https://www.gov.br/ana/pt-br/assuntos/noticias-e-eventos/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .tileItem, .summary", titleSelector: "h2 a, h3 a, .tileHeadline a", summarySelector: ".tileBody, .summary-text, p", imageSelector: "img.thumb", linkSelector: "a.summary-url, h2 a" }) },
+  { name: "Ministério das Cidades", slug: "mcidades", url: "https://www.gov.br/cidades", scrapeUrl: "https://www.gov.br/cidades/pt-br/assuntos/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .tileItem, .summary", titleSelector: "h2 a, h3 a, .tileHeadline a", summarySelector: ".tileBody, .summary-text, p", imageSelector: "img.thumb", linkSelector: "a.summary-url, h2 a" }) },
+  { name: "FUNASA", slug: "funasa", url: "https://www.funasa.gov.br", scrapeUrl: "https://www.funasa.gov.br/web/guest/noticias", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: "article, .portlet-content li", titleSelector: "h3 a, h4 a, .asset-title a", summarySelector: ".asset-summary p, p", imageSelector: "img", linkSelector: "h3 a, .asset-title a" }) },
+];
+
+export const licitacaoSources = [
+  { name: "PNCP", slug: "pncp", baseUrl: "https://pncp.gov.br/api/consulta", fetchMethod: "PNCP_API", fetchConfig: JSON.stringify({ searchEndpoint: "/v1/contratacoes/publicacao", defaultPageSize: 50, keywords: ["saneamento", "água", "esgoto", "tratamento", "abastecimento", "drenagem", "resíduos sólidos"] }), isActive: true },
+  { name: "Compras.gov.br", slug: "compras-gov", baseUrl: "https://api.compras.dados.gov.br", fetchMethod: "COMPRAS_GOV_API", fetchConfig: JSON.stringify({ format: "json" }), isActive: true },
+  { name: "BEC-SP", slug: "bec-sp", baseUrl: "https://www.bec.sp.gov.br", fetchMethod: "BEC_SP_SCRAPE", fetchConfig: JSON.stringify({ keywords: ["saneamento", "água", "agua", "esgoto", "drenagem", "resíduos", "residuos", "tubulação", "bomba"] }), isActive: true },
+  { name: "Licitacoes-e (Banco do Brasil)", slug: "licitacoes-e", baseUrl: "https://www.licitacoes-e.com.br", fetchMethod: "HTML_SCRAPE", fetchConfig: JSON.stringify({ articleListSelector: ".licitacao-item", titleSelector: ".descricao", linkSelector: "a" }), isActive: false },
+];
+
+export const licitacaoCategories = [
+  { name: "Saneamento e Água", slug: "saneamento-agua", color: "#0077B6", description: "Sistemas de abastecimento de água e esgotamento sanitário", keywords: JSON.stringify(["saneamento", "água", "esgoto", "abastecimento", "eta", "ete"]) },
+  { name: "Engenharia Civil", slug: "engenharia-civil", color: "#F9A825", description: "Obras de engenharia e construção civil", keywords: JSON.stringify(["engenharia", "obra", "construção", "edificação", "pavimentação"]) },
+  { name: "Resíduos Sólidos", slug: "residuos-solidos", color: "#43A047", description: "Coleta, tratamento e disposição de resíduos", keywords: JSON.stringify(["resíduo", "lixo", "coleta", "reciclagem", "aterro"]) },
+  { name: "Drenagem Urbana", slug: "drenagem-urbana", color: "#00B4D8", description: "Sistemas de drenagem e controle de enchentes", keywords: JSON.stringify(["drenagem", "enchente", "alagamento", "bueiro", "galeria"]) },
+  { name: "Equipamentos", slug: "equipamentos", color: "#6D4C41", description: "Aquisição de equipamentos e materiais", keywords: JSON.stringify(["equipamento", "bomba", "motor", "tubulação", "válvula", "medidor"]) },
+  { name: "Consultoria", slug: "consultoria", color: "#8B5CF6", description: "Serviços de consultoria e projetos", keywords: JSON.stringify(["consultoria", "projeto", "estudo", "diagnóstico", "plano"]) },
+  { name: "Tecnologia da Informação", slug: "ti", color: "#2E7D32", description: "Sistemas e serviços de TI", keywords: JSON.stringify(["software", "sistema", "tecnologia", "informatica", "digital"]) },
+  { name: "Outros", slug: "outros", color: "#6B6B73", description: "Outras categorias de licitação", keywords: null },
+];
+
+export const legislationCategories = [
+  { name: "Saneamento", slug: "saneamento-leg", color: "#0077B6", icon: "droplets" },
+  { name: "Licitações", slug: "licitacoes-leg", color: "#F9A825", icon: "gavel" },
+  { name: "Segurança do Trabalho", slug: "seguranca", color: "#EF4444", icon: "shield" },
+  { name: "Normas Técnicas", slug: "normas-tecnicas", color: "#8B5CF6", icon: "file-text" },
+  { name: "Regulação", slug: "regulacao", color: "#22C55E", icon: "landmark" },
+];
+
+export const legislationItems = [
+  { slug: "lei-14026-2020", title: "Lei n. 14.026/2020 — Novo Marco Legal do Saneamento Básico", shortTitle: "Marco Legal do Saneamento", description: "Atualiza o marco legal do saneamento básico, estabelecendo metas de universalização até 2033 (99% água e 90% esgoto). Estimula a regionalização e participação do setor privado.", type: "LEI", number: "14.026/2020", issuingBody: "Presidência da República", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/L14026.htm", publishedAt: new Date("2020-07-15"), effectiveAt: new Date("2020-07-16"), legCategorySlug: "saneamento-leg" },
+  { slug: "lei-14133-2021", title: "Lei n. 14.133/2021 — Nova Lei de Licitações e Contratos", shortTitle: "Nova Lei de Licitações", description: "Substitui a Lei 8.666/1993. Estabelece normas gerais de licitação e contratação para a administração pública.", type: "LEI", number: "14.133/2021", issuingBody: "Presidência da República", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/L14133.htm", publishedAt: new Date("2021-04-01"), effectiveAt: new Date("2021-04-01"), legCategorySlug: "licitacoes-leg" },
+  { slug: "decreto-12303-2024", title: "Decreto n. 12.303/2024 — Programa de Governança de Estatais", shortTitle: "Decreto 12.303/2024", description: "Institui o Programa de Governança e Modernização das Empresas Estatais.", type: "DECRETO", number: "12.303/2024", issuingBody: "Presidência da República", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/D12303.htm", publishedAt: new Date("2024-11-28"), effectiveAt: new Date("2024-11-28"), legCategorySlug: "saneamento-leg" },
+  { slug: "nr-18", title: "NR-18 — Segurança e Saúde no Trabalho na Construção", shortTitle: "NR-18", description: "Estabelece diretrizes de segurança nos processos da indústria da construção.", type: "NORMA_REGULAMENTADORA", number: "18", issuingBody: "Ministério do Trabalho e Emprego", documentUrl: "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-18", publishedAt: new Date("1978-06-08"), effectiveAt: new Date("2022-01-01"), legCategorySlug: "seguranca" },
+  { slug: "nbr-12211-2024", title: "NBR 12.211/2024 — Estudos de Concepção de Sistemas de Abastecimento de Água", shortTitle: "NBR 12.211", description: "Define condições para elaboração de estudos de concepção de sistemas públicos de abastecimento de água.", type: "NBR", number: "12.211/2024", issuingBody: "ABNT", documentUrl: "https://www.abntcatalogo.com.br", publishedAt: new Date("2024-01-15"), legCategorySlug: "normas-tecnicas" },
+  { slug: "resolucao-ana-211-2024", title: "Resolução ANA n. 211/2024 — Indicadores Operacionais de Água e Esgoto", shortTitle: "Resolução ANA 211", description: "Estabelece indicadores operacionais de água e esgoto para prestadores de serviços de saneamento.", type: "RESOLUCAO", number: "211/2024", issuingBody: "ANA", documentUrl: "https://www.gov.br/ana", publishedAt: new Date("2024-06-15"), legCategorySlug: "regulacao" },
+  { slug: "resolucao-ana-122-2023", title: "Resolução ANA n. 122/2023 — Norma de Referência de Regulação Tarifária", shortTitle: "Resolução ANA 122", description: "Estabelece norma de referência para regulação tarifária dos serviços públicos de saneamento básico.", type: "RESOLUCAO", number: "122/2023", issuingBody: "ANA", documentUrl: "https://www.gov.br/ana", publishedAt: new Date("2023-12-01"), legCategorySlug: "regulacao" },
+];
+
+export const regulatoryAgencies = [
+  { name: "ANA", fullName: "Agência Nacional de Águas e Saneamento Básico", slug: "ana", region: "NACIONAL", websiteUrl: "https://www.gov.br/ana", description: "Agência federal responsável pela regulação do uso de recursos hídricos e regulação de referência do saneamento básico." },
+  { name: "ARSESP", fullName: "Agência Reguladora de Serviços Públicos do Estado de São Paulo", slug: "arsesp", region: "SUDESTE", uf: "SP", websiteUrl: "https://www.arsesp.sp.gov.br" },
+  { name: "AGENERSA", fullName: "Agência Reguladora de Energia e Saneamento Básico do RJ", slug: "agenersa", region: "SUDESTE", uf: "RJ", websiteUrl: "https://www.agenersa.rj.gov.br" },
+  { name: "ARSAE", fullName: "Agência Reguladora de Serviços de Abastecimento de Água e Esgotamento Sanitário de MG", slug: "arsae", region: "SUDESTE", uf: "MG", websiteUrl: "https://www.arsae.mg.gov.br" },
+  { name: "ARSI", fullName: "Agência Reguladora de Saneamento e Infraestrutura do ES", slug: "arsi", region: "SUDESTE", uf: "ES", websiteUrl: "https://arsi.es.gov.br" },
+  { name: "AGEPAR", fullName: "Agência Reguladora de Serviços Públicos Delegados do Paraná", slug: "agepar", region: "SUL", uf: "PR", websiteUrl: "https://www.agepar.pr.gov.br" },
+  { name: "AGERGS", fullName: "Agência Estadual de Regulação dos Serviços Públicos Delegados do RS", slug: "agergs", region: "SUL", uf: "RS", websiteUrl: "https://www.agergs.rs.gov.br" },
+  { name: "ARESC", fullName: "Agência de Regulação de Serviços Públicos de Santa Catarina", slug: "aresc", region: "SUL", uf: "SC", websiteUrl: "https://www.aresc.sc.gov.br" },
+  { name: "ARCE", fullName: "Agência Reguladora de Serviços Públicos Delegados do Ceará", slug: "arce", region: "NORDESTE", uf: "CE", websiteUrl: "https://www.arce.ce.gov.br" },
+  { name: "ARSAL", fullName: "Agência Reguladora de Serviços Públicos de Alagoas", slug: "arsal", region: "NORDESTE", uf: "AL", websiteUrl: "https://www.arsal.al.gov.br" },
+  { name: "AGESPI", fullName: "Agência de Regulação dos Serviços Públicos Delegados do Piauí", slug: "agespi", region: "NORDESTE", uf: "PI", websiteUrl: "https://www.agespi.pi.gov.br" },
+  { name: "ATR", fullName: "Agência Tocantinense de Regulação", slug: "atr", region: "NORDESTE", uf: "TO", websiteUrl: "https://www.atr.to.gov.br" },
+  { name: "ADASA", fullName: "Agência Reguladora de Águas, Energia e Saneamento do DF", slug: "adasa", region: "CENTRO_OESTE", uf: "DF", websiteUrl: "https://www.adasa.df.gov.br" },
+  { name: "AGR", fullName: "Agência Goiana de Regulação", slug: "agr", region: "CENTRO_OESTE", uf: "GO", websiteUrl: "https://www.agr.go.gov.br" },
+  { name: "AGER", fullName: "Agência Estadual de Regulação dos Serviços Públicos Delegados de MT", slug: "ager", region: "CENTRO_OESTE", uf: "MT", websiteUrl: "https://www.ager.mt.gov.br" },
+  { name: "AGEMS", fullName: "Agência Estadual de Regulação de Serviços Públicos de MS", slug: "agems", region: "CENTRO_OESTE", uf: "MS", websiteUrl: "https://www.agems.ms.gov.br" },
+  { name: "AGEAC", fullName: "Agência Reguladora dos Serviços Públicos do Acre", slug: "ageac", region: "NORTE", uf: "AC", websiteUrl: "https://www.ageac.ac.gov.br" },
+  { name: "ARCON", fullName: "Agência de Regulação e Controle de Serviços Públicos do Pará", slug: "arcon", region: "NORTE", uf: "PA", websiteUrl: "https://www.arcon.pa.gov.br" },
+  { name: "ARSEP", fullName: "Agência Reguladora de Serviços Públicos do Rio Grande do Norte", slug: "arsep-rn", region: "NORTE", uf: "RN", websiteUrl: "https://www.arsep.rn.gov.br" },
+  { name: "ARES-PCJ", fullName: "Agência Reguladora dos Serviços de Saneamento das Bacias PCJ", slug: "ares-pcj", region: "INTERMUNICIPAL", websiteUrl: "https://www.arespcj.com.br", description: "Regula centenas de municípios nas bacias dos rios Piracicaba, Capivari e Jundiaí." },
+  { name: "ARIS-SC", fullName: "Agência Reguladora Intermunicipal de Saneamento de SC", slug: "aris-sc", region: "INTERMUNICIPAL", websiteUrl: "https://www.aris.sc.gov.br", description: "Agência intermunicipal que regula serviços de saneamento em Santa Catarina." },
+];

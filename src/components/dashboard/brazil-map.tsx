@@ -68,7 +68,7 @@ export function BrazilMap({ data }: BrazilMapProps) {
       <div className="rounded-xl border border-dark-border bg-dark-card">
         <div className="border-b border-dark-border p-5">
           <h3 className="font-semibold text-text-primary">
-            Licitacoes por Estado
+            Licitações por Estado
           </h3>
         </div>
         <div className="flex h-[400px] items-center justify-center">

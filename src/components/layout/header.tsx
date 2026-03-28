@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,6 +20,7 @@ import {
   Box,
   Info,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const mobileNavSections = [
   {
@@ -58,7 +59,18 @@ const allItems = mobileNavSections.flatMap((s) => s.items);
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userInitial, setUserInitial] = useState("?");
   const pathname = usePathname();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        const name: string = user.user_metadata?.name ?? user.email ?? "?";
+        setUserInitial(name.charAt(0).toUpperCase());
+      }
+    });
+  }, []);
 
   const pageTitle =
     pathname === "/" || pathname === "/dashboard"
@@ -106,7 +118,7 @@ export function Header() {
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
           </button>
           <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
-            A
+            {userInitial}
           </div>
         </div>
       </header>

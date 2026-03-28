@@ -33,13 +33,13 @@ export function KpiCards({
   const cards = [
     {
       icon: Gavel,
-      label: "Licitacoes Totais",
+      label: "Licitações Totais",
       value: totalLicitacoes.toLocaleString("pt-BR"),
-      subtitle: `${totalAgencias} agencias reguladoras`,
+      subtitle: `${totalAgencias} agências reguladoras`,
     },
     {
       icon: CheckCircle,
-      label: "Licitacoes Abertas",
+      label: "Licitações Abertas",
       value: licitacoesAbertas.toLocaleString("pt-BR"),
       subtitle: "Com prazo vigente",
     },
@@ -51,7 +51,7 @@ export function KpiCards({
     },
     {
       icon: Newspaper,
-      label: "Noticias",
+      label: "Notícias",
       value: totalNoticias.toLocaleString("pt-BR"),
       subtitle: `${fontesAtivas} fontes ativas`,
     },

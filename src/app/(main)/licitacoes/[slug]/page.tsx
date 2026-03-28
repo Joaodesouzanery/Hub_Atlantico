@@ -23,20 +23,24 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const licitacao = await prisma.licitacao.findUnique({
-    where: { slug },
-    select: { title: true, description: true },
-  });
+  try {
+    const { slug } = await params;
+    const licitacao = await prisma.licitacao.findUnique({
+      where: { slug },
+      select: { title: true, description: true },
+    });
 
-  if (!licitacao) return { title: "Licitação não encontrada" };
+    if (!licitacao) return { title: "Licitação não encontrada" };
 
-  return {
-    title: licitacao.title,
-    description: licitacao.description
-      ? licitacao.description.slice(0, 160)
-      : undefined,
-  };
+    return {
+      title: licitacao.title,
+      description: licitacao.description
+        ? licitacao.description.slice(0, 160)
+        : undefined,
+    };
+  } catch {
+    return { title: "Licitações" };
+  }
 }
 
 function formatBRL(value: number): string {

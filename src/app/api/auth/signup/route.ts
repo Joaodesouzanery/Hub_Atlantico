@@ -3,10 +3,18 @@ import { createClient } from "@supabase/supabase-js";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 
+const UF_VALUES = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"] as const;
+const SEGMENT_VALUES = ["PUBLIC","PRIVATE","CONSULTING","ACADEMIA","OTHER"] as const;
+
 const signupSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100),
   email: z.string().email("E-mail inválido"),
   password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
+  phone: z.string().min(10, "Telefone inválido").max(20).optional().or(z.literal("")),
+  company: z.string().max(150).optional().or(z.literal("")),
+  jobTitle: z.string().max(100).optional().or(z.literal("")),
+  uf: z.enum(UF_VALUES).optional().or(z.literal("")),
+  segment: z.enum(SEGMENT_VALUES).optional().or(z.literal("")),
 });
 
 export async function POST(request: NextRequest) {
@@ -23,20 +31,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: firstError }, { status: 400 });
   }
 
-  const { name, email, password } = parsed.data;
+  const { name, email, password, phone, company, jobTitle, uf, segment } = parsed.data;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !anonKey) {
-    console.error("[signup] Variáveis de ambiente Supabase não configuradas.");
+    console.error("[signup] Env vars Supabase ausentes.");
     return NextResponse.json({ error: "Serviço indisponível. Tente novamente." }, { status: 503 });
   }
 
   let userId: string | undefined;
 
-  // Caminho 1: Admin API (confirma e-mail automaticamente, sem envio de e-mail)
+  // Caminho 1: Admin API com email_confirm:true (sem e-mail de confirmação)
   if (serviceRoleKey) {
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
@@ -45,26 +53,22 @@ export async function POST(request: NextRequest) {
     const { data: adminData, error: adminError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      user_metadata: { name },
+      user_metadata: { name, phone, company, jobTitle, uf, segment },
       email_confirm: true,
     });
 
     if (adminError) {
-      if (
-        adminError.message.toLowerCase().includes("already registered") ||
-        adminError.message.toLowerCase().includes("already been registered") ||
-        adminError.message.toLowerCase().includes("email_exists")
-      ) {
+      const msg = adminError.message.toLowerCase();
+      if (msg.includes("already registered") || msg.includes("already been registered") || msg.includes("email_exists")) {
         return NextResponse.json({ error: "Este e-mail já está cadastrado." }, { status: 409 });
       }
-      // Admin API falhou por outra razão — tenta fallback abaixo
       console.warn("[signup] Admin API falhou, tentando fallback:", adminError.message);
     } else {
       userId = adminData.user?.id;
     }
   }
 
-  // Caminho 2: Fallback com signUp() padrão (se admin API indisponível ou falhou)
+  // Caminho 2: Fallback signUp() — requer "Confirm email" desativado no Supabase Dashboard
   if (!userId) {
     const supabase = createClient(supabaseUrl, anonKey, {
       auth: { autoRefreshToken: false, persistSession: false },
@@ -73,14 +77,12 @@ export async function POST(request: NextRequest) {
     const { data: signupData, error: signupError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: { name, phone, company, jobTitle, uf, segment } },
     });
 
     if (signupError) {
-      if (
-        signupError.message.toLowerCase().includes("already registered") ||
-        signupError.message.toLowerCase().includes("user already registered")
-      ) {
+      const msg = signupError.message.toLowerCase();
+      if (msg.includes("already registered") || msg.includes("user already registered")) {
         return NextResponse.json({ error: "Este e-mail já está cadastrado." }, { status: 409 });
       }
       console.error("[signup] signUp error:", signupError.message);
@@ -95,8 +97,25 @@ export async function POST(request: NextRequest) {
     try {
       await prisma.user.upsert({
         where: { email },
-        update: { name },
-        create: { id: userId, email, name, role: "FREE" },
+        update: {
+          name,
+          phone: phone || null,
+          company: company || null,
+          jobTitle: jobTitle || null,
+          uf: uf || null,
+          segment: segment || null,
+        },
+        create: {
+          id: userId,
+          email,
+          name,
+          phone: phone || null,
+          company: company || null,
+          jobTitle: jobTitle || null,
+          uf: uf || null,
+          segment: segment || null,
+          role: "FREE",
+        },
       });
     } catch (dbError) {
       console.error("[signup] Prisma upsert error:", dbError);

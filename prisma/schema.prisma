@@ -16,6 +16,11 @@ model User {
   id             String   @id @default(uuid())
   email          String   @unique
   name           String?
+  phone          String?  @map("phone")
+  company        String?  @map("company")
+  jobTitle       String?  @map("job_title")
+  uf             String?  @map("uf")
+  segment        String?  @map("segment") // PUBLIC, PRIVATE, CONSULTING, ACADEMIA, OTHER
   role           String   @default("FREE") // FREE, PREMIUM, ADMIN
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")

@@ -2,28 +2,57 @@ import type { RawLicitacao, LicitacaoFetchConfig } from "../types";
 
 const PNCP_BASE_URL = "https://pncp.gov.br/api/consulta";
 const FETCH_TIMEOUT = 30_000; // 30 seconds
-const MAX_PAGES = 5;
-const DEFAULT_PAGE_SIZE = 50;
+const DEFAULT_PAGE_SIZE = 20;
+
+/** Modalidade codes to search across */
+const MODALIDADE_CODES = [8, 6, 1, 2, 4]; // Dispensa, Pregao Eletronico, Leilao, Concorrencia, Concurso
+
+const DEFAULT_SANITATION_KEYWORDS: string[] = [
+  // Accented (canonical)
+  "saneamento",
+  "água",
+  "esgoto",
+  "abastecimento",
+  "tratamento de água",
+  "tratamento de esgoto",
+  "drenagem",
+  "adutora",
+  "reservatório",
+  "estação elevatória",
+  "rede de distribuição",
+  "hidrômetro",
+  "tubulação",
+  "esgotamento sanitário",
+  "eta ",
+  "ete ",
+  "residuos",
+  "coleta de lixo",
+  // Unaccented variants for matching
+  "agua",
+  "esgotamento sanitario",
+  "estacao elevatoria",
+];
 
 /**
  * Fetch licitacoes from PNCP (Portal Nacional de Contratacoes Publicas) API.
- * Searches publications from the last 7 days, filtering by relevant keywords.
+ * Iterates over multiple modalidade codes, fetching page 1 of each.
+ * Filters results by sanitation-related keywords in objetoCompra.
  */
 export async function fetchFromPNCP(
   config: LicitacaoFetchConfig,
   sourceName: string
 ): Promise<RawLicitacao[]> {
-  const pageSize = config.defaultPageSize || DEFAULT_PAGE_SIZE;
-  const keywords = config.keywords || getDefaultKeywords();
+  const pageSize = Math.max(config.defaultPageSize || DEFAULT_PAGE_SIZE, 10);
+  const keywords = config.keywords || DEFAULT_SANITATION_KEYWORDS;
 
   const { dataInicial, dataFinal } = getDateRange(7);
 
   const allResults: RawLicitacao[] = [];
 
-  for (let page = 1; page <= MAX_PAGES; page++) {
+  for (const modalidade of MODALIDADE_CODES) {
     try {
-      const url = buildSearchUrl(dataInicial, dataFinal, page, pageSize);
-      console.log(`[PNCP] Fetching page ${page}: ${url}`);
+      const url = buildSearchUrl(dataInicial, dataFinal, 1, pageSize, modalidade);
+      console.log(`[PNCP] Fetching modalidade ${modalidade}: ${url}`);
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
@@ -40,17 +69,17 @@ export async function fetchFromPNCP(
 
       if (!response.ok) {
         console.error(
-          `[PNCP] HTTP ${response.status} on page ${page}`
+          `[PNCP] HTTP ${response.status} for modalidade ${modalidade}`
         );
-        break;
+        continue;
       }
 
-      const data = await response.json();
-      const items = extractItems(data);
+      const body = await response.json();
+      const items = extractItems(body);
 
       if (!items || items.length === 0) {
-        console.log(`[PNCP] No more results on page ${page}`);
-        break;
+        console.log(`[PNCP] No results for modalidade ${modalidade}`);
+        continue;
       }
 
       const filtered = filterByKeywords(items, keywords);
@@ -58,21 +87,18 @@ export async function fetchFromPNCP(
       allResults.push(...mapped);
 
       console.log(
-        `[PNCP] Page ${page}: ${items.length} total, ${filtered.length} matched keywords`
+        `[PNCP] Modalidade ${modalidade}: ${items.length} total, ${filtered.length} matched keywords`
       );
-
-      // If fewer results than page size, no more pages
-      if (items.length < pageSize) break;
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
-        console.error(`[PNCP] Timeout on page ${page}`);
+        console.error(`[PNCP] Timeout for modalidade ${modalidade}`);
       } else {
         console.error(
-          `[PNCP] Error on page ${page}:`,
+          `[PNCP] Error for modalidade ${modalidade}:`,
           error instanceof Error ? error.message : error
         );
       }
-      break;
+      continue;
     }
   }
 
@@ -84,11 +110,13 @@ function buildSearchUrl(
   dataInicial: string,
   dataFinal: string,
   pagina: number,
-  tamanhoPagina: number
+  tamanhoPagina: number,
+  codigoModalidadeContratacao: number
 ): string {
   const params = new URLSearchParams({
     dataInicial,
     dataFinal,
+    codigoModalidadeContratacao: String(codigoModalidadeContratacao),
     pagina: String(pagina),
     tamanhoPagina: String(tamanhoPagina),
   });
@@ -119,16 +147,20 @@ function formatDateParam(date: Date): string {
   return `${yyyy}${mm}${dd}`;
 }
 
+/**
+ * Extract items from PNCP response.
+ * The API returns { data: [...], totalRegistros, totalPaginas, numeroPagina, paginasRestantes }.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractItems(data: any): any[] {
-  // PNCP API may wrap results in different structures
-  if (Array.isArray(data)) return data;
-  if (data?.data && Array.isArray(data.data)) return data.data;
-  if (data?.resultado && Array.isArray(data.resultado)) return data.resultado;
-  if (data?.content && Array.isArray(data.content)) return data.content;
+function extractItems(body: any): any[] {
+  if (body?.data && Array.isArray(body.data)) return body.data;
+  if (Array.isArray(body)) return body;
   return [];
 }
 
+/**
+ * Filter items whose objetoCompra matches any of the sanitation keywords.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function filterByKeywords(items: any[], keywords: string[]): any[] {
   if (keywords.length === 0) return items;
@@ -136,81 +168,52 @@ function filterByKeywords(items: any[], keywords: string[]): any[] {
   const lowerKeywords = keywords.map((k) => k.toLowerCase());
 
   return items.filter((item) => {
-    const text = [
-      item.objetoCompra,
-      item.descricao,
-      item.objeto,
-      item.nomeOrgao,
-      item.description,
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-
+    const text = (item.objetoCompra || "").toLowerCase();
     return lowerKeywords.some((kw) => text.includes(kw));
   });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapToRawLicitacao(item: any, sourceName: string): RawLicitacao {
-  const title =
-    item.objetoCompra || item.objeto || item.title || "Sem titulo";
-  const description =
-    item.descricao || item.objetoCompra || item.description || "";
-  const process =
-    item.numeroCompra ||
-    item.processo ||
-    item.numberProcess ||
-    undefined;
-  const modalidade =
-    item.modalidadeNome ||
-    item.modalidade ||
-    item.modalidadeId ||
-    "NAO_INFORMADO";
-  const status =
-    item.situacaoCompra ||
-    item.statusCompra ||
-    item.status ||
-    "ABERTA";
+  const title = item.objetoCompra || "Sem titulo";
+  const description = item.objetoCompra || "";
+  const process = item.processo || undefined;
+
+  const modalidade = item.modalidadeNome || "NAO_INFORMADO";
+  const status = mapStatus(item.situacaoCompraNome || "");
 
   const estimatedValue =
-    parseFloat(item.valorEstimado || item.valorTotalEstimado) || undefined;
+    typeof item.valorTotalEstimado === "number"
+      ? item.valorTotalEstimado
+      : parseFloat(item.valorTotalEstimado) || undefined;
 
-  const uf = item.uf || item.unidadeFederativa || undefined;
-  const city = item.municipio || item.cidade || undefined;
-  const organ = item.nomeOrgao || item.orgao || undefined;
-  const organCnpj = item.cnpjOrgao || item.cnpj || undefined;
+  const uf = item.unidadeOrgao?.ufSigla || undefined;
+  const city = item.unidadeOrgao?.municipioNome || undefined;
+  const organ = item.orgaoEntidade?.razaoSocial || undefined;
+  const organCnpj = item.orgaoEntidade?.cnpj || undefined;
 
-  const originalUrl =
-    item.linkSistemaOrigem ||
-    item.uri ||
-    item.link ||
-    `https://pncp.gov.br/app/editais/${item.codigoUnidade || "unknown"}/${item.anoCompra || "0"}/${item.sequencialCompra || "0"}`;
+  const originalUrl = `https://pncp.gov.br/app/editais/${item.numeroControlePNCP || "unknown"}`;
 
-  const editalUrl = item.linkEdital || item.urlEdital || undefined;
+  const editalUrl = item.linkSistemaOrigem || undefined;
 
-  const publishedAt = item.dataPublicacao
-    ? new Date(item.dataPublicacao)
+  const publishedAt = item.dataPublicacaoPncp
+    ? new Date(item.dataPublicacaoPncp)
     : new Date();
 
-  const openDate = item.dataAbertura
-    ? new Date(item.dataAbertura)
-    : item.dataInicioVigencia
-      ? new Date(item.dataInicioVigencia)
-      : undefined;
+  const openDate = item.dataAberturaProposta
+    ? new Date(item.dataAberturaProposta)
+    : undefined;
 
   const closeDate = item.dataEncerramentoProposta
     ? new Date(item.dataEncerramentoProposta)
-    : item.dataFimVigencia
-      ? new Date(item.dataFimVigencia)
-      : undefined;
+    : undefined;
 
   return {
     title: title.slice(0, 500),
     description: description.slice(0, 2000),
     process,
     modalidade: normalizeModalidade(modalidade),
-    status: normalizeStatus(status),
+    status,
     estimatedValue,
     uf,
     city,
@@ -225,8 +228,31 @@ function mapToRawLicitacao(item: any, sourceName: string): RawLicitacao {
   };
 }
 
+/**
+ * Map PNCP situacaoCompraNome to our internal status codes.
+ */
+function mapStatus(situacao: string): string {
+  const s = situacao.trim().toLowerCase();
+
+  if (s.includes("divulgada")) return "ABERTA";
+  if (s.includes("abert")) return "ABERTA";
+  if (s.includes("publicada")) return "ABERTA";
+  if (s.includes("homologada")) return "HOMOLOGADA";
+  if (s.includes("encerrada")) return "ENCERRADA";
+  if (s.includes("suspens")) return "SUSPENSA";
+  if (s.includes("anulada")) return "ANULADA";
+  if (s.includes("revogada")) return "ANULADA";
+  if (s.includes("deserta")) return "DESERTA";
+  if (s.includes("fracassada")) return "DESERTA";
+
+  return "ABERTA";
+}
+
 function normalizeModalidade(raw: string): string {
-  const normalized = raw.toUpperCase().replace(/\s+/g, "_").replace(/[^A-Z_]/g, "");
+  const normalized = raw
+    .toUpperCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^A-Z_]/g, "");
   const mapping: Record<string, string> = {
     PREGAO_ELETRONICO: "PREGAO_ELETRONICO",
     PREGAO: "PREGAO_ELETRONICO",
@@ -240,52 +266,7 @@ function normalizeModalidade(raw: string): string {
     DISPENSA: "DISPENSA",
     DISPENSA_DE_LICITACAO: "DISPENSA",
     INEXIGIBILIDADE: "INEXIGIBILIDADE",
+    CONCURSO: "CONCURSO",
   };
   return mapping[normalized] || normalized || "NAO_INFORMADO";
-}
-
-function normalizeStatus(raw: string): string {
-  const normalized = raw.toUpperCase().replace(/\s+/g, "_");
-  const mapping: Record<string, string> = {
-    ABERTA: "ABERTA",
-    ABERTO: "ABERTA",
-    PUBLICADA: "ABERTA",
-    ENCERRADA: "ENCERRADA",
-    ENCERRADO: "ENCERRADA",
-    SUSPENSA: "SUSPENSA",
-    SUSPENSO: "SUSPENSA",
-    ANULADA: "ANULADA",
-    ANULADO: "ANULADA",
-    HOMOLOGADA: "HOMOLOGADA",
-    HOMOLOGADO: "HOMOLOGADA",
-    DESERTA: "DESERTA",
-    DESERTO: "DESERTA",
-    REVOGADA: "ANULADA",
-  };
-  return mapping[normalized] || "ABERTA";
-}
-
-function getDefaultKeywords(): string[] {
-  return [
-    "saneamento",
-    "abastecimento de água",
-    "água potável",
-    "esgotamento sanitário",
-    "tratamento de água",
-    "tratamento de esgoto",
-    "estação de tratamento",
-    "eta",
-    "ete",
-    "estação elevatória",
-    "rede de distribuição",
-    "adutora",
-    "reservatório",
-    "bombeamento",
-    "tubulação",
-    "hidrômetro",
-    "drenagem",
-    "engenharia sanitária",
-    "consultoria ambiental",
-    "infraestrutura hídrica",
-  ];
 }

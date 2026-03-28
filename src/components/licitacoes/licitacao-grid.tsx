@@ -1,4 +1,5 @@
 import { LicitacaoCard } from "./licitacao-card";
+import { AdEngelferInline } from "@/components/ads/ad-engelfer-inline";
 
 interface Licitacao {
   id: string;
@@ -26,7 +27,7 @@ interface LicitacaoGridProps {
 
 export function LicitacaoGrid({
   licitacoes,
-  emptyMessage = "Nenhuma licitacao encontrada.",
+  emptyMessage = "Nenhuma licitação encontrada.",
 }: LicitacaoGridProps) {
   if (licitacoes.length === 0) {
     return (
@@ -37,11 +38,18 @@ export function LicitacaoGrid({
     );
   }
 
+  // Intercala um AdEngelferInline a cada 5 cards
+  const items: React.ReactNode[] = [];
+  licitacoes.forEach((licitacao, index) => {
+    items.push(<LicitacaoCard key={licitacao.id} {...licitacao} />);
+    if ((index + 1) % 5 === 0 && index + 1 < licitacoes.length) {
+      items.push(<AdEngelferInline key={`ad-${index}`} />);
+    }
+  });
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {licitacoes.map((licitacao) => (
-        <LicitacaoCard key={licitacao.id} {...licitacao} />
-      ))}
+      {items}
     </div>
   );
 }

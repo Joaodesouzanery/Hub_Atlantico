@@ -36,30 +36,30 @@ export function LineChartWrapper({ data }: LineChartWrapperProps) {
       >
         <CartesianGrid
           strokeDasharray="3 3"
-          stroke="#2A2A2D"
+          stroke="#E2E8F0"
           vertical={false}
         />
         <XAxis
           dataKey="name"
-          tick={{ fill: "#A0A0A8", fontSize: 12 }}
-          axisLine={{ stroke: "#2A2A2D" }}
-          tickLine={{ stroke: "#2A2A2D" }}
+          tick={{ fill: "#94A3B8", fontSize: 12 }}
+          axisLine={{ stroke: "#E2E8F0" }}
+          tickLine={{ stroke: "#E2E8F0" }}
         />
         <YAxis
-          tick={{ fill: "#A0A0A8", fontSize: 12 }}
-          axisLine={{ stroke: "#2A2A2D" }}
-          tickLine={{ stroke: "#2A2A2D" }}
+          tick={{ fill: "#94A3B8", fontSize: 12 }}
+          axisLine={{ stroke: "#E2E8F0" }}
+          tickLine={{ stroke: "#E2E8F0" }}
           allowDecimals={false}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1A1A1D",
-            border: "1px solid #2A2A2D",
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             borderRadius: "8px",
-            color: "#F5F5F5",
+            color: "#0F172A",
             fontSize: 13,
           }}
-          labelStyle={{ color: "#A0A0A8" }}
+          labelStyle={{ color: "#475569" }}
         />
         <Line
           type="monotone"
@@ -67,7 +67,7 @@ export function LineChartWrapper({ data }: LineChartWrapperProps) {
           stroke="#F97316"
           strokeWidth={2.5}
           dot={{ fill: "#F97316", r: 4, strokeWidth: 0 }}
-          activeDot={{ r: 6, fill: "#F97316", stroke: "#0C0C0E", strokeWidth: 2 }}
+          activeDot={{ r: 6, fill: "#F97316", stroke: "#F1F5F9", strokeWidth: 2 }}
         />
       </LineChart>
     </ResponsiveContainer>

@@ -46,21 +46,21 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="#2E2E33"
+              stroke="#E2E8F0"
               vertical={false}
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#6B6B73", fontSize: 12 }}
-              axisLine={{ stroke: "#2E2E33" }}
+              tick={{ fill: "#94A3B8", fontSize: 12 }}
+              axisLine={{ stroke: "#E2E8F0" }}
               tickLine={false}
             />
             <YAxis
-              tick={{ fill: "#6B6B73", fontSize: 12 }}
+              tick={{ fill: "#94A3B8", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#6B6B73", strokeDasharray: "3 3" }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#CBD5E1", strokeDasharray: "3 3" }} />
             <Area
               type="monotone"
               dataKey="value"

@@ -15,15 +15,15 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#111113] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] p-4">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F97316]/10">
           <AlertTriangle className="h-8 w-8 text-[#F97316]" />
         </div>
-        <h2 className="mb-2 text-xl font-bold text-white">
+        <h2 className="mb-2 text-xl font-bold text-slate-800">
           Algo deu errado
         </h2>
-        <p className="mb-6 text-sm text-[#A0A0A8]">
+        <p className="mb-6 text-sm text-[#475569]">
           Ocorreu um erro ao carregar esta página. Tente novamente.
         </p>
         <button

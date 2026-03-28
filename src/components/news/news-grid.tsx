@@ -1,4 +1,5 @@
 import { NewsCard } from "./news-card";
+import { AdEngelferInline } from "@/components/ads/ad-engelfer-inline";
 
 interface Article {
   id: string;
@@ -38,11 +39,18 @@ export function NewsGrid({
     );
   }
 
+  // Intercala um AdEngelferInline a cada 5 cards
+  const items: React.ReactNode[] = [];
+  articles.forEach((article, index) => {
+    items.push(<NewsCard key={article.id} {...article} />);
+    if ((index + 1) % 5 === 0 && index + 1 < articles.length) {
+      items.push(<AdEngelferInline key={`ad-${index}`} />);
+    }
+  });
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {articles.map((article) => (
-        <NewsCard key={article.id} {...article} />
-      ))}
+      {items}
     </div>
   );
 }

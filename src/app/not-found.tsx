@@ -3,13 +3,13 @@ import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#111113] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] p-4">
       <div className="max-w-md text-center">
         <p className="mb-2 text-6xl font-bold text-[#F97316]">404</p>
-        <h2 className="mb-2 text-xl font-bold text-white">
+        <h2 className="mb-2 text-xl font-bold text-slate-800">
           Página não encontrada
         </h2>
-        <p className="mb-6 text-sm text-[#A0A0A8]">
+        <p className="mb-6 text-sm text-[#475569]">
           A página que você procura não existe ou foi movida.
         </p>
         <Link

@@ -69,68 +69,101 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-dark-border bg-dark-surface/95 px-4 backdrop-blur lg:px-8">
+      {/* Header — light background on desktop, dark on mobile */}
+      <header
+        className="sticky top-0 z-30 flex h-14 items-center justify-between border-b px-4 backdrop-blur lg:px-8"
+        style={{
+          background: "rgba(248,250,252,0.95)",
+          borderColor: "#E2E8F0",
+        }}
+      >
         <div className="flex items-center gap-3">
           <button
-            className="rounded-lg p-2 text-text-secondary hover:bg-dark-hover lg:hidden"
+            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
+          {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent">
               <Droplets className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-text-primary">HuB - Atlântico</span>
+            <span className="font-bold text-slate-800">HuB - Atlântico</span>
           </div>
-          <h1 className="hidden text-lg font-semibold text-text-primary lg:block">
+          {/* Desktop page title */}
+          <h1 className="hidden text-base font-semibold text-slate-700 lg:block">
             {pageTitle}
           </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="rounded-lg p-2 text-text-secondary hover:bg-dark-hover">
-            <Search className="h-5 w-5" />
+
+        <div className="flex items-center gap-1.5">
+          <button className="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+            <Search className="h-4.5 w-4.5 h-5 w-5" />
           </button>
-          <button className="relative rounded-lg p-2 text-text-secondary hover:bg-dark-hover">
+          <button className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100">
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
           </button>
-          <div className="ml-2 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+          <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
             A
           </div>
         </div>
       </header>
 
+      {/* Mobile nav drawer — stays dark */}
       {mobileMenuOpen && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
-          <div className="fixed left-0 top-0 z-50 h-full w-[280px] border-r border-dark-border bg-dark-surface lg:hidden">
-            <div className="flex h-16 items-center gap-3 border-b border-dark-border px-6">
+          <div
+            className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div
+            className="fixed left-0 top-0 z-50 h-full w-[280px] border-r lg:hidden"
+            style={{ background: "#18181B", borderColor: "#2E2E33" }}
+          >
+            <div
+              className="flex h-16 items-center gap-3 border-b px-6"
+              style={{ borderColor: "#2E2E33" }}
+            >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
                 <Droplets className="h-5 w-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-text-primary">HuB - Atlântico</span>
-              <button className="ml-auto rounded-lg p-1 text-text-secondary hover:bg-dark-hover" onClick={() => setMobileMenuOpen(false)}>
+              <span className="text-lg font-bold text-white">HuB - Atlântico</span>
+              <button
+                className="ml-auto rounded-lg p-1"
+                style={{ color: "#A0A0A8" }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <nav className="overflow-y-auto px-3 py-3">
               {mobileNavSections.map((section) => (
                 <div key={section.label} className="mb-4">
-                  <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+                  <p
+                    className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider"
+                    style={{ color: "#6B6B73" }}
+                  >
                     {section.label}
                   </p>
                   <ul className="space-y-0.5">
                     {section.items.map((item) => {
-                      const isActive = item.href === "/dashboard" ? pathname === "/dashboard" || pathname === "/" : pathname.startsWith(item.href);
+                      const isActive =
+                        item.href === "/dashboard"
+                          ? pathname === "/dashboard" || pathname === "/"
+                          : pathname.startsWith(item.href);
                       return (
                         <li key={item.href}>
                           <Link
                             href={item.href}
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${
-                              isActive ? "bg-accent/10 text-accent" : "text-text-secondary hover:bg-dark-hover hover:text-text-primary"
-                            }`}
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                            style={
+                              isActive
+                                ? { background: "rgba(249,115,22,0.12)", color: "#F97316" }
+                                : { color: "#A0A0A8" }
+                            }
                           >
                             <item.icon className="h-[18px] w-[18px]" />
                             {item.title}

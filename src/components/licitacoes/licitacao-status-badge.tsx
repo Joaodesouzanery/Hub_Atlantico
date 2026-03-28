@@ -8,7 +8,7 @@ type LicitacaoStatus =
 
 const statusConfig: Record<LicitacaoStatus, { label: string; color: string }> = {
   ABERTA: { label: "Aberta", color: "#22C55E" },
-  ENCERRADA: { label: "Encerrada", color: "#6B6B73" },
+  ENCERRADA: { label: "Encerrada", color: "#94A3B8" },
   SUSPENSA: { label: "Suspensa", color: "#F59E0B" },
   ANULADA: { label: "Anulada", color: "#EF4444" },
   HOMOLOGADA: { label: "Homologada", color: "#3B82F6" },

@@ -49,24 +49,24 @@ export function TopOrgansChart({ data }: TopOrgansChartProps) {
           >
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="#2E2E33"
+              stroke="#E2E8F0"
               horizontal={false}
             />
             <XAxis
               type="number"
-              tick={{ fill: "#6B6B73", fontSize: 12 }}
-              axisLine={{ stroke: "#2E2E33" }}
+              tick={{ fill: "#94A3B8", fontSize: 12 }}
+              axisLine={{ stroke: "#E2E8F0" }}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="shortName"
               width={150}
-              tick={{ fill: "#6B6B73", fontSize: 11 }}
+              tick={{ fill: "#94A3B8", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "#27272B" }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "#F1F5F9" }} />
             <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={24}>
               {truncated.map((_, index) => (
                 <Cell key={`cell-${index}`} fill="#F97316" />

@@ -36,31 +36,31 @@ export function MarketAnalysisChart({ data }: MarketAnalysisChartProps) {
       >
         <CartesianGrid
           strokeDasharray="3 3"
-          stroke="#2A2A2D"
+          stroke="#E2E8F0"
           vertical={false}
         />
         <XAxis
           dataKey="name"
-          tick={{ fill: "#A0A0A8", fontSize: 12 }}
-          axisLine={{ stroke: "#2A2A2D" }}
-          tickLine={{ stroke: "#2A2A2D" }}
+          tick={{ fill: "#94A3B8", fontSize: 12 }}
+          axisLine={{ stroke: "#E2E8F0" }}
+          tickLine={{ stroke: "#E2E8F0" }}
         />
         <YAxis
-          tick={{ fill: "#A0A0A8", fontSize: 12 }}
-          axisLine={{ stroke: "#2A2A2D" }}
-          tickLine={{ stroke: "#2A2A2D" }}
+          tick={{ fill: "#94A3B8", fontSize: 12 }}
+          axisLine={{ stroke: "#E2E8F0" }}
+          tickLine={{ stroke: "#E2E8F0" }}
           allowDecimals={false}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1A1A1D",
-            border: "1px solid #2A2A2D",
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             borderRadius: "8px",
-            color: "#F5F5F5",
+            color: "#0F172A",
             fontSize: 13,
           }}
-          labelStyle={{ color: "#A0A0A8" }}
-          cursor={{ fill: "rgba(249, 115, 22, 0.08)" }}
+          labelStyle={{ color: "#475569" }}
+          cursor={{ fill: "rgba(249, 115, 22, 0.06)" }}
         />
         <Bar
           dataKey="value"

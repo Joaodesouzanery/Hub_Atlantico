@@ -54,7 +54,7 @@ export function RegionDistributionChart({
           paddingAngle={3}
           dataKey="value"
           nameKey="name"
-          stroke="#0C0C0E"
+          stroke="#F1F5F9"
           strokeWidth={2}
         >
           {data.map((_, index) => (
@@ -66,20 +66,20 @@ export function RegionDistributionChart({
         </Pie>
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1A1A1D",
-            border: "1px solid #2A2A2D",
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             borderRadius: "8px",
-            color: "#F5F5F5",
+            color: "#0F172A",
             fontSize: 13,
           }}
-          labelStyle={{ color: "#A0A0A8" }}
+          labelStyle={{ color: "#475569" }}
         />
         <Legend
           verticalAlign="bottom"
           iconType="circle"
           iconSize={10}
           wrapperStyle={{
-            color: "#A0A0A8",
+            color: "#475569",
             fontSize: 12,
             paddingTop: 12,
           }}

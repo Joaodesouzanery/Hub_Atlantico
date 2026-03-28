@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Clock, Tag } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
 import { NewsGrid } from "@/components/news/news-grid";
+import { AdEngelferNewsDetail } from "@/components/ads/ad-engelfer-news-detail";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -119,6 +120,9 @@ export default async function NoticiaPage({ params }: PageProps) {
               {article.summary}
             </p>
           </div>
+
+          {/* Ad Engelfer — após o sumário (equivalente ao 3º parágrafo) */}
+          <AdEngelferNewsDetail />
 
           {/* CTA - Read Original */}
           <div className="mb-8 rounded-xl border border-accent/30 bg-accent/5 p-6 text-center">

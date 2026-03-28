@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Tooltip, ZoomControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 interface BrazilMapProps {
@@ -39,11 +39,11 @@ const stateCapitals: Record<string, { lat: number; lng: number; name: string }> 
 };
 
 function interpolateColor(value: number, max: number): string {
-  if (max === 0 || value === 0) return "#2E2E33";
+  if (max === 0 || value === 0) return "#E2E8F0";
   const ratio = Math.min(value / max, 1);
-  const r = Math.round(0x2e + (0xf9 - 0x2e) * ratio);
-  const g = Math.round(0x2e + (0x73 - 0x2e) * ratio);
-  const b = Math.round(0x33 + (0x16 - 0x33) * ratio);
+  const r = Math.round(0xe2 + (0xf9 - 0xe2) * ratio);
+  const g = Math.round(0xe8 + (0x73 - 0xe8) * ratio);
+  const b = Math.round(0xf0 + (0x16 - 0xf0) * ratio);
   return `rgb(${r}, ${g}, ${b})`;
 }
 
@@ -82,42 +82,66 @@ export function BrazilMap({ data }: BrazilMapProps) {
     <div className="rounded-xl border border-dark-border bg-dark-card">
       <div className="border-b border-dark-border p-5">
         <h3 className="font-semibold text-text-primary">
-          Licitacoes por Estado
+          Licitações por Estado
         </h3>
+        <p className="mt-0.5 text-xs text-text-muted">Distribuição geográfica das licitações ativas</p>
       </div>
       <div className="relative p-4">
         <style>{`
           .brazil-map-tooltip {
-            background: #27272A !important;
-            border: 1px solid #3F3F46 !important;
+            background: #1C1C1F !important;
+            border: 1px solid #F97316 !important;
             border-radius: 8px !important;
-            padding: 6px 10px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+            padding: 8px 12px !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+            color: #FAFAF9 !important;
           }
           .brazil-map-tooltip::before {
-            border-top-color: #3F3F46 !important;
+            border-top-color: #F97316 !important;
           }
           .leaflet-container {
-            background: #18181B !important;
+            background: #f0ebe3 !important;
             border-radius: 8px;
+          }
+          .leaflet-control-zoom {
+            border: 1px solid #d0ccc4 !important;
+            border-radius: 8px !important;
+            overflow: hidden;
+          }
+          .leaflet-control-zoom a {
+            background: #fff !important;
+            color: #333 !important;
+            border-bottom: 1px solid #d0ccc4 !important;
+            font-size: 16px !important;
+            line-height: 26px !important;
+          }
+          .leaflet-control-zoom a:hover {
+            background: #f5f5f5 !important;
+          }
+          .leaflet-control-attribution {
+            display: none !important;
           }
         `}</style>
         <MapContainer
-          center={[-15.78, -47.93]}
+          center={[-14.0, -52.0]}
           zoom={4}
-          style={{ height: "400px", width: "100%", borderRadius: "8px" }}
-          zoomControl={true}
-          scrollWheelZoom={true}
+          style={{ height: "420px", width: "100%", borderRadius: "8px" }}
+          zoomControl={false}
+          scrollWheelZoom={false}
           attributionControl={false}
         >
+          {/* CartoDB Voyager — mostra labels, ícones de cidades e estradas com visual limpo */}
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
+            maxZoom={19}
           />
+          <ZoomControl position="bottomright" />
           {Object.entries(stateCapitals).map(([uf, coords]) => {
             const value = dataMap.get(uf) || 0;
             const radius = interpolateRadius(value, maxValue);
             const color = interpolateColor(value, maxValue);
+            const hasData = value > 0;
 
             return (
               <CircleMarker
@@ -125,10 +149,10 @@ export function BrazilMap({ data }: BrazilMapProps) {
                 center={[coords.lat, coords.lng]}
                 radius={radius}
                 pathOptions={{
-                  fillColor: color,
-                  fillOpacity: 0.85,
-                  color: value > 0 ? "#F97316" : "#3F3F46",
-                  weight: value > 0 ? 1.5 : 0.5,
+                  fillColor: hasData ? color : "rgba(249,115,22,0.15)",
+                  fillOpacity: hasData ? 0.88 : 0.5,
+                  color: hasData ? "#F97316" : "#F9731688",
+                  weight: hasData ? 2 : 1,
                   opacity: 1,
                 }}
               >
@@ -136,12 +160,16 @@ export function BrazilMap({ data }: BrazilMapProps) {
                   direction="top"
                   sticky={true}
                   className="brazil-map-tooltip"
+                  offset={[0, -4]}
                 >
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "#FAFAF9" }}>
-                    {coords.name} ({uf})
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#FAFAF9", marginBottom: 2 }}>
+                    {coords.name} <span style={{ color: "#F97316" }}>({uf})</span>
                   </div>
                   <div style={{ fontSize: "12px", color: "#A1A1AA" }}>
-                    {value.toLocaleString("pt-BR")} licitacoes
+                    {hasData
+                      ? <><span style={{ color: "#F97316", fontWeight: 600 }}>{value.toLocaleString("pt-BR")}</span> licitações ativas</>
+                      : "Sem licitações no período"
+                    }
                   </div>
                 </Tooltip>
               </CircleMarker>
@@ -150,11 +178,14 @@ export function BrazilMap({ data }: BrazilMapProps) {
         </MapContainer>
 
         {/* Legend */}
-        <div className="mt-3 flex items-center justify-center gap-2">
-          <span className="text-[10px] text-text-muted">0</span>
-          <div className="h-2 w-24 rounded-full bg-gradient-to-r from-[#2E2E33] to-[#F97316]" />
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-text-muted">Menos</span>
+            <div className="h-2 w-28 rounded-full bg-gradient-to-r from-[#F9731622] to-[#F97316]" />
+            <span className="text-[10px] text-text-muted">Mais</span>
+          </div>
           <span className="text-[10px] text-text-muted">
-            {maxValue.toLocaleString("pt-BR")}
+            Máx: <span className="font-semibold text-accent">{maxValue.toLocaleString("pt-BR")}</span>
           </span>
         </div>
       </div>

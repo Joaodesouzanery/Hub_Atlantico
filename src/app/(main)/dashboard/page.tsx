@@ -8,6 +8,7 @@ import {
   DashboardChartsRow2,
   DashboardChartsRow3,
 } from "@/components/dashboard/dashboard-charts";
+import { AdEngelferDashboard } from "@/components/ads/ad-engelfer-dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,9 @@ export default async function DashboardPage() {
 
       {/* Row 1: KPI Cards */}
       <KpiCards {...data.kpis} />
+
+      {/* Ad Banner — Engelfer */}
+      <AdEngelferDashboard />
 
       {/* Row 2: Map + Deadlines */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">

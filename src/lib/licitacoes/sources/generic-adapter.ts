@@ -6,6 +6,7 @@ import type {
 } from "../types";
 import { fetchFromPNCP } from "../adapters/pncp-api";
 import { fetchFromComprasGov } from "../adapters/compras-gov-api";
+import { fetchFromBECSP } from "../adapters/bec-sp-scraper";
 
 /**
  * Generic adapter that dynamically selects fetch method
@@ -29,6 +30,9 @@ export function createLicitacaoAdapter(
 
         case "COMPRAS_GOV_API":
           return fetchFromComprasGov(config, source.name);
+
+        case "BEC_SP_SCRAPE":
+          return fetchFromBECSP(config, source.name);
 
         case "HTML_SCRAPE":
           console.log(

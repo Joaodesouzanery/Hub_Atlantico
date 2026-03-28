@@ -24,6 +24,15 @@ export async function middleware(request: NextRequest) {
   // Cria response base para que o middleware possa atualizar cookies de sessão
   const response = NextResponse.next({ request });
 
+  // Se as variáveis do Supabase não estiverem configuradas, deixa passar
+  // (evita crash em deploy sem env vars ainda configuradas)
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return response;
+  }
+
   // Cria o cliente Supabase e atualiza a sessão a cada request
   const supabase = createMiddlewareClient(request, response);
   const {

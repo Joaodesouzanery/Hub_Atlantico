@@ -7,10 +7,7 @@ const TopOrgansChart = dynamic(
     import("@/components/dashboard/top-organs-chart").then(
       (mod) => mod.TopOrgansChart
     ),
-  {
-    ssr: false,
-    loading: () => <ChartSkeleton />,
-  }
+  { ssr: false, loading: () => <ChartSkeleton /> }
 );
 
 const MonthlyTrendChart = dynamic(
@@ -18,10 +15,7 @@ const MonthlyTrendChart = dynamic(
     import("@/components/dashboard/monthly-trend-chart").then(
       (mod) => mod.MonthlyTrendChart
     ),
-  {
-    ssr: false,
-    loading: () => <ChartSkeleton />,
-  }
+  { ssr: false, loading: () => <ChartSkeleton /> }
 );
 
 const CategoryDistribution = dynamic(
@@ -29,10 +23,13 @@ const CategoryDistribution = dynamic(
     import("@/components/dashboard/category-distribution").then(
       (mod) => mod.CategoryDistribution
     ),
-  {
-    ssr: false,
-    loading: () => <ChartSkeleton />,
-  }
+  { ssr: false, loading: () => <ChartSkeleton /> }
+);
+
+const BrazilMapDynamic = dynamic(
+  () =>
+    import("@/components/dashboard/brazil-map").then((mod) => mod.BrazilMap),
+  { ssr: false, loading: () => <MapSkeleton /> }
 );
 
 function ChartSkeleton() {
@@ -43,18 +40,28 @@ function ChartSkeleton() {
   );
 }
 
-interface DashboardChartsProps {
-  topOrgaos: { name: string; value: number }[];
-  licitacoesPorMes: { name: string; value: number }[];
-  licitacoesPorCategoria: { name: string; value: number; color: string }[];
+function MapSkeleton() {
+  return (
+    <div className="flex h-[470px] items-center justify-center rounded-xl border border-dark-border bg-dark-card">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-dark-border border-t-accent" />
+    </div>
+  );
+}
+
+export function DashboardBrazilMap({
+  data,
+}: {
+  data: { name: string; value: number }[];
+}) {
+  return <BrazilMapDynamic data={data} />;
 }
 
 export function DashboardChartsRow2({
   licitacoesPorMes,
   licitacoesPorCategoria,
 }: {
-  licitacoesPorMes: DashboardChartsProps["licitacoesPorMes"];
-  licitacoesPorCategoria: DashboardChartsProps["licitacoesPorCategoria"];
+  licitacoesPorMes: { name: string; value: number }[];
+  licitacoesPorCategoria: { name: string; value: number; color: string }[];
 }) {
   return (
     <>
@@ -71,7 +78,7 @@ export function DashboardChartsRow2({
 export function DashboardChartsRow3({
   topOrgaos,
 }: {
-  topOrgaos: DashboardChartsProps["topOrgaos"];
+  topOrgaos: { name: string; value: number }[];
 }) {
   return (
     <div className="xl:col-span-1">

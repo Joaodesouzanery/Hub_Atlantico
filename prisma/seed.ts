@@ -328,7 +328,7 @@ async function main() {
         searchEndpoint: "/v1/contratacoes/publicacao",
         proposalEndpoint: "/v1/contratacoes/proposta",
         defaultPageSize: 50,
-        keywords: ["saneamento", "agua", "esgoto", "tratamento", "abastecimento", "drenagem", "residuos solidos"],
+        keywords: ["saneamento", "água", "esgoto", "tratamento", "abastecimento", "drenagem", "resíduos sólidos"],
       }),
     },
     {
@@ -363,14 +363,14 @@ async function main() {
   console.log(`Seeded ${licitacaoSources.length} licitacao sources`);
 
   const licitacaoCategorias = [
-    { name: "Saneamento e Agua", slug: "saneamento-agua", color: "#0077B6", description: "Sistemas de abastecimento de agua e esgotamento sanitario", keywords: JSON.stringify(["saneamento", "agua", "esgoto", "abastecimento", "eta", "ete"]) },
-    { name: "Engenharia Civil", slug: "engenharia-civil", color: "#F9A825", description: "Obras de engenharia e construcao civil", keywords: JSON.stringify(["engenharia", "obra", "construcao", "edificacao", "pavimentacao"]) },
-    { name: "Residuos Solidos", slug: "residuos-solidos", color: "#43A047", description: "Coleta, tratamento e disposicao de residuos", keywords: JSON.stringify(["residuo", "lixo", "coleta", "reciclagem", "aterro"]) },
+    { name: "Saneamento e Água", slug: "saneamento-agua", color: "#0077B6", description: "Sistemas de abastecimento de água e esgotamento sanitário", keywords: JSON.stringify(["saneamento", "água", "esgoto", "abastecimento", "eta", "ete"]) },
+    { name: "Engenharia Civil", slug: "engenharia-civil", color: "#F9A825", description: "Obras de engenharia e construção civil", keywords: JSON.stringify(["engenharia", "obra", "construção", "edificação", "pavimentação"]) },
+    { name: "Resíduos Sólidos", slug: "residuos-solidos", color: "#43A047", description: "Coleta, tratamento e disposição de resíduos", keywords: JSON.stringify(["resíduo", "lixo", "coleta", "reciclagem", "aterro"]) },
     { name: "Drenagem Urbana", slug: "drenagem-urbana", color: "#00B4D8", description: "Sistemas de drenagem e controle de enchentes", keywords: JSON.stringify(["drenagem", "enchente", "alagamento", "bueiro", "galeria"]) },
-    { name: "Equipamentos", slug: "equipamentos", color: "#6D4C41", description: "Aquisicao de equipamentos e materiais", keywords: JSON.stringify(["equipamento", "bomba", "motor", "tubulacao", "valvula", "medidor"]) },
-    { name: "Consultoria", slug: "consultoria", color: "#8B5CF6", description: "Servicos de consultoria e projetos", keywords: JSON.stringify(["consultoria", "projeto", "estudo", "diagnostico", "plano"]) },
-    { name: "Tecnologia da Informacao", slug: "ti", color: "#2E7D32", description: "Sistemas e servicos de TI", keywords: JSON.stringify(["software", "sistema", "tecnologia", "informatica", "digital"]) },
-    { name: "Outros", slug: "outros", color: "#6B6B73", description: "Outras categorias de licitacao", keywords: null },
+    { name: "Equipamentos", slug: "equipamentos", color: "#6D4C41", description: "Aquisição de equipamentos e materiais", keywords: JSON.stringify(["equipamento", "bomba", "motor", "tubulação", "válvula", "medidor"]) },
+    { name: "Consultoria", slug: "consultoria", color: "#8B5CF6", description: "Serviços de consultoria e projetos", keywords: JSON.stringify(["consultoria", "projeto", "estudo", "diagnóstico", "plano"]) },
+    { name: "Tecnologia da Informação", slug: "ti", color: "#2E7D32", description: "Sistemas e serviços de TI", keywords: JSON.stringify(["software", "sistema", "tecnologia", "informatica", "digital"]) },
+    { name: "Outros", slug: "outros", color: "#6B6B73", description: "Outras categorias de licitação", keywords: null },
   ];
 
   for (const cat of licitacaoCategorias) {
@@ -386,10 +386,10 @@ async function main() {
 
   const legislationCategories = [
     { name: "Saneamento", slug: "saneamento-leg", color: "#0077B6", icon: "droplets" },
-    { name: "Licitacoes", slug: "licitacoes-leg", color: "#F9A825", icon: "gavel" },
-    { name: "Seguranca do Trabalho", slug: "seguranca", color: "#EF4444", icon: "shield" },
-    { name: "Normas Tecnicas", slug: "normas-tecnicas", color: "#8B5CF6", icon: "file-text" },
-    { name: "Regulacao", slug: "regulacao", color: "#22C55E", icon: "landmark" },
+    { name: "Licitações", slug: "licitacoes-leg", color: "#F9A825", icon: "gavel" },
+    { name: "Segurança do Trabalho", slug: "seguranca", color: "#EF4444", icon: "shield" },
+    { name: "Normas Técnicas", slug: "normas-tecnicas", color: "#8B5CF6", icon: "file-text" },
+    { name: "Regulação", slug: "regulacao", color: "#22C55E", icon: "landmark" },
   ];
 
   for (const cat of legislationCategories) {
@@ -406,13 +406,13 @@ async function main() {
   for (const c of legCats) legCatMap.set(c.slug, c.id);
 
   const legislationItems = [
-    { slug: "lei-14026-2020", title: "Lei n. 14.026/2020 - Novo Marco Legal do Saneamento Basico", shortTitle: "Marco Legal do Saneamento", description: "Atualiza o marco legal do saneamento basico, estabelecendo metas de universalizacao ate 2033 (99% agua e 90% esgoto). Estimula a regionalizacao e participacao do setor privado.", type: "LEI", number: "14.026/2020", issuingBody: "Presidencia da Republica", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/L14026.htm", publishedAt: new Date("2020-07-15"), effectiveAt: new Date("2020-07-16"), categoryId: legCatMap.get("saneamento-leg") },
-    { slug: "lei-14133-2021", title: "Lei n. 14.133/2021 - Nova Lei de Licitacoes e Contratos", shortTitle: "Nova Lei de Licitacoes", description: "Substitui a Lei 8.666/1993. Estabelece normas gerais de licitacao e contratacao para a administracao publica.", type: "LEI", number: "14.133/2021", issuingBody: "Presidencia da Republica", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/L14133.htm", publishedAt: new Date("2021-04-01"), effectiveAt: new Date("2021-04-01"), categoryId: legCatMap.get("licitacoes-leg") },
-    { slug: "decreto-12303-2024", title: "Decreto n. 12.303/2024 - Programa Inova", shortTitle: "Programa Inova", description: "Institui o Programa de Governanca e Modernizacao das Empresas Estatais.", type: "DECRETO", number: "12.303/2024", issuingBody: "Presidencia da Republica", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/D12303.htm", publishedAt: new Date("2024-11-28"), effectiveAt: new Date("2024-11-28"), categoryId: legCatMap.get("saneamento-leg") },
-    { slug: "nr-18", title: "NR-18 - Seguranca e Saude no Trabalho na Industria da Construcao", shortTitle: "NR-18", description: "Estabelece diretrizes de seguranca nos processos da industria da construcao.", type: "NORMA_REGULAMENTADORA", number: "18", issuingBody: "Ministerio do Trabalho e Emprego", documentUrl: "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-18", publishedAt: new Date("1978-06-08"), effectiveAt: new Date("2022-01-01"), categoryId: legCatMap.get("seguranca") },
-    { slug: "nbr-12211-2024", title: "NBR 12.211/2024 - Estudos de Concepcao de Sistemas de Abastecimento de Agua", shortTitle: "NBR 12.211", description: "Define condicoes para elaboracao de estudos de concepcao de sistemas publicos de abastecimento de agua.", type: "NBR", number: "12.211/2024", issuingBody: "ABNT", documentUrl: "https://www.abntcatalogo.com.br", publishedAt: new Date("2024-01-15"), categoryId: legCatMap.get("normas-tecnicas") },
-    { slug: "resolucao-ana-211-2024", title: "Resolucao ANA n. 211/2024 - Indicadores Operacionais de Agua e Esgoto", shortTitle: "Resolucao ANA 211", description: "Estabelece indicadores operacionais de agua e esgoto para prestadores de servicos de saneamento.", type: "RESOLUCAO", number: "211/2024", issuingBody: "ANA", documentUrl: "https://www.gov.br/ana", publishedAt: new Date("2024-06-15"), categoryId: legCatMap.get("regulacao") },
-    { slug: "resolucao-ana-122-2023", title: "Resolucao ANA n. 122/2023 - Norma de Referencia de Regulacao", shortTitle: "Resolucao ANA 122", description: "Estabelece norma de referencia para regulacao tarifaria dos servicos publicos de saneamento basico.", type: "RESOLUCAO", number: "122/2023", issuingBody: "ANA", documentUrl: "https://www.gov.br/ana", publishedAt: new Date("2023-12-01"), categoryId: legCatMap.get("regulacao") },
+    { slug: "lei-14026-2020", title: "Lei n. 14.026/2020 - Novo Marco Legal do Saneamento Básico", shortTitle: "Marco Legal do Saneamento", description: "Atualiza o marco legal do saneamento básico, estabelecendo metas de universalização até 2033 (99% água e 90% esgoto). Estimula a regionalização e participação do setor privado.", type: "LEI", number: "14.026/2020", issuingBody: "Presidência da República", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/L14026.htm", publishedAt: new Date("2020-07-15"), effectiveAt: new Date("2020-07-16"), categoryId: legCatMap.get("saneamento-leg") },
+    { slug: "lei-14133-2021", title: "Lei n. 14.133/2021 - Nova Lei de Licitações e Contratos", shortTitle: "Nova Lei de Licitações", description: "Substitui a Lei 8.666/1993. Estabelece normas gerais de licitação e contratação para a administração pública.", type: "LEI", number: "14.133/2021", issuingBody: "Presidência da República", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/L14133.htm", publishedAt: new Date("2021-04-01"), effectiveAt: new Date("2021-04-01"), categoryId: legCatMap.get("licitacoes-leg") },
+    { slug: "decreto-12303-2024", title: "Decreto n. 12.303/2024 - Programa Inova", shortTitle: "Programa Inova", description: "Institui o Programa de Governança e Modernização das Empresas Estatais.", type: "DECRETO", number: "12.303/2024", issuingBody: "Presidência da República", documentUrl: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/decreto/D12303.htm", publishedAt: new Date("2024-11-28"), effectiveAt: new Date("2024-11-28"), categoryId: legCatMap.get("saneamento-leg") },
+    { slug: "nr-18", title: "NR-18 - Segurança e Saúde no Trabalho na Indústria da Construção", shortTitle: "NR-18", description: "Estabelece diretrizes de segurança nos processos da indústria da construção.", type: "NORMA_REGULAMENTADORA", number: "18", issuingBody: "Ministério do Trabalho e Emprego", documentUrl: "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-18", publishedAt: new Date("1978-06-08"), effectiveAt: new Date("2022-01-01"), categoryId: legCatMap.get("seguranca") },
+    { slug: "nbr-12211-2024", title: "NBR 12.211/2024 - Estudos de Concepção de Sistemas de Abastecimento de Água", shortTitle: "NBR 12.211", description: "Define condições para elaboração de estudos de concepção de sistemas públicos de abastecimento de água.", type: "NBR", number: "12.211/2024", issuingBody: "ABNT", documentUrl: "https://www.abntcatalogo.com.br", publishedAt: new Date("2024-01-15"), categoryId: legCatMap.get("normas-tecnicas") },
+    { slug: "resolucao-ana-211-2024", title: "Resolução ANA n. 211/2024 - Indicadores Operacionais de Água e Esgoto", shortTitle: "Resolução ANA 211", description: "Estabelece indicadores operacionais de água e esgoto para prestadores de serviços de saneamento.", type: "RESOLUCAO", number: "211/2024", issuingBody: "ANA", documentUrl: "https://www.gov.br/ana", publishedAt: new Date("2024-06-15"), categoryId: legCatMap.get("regulacao") },
+    { slug: "resolucao-ana-122-2023", title: "Resolução ANA n. 122/2023 - Norma de Referência de Regulação", shortTitle: "Resolução ANA 122", description: "Estabelece norma de referência para regulação tarifária dos serviços públicos de saneamento básico.", type: "RESOLUCAO", number: "122/2023", issuingBody: "ANA", documentUrl: "https://www.gov.br/ana", publishedAt: new Date("2023-12-01"), categoryId: legCatMap.get("regulacao") },
   ];
 
   for (const item of legislationItems) {
@@ -427,27 +427,27 @@ async function main() {
   // ==================== MODULE 5: REGULATORY AGENCIES ====================
 
   const agencies = [
-    { name: "ANA", fullName: "Agencia Nacional de Aguas e Saneamento Basico", slug: "ana", region: "NACIONAL", websiteUrl: "https://www.gov.br/ana", description: "Agencia federal responsavel pela regulacao do uso de recursos hidricos e regulacao de referencia do saneamento basico." },
-    { name: "ARSESP", fullName: "Agencia Reguladora de Servicos Publicos do Estado de Sao Paulo", slug: "arsesp", region: "SUDESTE", uf: "SP", websiteUrl: "https://www.arsesp.sp.gov.br" },
-    { name: "AGENERSA", fullName: "Agencia Reguladora de Energia e Saneamento Basico do RJ", slug: "agenersa", region: "SUDESTE", uf: "RJ", websiteUrl: "https://www.agenersa.rj.gov.br" },
-    { name: "ARSAE", fullName: "Agencia Reguladora de Servicos de Abastecimento de Agua e Esgotamento Sanitario de MG", slug: "arsae", region: "SUDESTE", uf: "MG", websiteUrl: "https://www.arsae.mg.gov.br" },
-    { name: "ARSI", fullName: "Agencia Reguladora de Saneamento e Infraestrutura do ES", slug: "arsi", region: "SUDESTE", uf: "ES", websiteUrl: "https://arsi.es.gov.br" },
-    { name: "AGEPAR", fullName: "Agencia Reguladora de Servicos Publicos Delegados do Parana", slug: "agepar", region: "SUL", uf: "PR", websiteUrl: "https://www.agepar.pr.gov.br" },
-    { name: "AGERGS", fullName: "Agencia Estadual de Regulacao dos Servicos Publicos Delegados do RS", slug: "agergs", region: "SUL", uf: "RS", websiteUrl: "https://www.agergs.rs.gov.br" },
-    { name: "ARESC", fullName: "Agencia de Regulacao de Servicos Publicos de Santa Catarina", slug: "aresc", region: "SUL", uf: "SC", websiteUrl: "https://www.aresc.sc.gov.br" },
-    { name: "ARCE", fullName: "Agencia Reguladora de Servicos Publicos Delegados do Ceara", slug: "arce", region: "NORDESTE", uf: "CE", websiteUrl: "https://www.arce.ce.gov.br" },
-    { name: "ARSAL", fullName: "Agencia Reguladora de Servicos Publicos de Alagoas", slug: "arsal", region: "NORDESTE", uf: "AL", websiteUrl: "https://www.arsal.al.gov.br" },
-    { name: "AGESPI", fullName: "Agencia de Regulacao dos Servicos Publicos Delegados do Piaui", slug: "agespi", region: "NORDESTE", uf: "PI", websiteUrl: "https://www.agespi.pi.gov.br" },
-    { name: "ATR", fullName: "Agencia Tocantinense de Regulacao", slug: "atr", region: "NORDESTE", uf: "TO", websiteUrl: "https://www.atr.to.gov.br" },
-    { name: "ADASA", fullName: "Agencia Reguladora de Aguas, Energia e Saneamento do DF", slug: "adasa", region: "CENTRO_OESTE", uf: "DF", websiteUrl: "https://www.adasa.df.gov.br" },
-    { name: "AGR", fullName: "Agencia Goiana de Regulacao", slug: "agr", region: "CENTRO_OESTE", uf: "GO", websiteUrl: "https://www.agr.go.gov.br" },
-    { name: "AGER", fullName: "Agencia Estadual de Regulacao dos Servicos Publicos Delegados de MT", slug: "ager", region: "CENTRO_OESTE", uf: "MT", websiteUrl: "https://www.ager.mt.gov.br" },
-    { name: "AGEMS", fullName: "Agencia Estadual de Regulacao de Servicos Publicos de MS", slug: "agems", region: "CENTRO_OESTE", uf: "MS", websiteUrl: "https://www.agems.ms.gov.br" },
-    { name: "AGEAC", fullName: "Agencia Reguladora dos Servicos Publicos do Acre", slug: "ageac", region: "NORTE", uf: "AC", websiteUrl: "https://www.ageac.ac.gov.br" },
-    { name: "ARCON", fullName: "Agencia de Regulacao e Controle de Servicos Publicos do Para", slug: "arcon", region: "NORTE", uf: "PA", websiteUrl: "https://www.arcon.pa.gov.br" },
-    { name: "ARSEP", fullName: "Agencia Reguladora de Servicos Publicos do Rio Grande do Norte", slug: "arsep-rn", region: "NORTE", uf: "RN", websiteUrl: "https://www.arsep.rn.gov.br" },
-    { name: "ARES-PCJ", fullName: "Agencia Reguladora dos Servicos de Saneamento das Bacias PCJ", slug: "ares-pcj", region: "INTERMUNICIPAL", websiteUrl: "https://www.arespcj.com.br", description: "Regula centenas de municipios nas bacias dos rios Piracicaba, Capivari e Jundiai." },
-    { name: "ARIS-SC", fullName: "Agencia Reguladora Intermunicipal de Saneamento de SC", slug: "aris-sc", region: "INTERMUNICIPAL", websiteUrl: "https://www.aris.sc.gov.br", description: "Agencia intermunicipal que regula servicos de saneamento em Santa Catarina." },
+    { name: "ANA", fullName: "Agência Nacional de Águas e Saneamento Básico", slug: "ana", region: "NACIONAL", websiteUrl: "https://www.gov.br/ana", description: "Agência federal responsável pela regulação do uso de recursos hídricos e regulação de referência do saneamento básico." },
+    { name: "ARSESP", fullName: "Agência Reguladora de Serviços Públicos do Estado de São Paulo", slug: "arsesp", region: "SUDESTE", uf: "SP", websiteUrl: "https://www.arsesp.sp.gov.br" },
+    { name: "AGENERSA", fullName: "Agência Reguladora de Energia e Saneamento Básico do RJ", slug: "agenersa", region: "SUDESTE", uf: "RJ", websiteUrl: "https://www.agenersa.rj.gov.br" },
+    { name: "ARSAE", fullName: "Agência Reguladora de Serviços de Abastecimento de Água e Esgotamento Sanitário de MG", slug: "arsae", region: "SUDESTE", uf: "MG", websiteUrl: "https://www.arsae.mg.gov.br" },
+    { name: "ARSI", fullName: "Agência Reguladora de Saneamento e Infraestrutura do ES", slug: "arsi", region: "SUDESTE", uf: "ES", websiteUrl: "https://arsi.es.gov.br" },
+    { name: "AGEPAR", fullName: "Agência Reguladora de Serviços Públicos Delegados do Paraná", slug: "agepar", region: "SUL", uf: "PR", websiteUrl: "https://www.agepar.pr.gov.br" },
+    { name: "AGERGS", fullName: "Agência Estadual de Regulação dos Serviços Públicos Delegados do RS", slug: "agergs", region: "SUL", uf: "RS", websiteUrl: "https://www.agergs.rs.gov.br" },
+    { name: "ARESC", fullName: "Agência de Regulação de Serviços Públicos de Santa Catarina", slug: "aresc", region: "SUL", uf: "SC", websiteUrl: "https://www.aresc.sc.gov.br" },
+    { name: "ARCE", fullName: "Agência Reguladora de Serviços Públicos Delegados do Ceará", slug: "arce", region: "NORDESTE", uf: "CE", websiteUrl: "https://www.arce.ce.gov.br" },
+    { name: "ARSAL", fullName: "Agência Reguladora de Serviços Públicos de Alagoas", slug: "arsal", region: "NORDESTE", uf: "AL", websiteUrl: "https://www.arsal.al.gov.br" },
+    { name: "AGESPI", fullName: "Agência de Regulação dos Serviços Públicos Delegados do Piauí", slug: "agespi", region: "NORDESTE", uf: "PI", websiteUrl: "https://www.agespi.pi.gov.br" },
+    { name: "ATR", fullName: "Agência Tocantinense de Regulação", slug: "atr", region: "NORDESTE", uf: "TO", websiteUrl: "https://www.atr.to.gov.br" },
+    { name: "ADASA", fullName: "Agência Reguladora de Águas, Energia e Saneamento do DF", slug: "adasa", region: "CENTRO_OESTE", uf: "DF", websiteUrl: "https://www.adasa.df.gov.br" },
+    { name: "AGR", fullName: "Agência Goiana de Regulação", slug: "agr", region: "CENTRO_OESTE", uf: "GO", websiteUrl: "https://www.agr.go.gov.br" },
+    { name: "AGER", fullName: "Agência Estadual de Regulação dos Serviços Públicos Delegados de MT", slug: "ager", region: "CENTRO_OESTE", uf: "MT", websiteUrl: "https://www.ager.mt.gov.br" },
+    { name: "AGEMS", fullName: "Agência Estadual de Regulação de Serviços Públicos de MS", slug: "agems", region: "CENTRO_OESTE", uf: "MS", websiteUrl: "https://www.agems.ms.gov.br" },
+    { name: "AGEAC", fullName: "Agência Reguladora dos Serviços Públicos do Acre", slug: "ageac", region: "NORTE", uf: "AC", websiteUrl: "https://www.ageac.ac.gov.br" },
+    { name: "ARCON", fullName: "Agência de Regulação e Controle de Serviços Públicos do Pará", slug: "arcon", region: "NORTE", uf: "PA", websiteUrl: "https://www.arcon.pa.gov.br" },
+    { name: "ARSEP", fullName: "Agência Reguladora de Serviços Públicos do Rio Grande do Norte", slug: "arsep-rn", region: "NORTE", uf: "RN", websiteUrl: "https://www.arsep.rn.gov.br" },
+    { name: "ARES-PCJ", fullName: "Agência Reguladora dos Serviços de Saneamento das Bacias PCJ", slug: "ares-pcj", region: "INTERMUNICIPAL", websiteUrl: "https://www.arespcj.com.br", description: "Regula centenas de municípios nas bacias dos rios Piracicaba, Capivari e Jundiaí." },
+    { name: "ARIS-SC", fullName: "Agência Reguladora Intermunicipal de Saneamento de SC", slug: "aris-sc", region: "INTERMUNICIPAL", websiteUrl: "https://www.aris.sc.gov.br", description: "Agência intermunicipal que regula serviços de saneamento em Santa Catarina." },
   ];
 
   for (const agency of agencies) {

@@ -10,7 +10,7 @@ const TYPE_CONFIG: Record<string, { label: string; color: string }> = {
   DECRETO: { label: "Decreto", color: "#8B5CF6" },
   NORMA_REGULAMENTADORA: { label: "Norma Regulamentadora", color: "#EF4444" },
   NBR: { label: "NBR", color: "#F59E0B" },
-  RESOLUCAO: { label: "Resolucao", color: "#22C55E" },
+  RESOLUCAO: { label: "Resolução", color: "#22C55E" },
   PORTARIA: { label: "Portaria", color: "#EC4899" },
 };
 
@@ -27,7 +27,7 @@ export async function generateMetadata({
     select: { title: true, description: true },
   });
 
-  if (!legislation) return { title: "Legislacao nao encontrada" };
+  if (!legislation) return { title: "Legislação não encontrada" };
 
   return {
     title: legislation.title,
@@ -63,7 +63,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-accent"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar para legislacao
+          Voltar para legislação
         </Link>
 
         <article>
@@ -102,7 +102,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-3 rounded-xl border border-dark-border bg-dark-card p-4">
                 <Hash className="h-5 w-5 text-text-muted" />
                 <div>
-                  <p className="text-xs text-text-muted">Numero</p>
+                  <p className="text-xs text-text-muted">Número</p>
                   <p className="text-sm font-medium text-text-primary">
                     {legislation.number}
                   </p>
@@ -114,7 +114,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-3 rounded-xl border border-dark-border bg-dark-card p-4">
                 <Building2 className="h-5 w-5 text-text-muted" />
                 <div>
-                  <p className="text-xs text-text-muted">Orgao Emissor</p>
+                  <p className="text-xs text-text-muted">Órgão Emissor</p>
                   <p className="text-sm font-medium text-text-primary">
                     {legislation.issuingBody}
                   </p>
@@ -125,7 +125,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
             <div className="flex items-center gap-3 rounded-xl border border-dark-border bg-dark-card p-4">
               <Clock className="h-5 w-5 text-text-muted" />
               <div>
-                <p className="text-xs text-text-muted">Data de Publicacao</p>
+                <p className="text-xs text-text-muted">Data de Publicação</p>
                 <p className="text-sm font-medium text-text-primary">
                   {formatDate(legislation.publishedAt)}
                 </p>
@@ -136,7 +136,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-3 rounded-xl border border-dark-border bg-dark-card p-4">
                 <Calendar className="h-5 w-5 text-text-muted" />
                 <div>
-                  <p className="text-xs text-text-muted">Data de Vigencia</p>
+                  <p className="text-xs text-text-muted">Data de Vigência</p>
                   <p className="text-sm font-medium text-text-primary">
                     {formatDate(legislation.effectiveAt)}
                   </p>
@@ -149,7 +149,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
           {legislation.description && (
             <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-6">
               <h2 className="mb-3 text-sm font-semibold text-text-secondary">
-                Descricao
+                Descrição
               </h2>
               <p className="text-sm leading-relaxed text-text-secondary whitespace-pre-line">
                 {legislation.description}
@@ -161,7 +161,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
           {legislation.documentUrl && (
             <div className="mb-8 rounded-xl border border-accent/30 bg-accent/5 p-6 text-center">
               <p className="mb-4 text-sm text-text-secondary">
-                Acesse o documento oficial completo no site do orgao emissor.
+                Acesse o documento oficial completo no site do órgão emissor.
               </p>
               <a
                 href={legislation.documentUrl}
@@ -174,7 +174,7 @@ export default async function LegislacaoDetailPage({ params }: PageProps) {
               </a>
               {legislation.issuingBody && (
                 <p className="mt-3 text-xs text-text-muted">
-                  Voce sera redirecionado para {legislation.issuingBody}
+                  Você será redirecionado para {legislation.issuingBody}
                 </p>
               )}
             </div>

@@ -40,12 +40,12 @@ export function generateLicitacoesPDF(data: LicitacaoRow[]): ArrayBuffer {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.setTextColor(249, 115, 22); // #F97316
-  doc.text("HuB - Atlantico", margin, 14);
+  doc.text("HuB - Atlântico", margin, 14);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(160, 160, 168); // #A0A0A8
-  doc.text("Relatorio de Licitacoes", margin, 22);
+  doc.text("Relatório de Licitações", margin, 22);
 
   doc.setFontSize(9);
   doc.text(
@@ -57,8 +57,8 @@ export function generateLicitacoesPDF(data: LicitacaoRow[]): ArrayBuffer {
 
   // --- Table setup ---
   const columns = [
-    { header: "Titulo", width: 80 },
-    { header: "Orgao", width: 55 },
+    { header: "Título", width: 80 },
+    { header: "Órgão", width: 55 },
     { header: "UF", width: 15 },
     { header: "Valor", width: 35 },
     { header: "Status", width: 28 },
@@ -135,7 +135,7 @@ export function generateLicitacoesPDF(data: LicitacaoRow[]): ArrayBuffer {
       doc.setFontSize(7);
       doc.setTextColor(107, 107, 115); // muted
       doc.text(
-        `HuB - Atlantico | Pagina ${doc.getNumberOfPages()}`,
+        `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
         pageWidth / 2,
         pageHeight - 8,
         { align: "center" }
@@ -153,7 +153,7 @@ export function generateLicitacoesPDF(data: LicitacaoRow[]): ArrayBuffer {
   doc.setFontSize(7);
   doc.setTextColor(107, 107, 115);
   doc.text(
-    `HuB - Atlantico | Pagina ${doc.getNumberOfPages()}`,
+    `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
     pageWidth / 2,
     pageHeight - 8,
     { align: "center" }
@@ -183,12 +183,12 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.setTextColor(249, 115, 22);
-  doc.text("HuB - Atlantico", margin, 14);
+  doc.text("HuB - Atlântico", margin, 14);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(160, 160, 168);
-  doc.text("Relatorio de Noticias", margin, 22);
+  doc.text("Relatório de Notícias", margin, 22);
 
   doc.setFontSize(9);
   doc.text(
@@ -200,7 +200,7 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
 
   // --- Table setup ---
   const columns = [
-    { header: "Titulo", width: 90 },
+    { header: "Título", width: 90 },
     { header: "Resumo", width: 80 },
     { header: "Fonte", width: 35 },
     { header: "Categoria", width: 30 },
@@ -273,7 +273,7 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
       doc.setFontSize(7);
       doc.setTextColor(107, 107, 115);
       doc.text(
-        `HuB - Atlantico | Pagina ${doc.getNumberOfPages()}`,
+        `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
         pageWidth / 2,
         pageHeight - 8,
         { align: "center" }
@@ -290,7 +290,7 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
   doc.setFontSize(7);
   doc.setTextColor(107, 107, 115);
   doc.text(
-    `HuB - Atlantico | Pagina ${doc.getNumberOfPages()}`,
+    `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
     pageWidth / 2,
     pageHeight - 8,
     { align: "center" }

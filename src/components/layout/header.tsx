@@ -65,7 +65,7 @@ export function Header() {
       ? "Dashboard"
       : allItems.find((item) =>
           item.href === "/dashboard" ? false : pathname.startsWith(item.href)
-        )?.title || "Pagina";
+        )?.title || "Página";
 
   return (
     <>

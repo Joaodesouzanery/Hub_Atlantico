@@ -29,7 +29,7 @@ export async function generateMetadata({
     select: { title: true, description: true },
   });
 
-  if (!licitacao) return { title: "Licitacao nao encontrada" };
+  if (!licitacao) return { title: "Licitação não encontrada" };
 
   return {
     title: licitacao.title,
@@ -78,7 +78,7 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
     },
     {
       icon: Building2,
-      label: "Orgao",
+      label: "Órgão",
       value: licitacao.organ,
     },
     {
@@ -91,26 +91,26 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
       label: "Valor Estimado",
       value: licitacao.estimatedValue
         ? formatBRL(licitacao.estimatedValue)
-        : "Nao informado",
+        : "Não informado",
     },
     {
       icon: Calendar,
       label: "Data de Abertura",
-      value: licitacao.openDate ? formatDate(licitacao.openDate) : "Nao informada",
+      value: licitacao.openDate ? formatDate(licitacao.openDate) : "Não informada",
     },
     {
       icon: Calendar,
       label: "Data de Encerramento",
       value: licitacao.closeDate
         ? formatDate(licitacao.closeDate)
-        : "Nao informada",
+        : "Não informada",
     },
     {
       icon: Calendar,
       label: "Publicado em",
       value: licitacao.publishedAt
         ? formatDate(licitacao.publishedAt)
-        : "Nao informado",
+        : "Não informado",
     },
   ];
 
@@ -123,7 +123,7 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-accent"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar para licitacoes
+          Voltar para licitações
         </Link>
 
         <article>
@@ -168,7 +168,7 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
           {/* Metadata grid */}
           <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-6">
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-text-muted">
-              Detalhes da Licitacao
+              Detalhes da Licitação
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {metadataItems.map((item) => {
@@ -194,7 +194,7 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
           {licitacao.organCnpj && (
             <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-4">
               <p className="text-xs text-text-muted">
-                CNPJ do Orgao:{" "}
+                CNPJ do Órgão:{" "}
                 <span className="font-mono text-text-secondary">
                   {licitacao.organCnpj}
                 </span>

@@ -14,28 +14,28 @@ function formatCurrency(value: number | null | undefined): string {
   }).format(value);
 }
 
-// ---------- Licitacoes ----------
+// ---------- Licitações ----------
 
 export async function generateLicitacoesExcel(data: any[]): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = "HuB - Atlantico";
+  workbook.creator = "HuB - Atlântico";
   workbook.created = new Date();
 
-  const sheet = workbook.addWorksheet("Licitacoes", {
+  const sheet = workbook.addWorksheet("Licitações", {
     properties: { defaultColWidth: 20 },
   });
 
   // Define columns
   sheet.columns = [
-    { header: "Titulo", key: "title", width: 50 },
-    { header: "Descricao", key: "description", width: 60 },
-    { header: "Orgao", key: "organ", width: 35 },
+    { header: "Título", key: "title", width: 50 },
+    { header: "Descrição", key: "description", width: 60 },
+    { header: "Órgão", key: "organ", width: 35 },
     { header: "UF", key: "uf", width: 8 },
     { header: "Cidade", key: "city", width: 20 },
     { header: "Modalidade", key: "modalidade", width: 22 },
     { header: "Status", key: "status", width: 15 },
     { header: "Valor Estimado", key: "estimatedValue", width: 20 },
-    { header: "Data Publicacao", key: "publishedAt", width: 18 },
+    { header: "Data de Publicação", key: "publishedAt", width: 18 },
     { header: "URL Original", key: "originalUrl", width: 45 },
   ];
 
@@ -94,23 +94,23 @@ export async function generateLicitacoesExcel(data: any[]): Promise<Buffer> {
   return Buffer.from(buffer);
 }
 
-// ---------- Noticias ----------
+// ---------- Notícias ----------
 
 export async function generateNoticiasExcel(data: any[]): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = "HuB - Atlantico";
+  workbook.creator = "HuB - Atlântico";
   workbook.created = new Date();
 
-  const sheet = workbook.addWorksheet("Noticias", {
+  const sheet = workbook.addWorksheet("Notícias", {
     properties: { defaultColWidth: 20 },
   });
 
   sheet.columns = [
-    { header: "Titulo", key: "title", width: 50 },
+    { header: "Título", key: "title", width: 50 },
     { header: "Resumo", key: "summary", width: 60 },
     { header: "Fonte", key: "source", width: 25 },
     { header: "Categoria", key: "category", width: 20 },
-    { header: "Data Publicacao", key: "publishedAt", width: 18 },
+    { header: "Data de Publicação", key: "publishedAt", width: 18 },
     { header: "URL Original", key: "originalUrl", width: 50 },
   ];
 

@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
-import { BrazilMap } from "@/components/dashboard/brazil-map";
 import { UpcomingDeadlines } from "@/components/dashboard/upcoming-deadlines";
 import { RecentActivityFeed } from "@/components/dashboard/recent-activity-feed";
 import {
+  DashboardBrazilMap,
   DashboardChartsRow2,
   DashboardChartsRow3,
 } from "@/components/dashboard/dashboard-charts";
@@ -26,7 +26,7 @@ export default async function DashboardPage() {
           Dashboard Inteligente
         </h2>
         <p className="mt-1 text-sm text-text-muted">
-          Visao geral de licitacoes, noticias e atividades do setor.
+          Visão geral de licitações, notícias e atividades do setor.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
       {/* Row 2: Map + Deadlines */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <BrazilMap data={data.licitacoesPorUF} />
+          <DashboardBrazilMap data={data.licitacoesPorUF} />
         </div>
         <div className="xl:col-span-1">
           <UpcomingDeadlines deadlines={data.proximosPrazos} />

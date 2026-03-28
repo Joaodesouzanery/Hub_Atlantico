@@ -37,7 +37,7 @@ export function TopOrgansChart({ data }: TopOrgansChartProps) {
     <div className="rounded-xl border border-dark-border bg-dark-card">
       <div className="border-b border-dark-border p-5">
         <h3 className="font-semibold text-text-primary">
-          Top Orgaos Licitantes
+          Top Órgãos Licitantes
         </h3>
       </div>
       <div className="p-4">

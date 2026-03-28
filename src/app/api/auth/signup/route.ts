@@ -25,45 +25,81 @@ export async function POST(request: NextRequest) {
 
   const { name, email, password } = parsed.data;
 
-  // Usa a Service Role Key para criar usuários via Admin API (não requer login)
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Cria o usuário no Supabase Auth
-  const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-    email,
-    password,
-    user_metadata: { name },
-    email_confirm: true, // Confirma automaticamente — sem necessidade de clicar em link
-  });
-
-  if (authError) {
-    if (authError.message.includes("already registered")) {
-      return NextResponse.json({ error: "Este e-mail já está cadastrado." }, { status: 409 });
-    }
-    console.error("[signup] Supabase auth error:", authError.message);
-    return NextResponse.json({ error: "Erro ao criar conta. Tente novamente." }, { status: 500 });
+  if (!supabaseUrl || !anonKey) {
+    console.error("[signup] Variáveis de ambiente Supabase não configuradas.");
+    return NextResponse.json({ error: "Serviço indisponível. Tente novamente." }, { status: 503 });
   }
 
-  // Sincroniza com a tabela `users` do Prisma usando o UUID do Supabase como ID
-  if (authData.user) {
+  let userId: string | undefined;
+
+  // Caminho 1: Admin API (confirma e-mail automaticamente, sem envio de e-mail)
+  if (serviceRoleKey) {
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    const { data: adminData, error: adminError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      user_metadata: { name },
+      email_confirm: true,
+    });
+
+    if (adminError) {
+      if (
+        adminError.message.toLowerCase().includes("already registered") ||
+        adminError.message.toLowerCase().includes("already been registered") ||
+        adminError.message.toLowerCase().includes("email_exists")
+      ) {
+        return NextResponse.json({ error: "Este e-mail já está cadastrado." }, { status: 409 });
+      }
+      // Admin API falhou por outra razão — tenta fallback abaixo
+      console.warn("[signup] Admin API falhou, tentando fallback:", adminError.message);
+    } else {
+      userId = adminData.user?.id;
+    }
+  }
+
+  // Caminho 2: Fallback com signUp() padrão (se admin API indisponível ou falhou)
+  if (!userId) {
+    const supabase = createClient(supabaseUrl, anonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    const { data: signupData, error: signupError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+
+    if (signupError) {
+      if (
+        signupError.message.toLowerCase().includes("already registered") ||
+        signupError.message.toLowerCase().includes("user already registered")
+      ) {
+        return NextResponse.json({ error: "Este e-mail já está cadastrado." }, { status: 409 });
+      }
+      console.error("[signup] signUp error:", signupError.message);
+      return NextResponse.json({ error: "Erro ao criar conta. Tente novamente." }, { status: 500 });
+    }
+
+    userId = signupData.user?.id;
+  }
+
+  // Sincroniza com a tabela users (best-effort)
+  if (userId) {
     try {
       await prisma.user.upsert({
         where: { email },
         update: { name },
-        create: {
-          id: authData.user.id,
-          email,
-          name,
-          role: "FREE",
-        },
+        create: { id: userId, email, name, role: "FREE" },
       });
     } catch (dbError) {
       console.error("[signup] Prisma upsert error:", dbError);
-      // Não falha o signup — o usuário já foi criado no Supabase Auth
     }
   }
 

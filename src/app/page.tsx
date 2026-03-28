@@ -10,127 +10,83 @@ import {
   ArrowRight,
   ArrowUpRight,
   CheckCircle,
+  Zap,
 } from "lucide-react";
-import { prisma } from "@/lib/db";
 
-async function getStats() {
-  try {
-    const [licitacoes, newsArticles, agencies, sources] = await Promise.all([
-      prisma.licitacao.count(),
-      prisma.newsArticle.count(),
-      prisma.regulatoryAgency.count(),
-      prisma.newsSource.count(),
-    ]);
-    return { licitacoes, newsArticles, agencies, sources };
-  } catch {
-    return { licitacoes: 0, newsArticles: 0, agencies: 21, sources: 18 };
-  }
-}
-
+// Sem busca no banco — números fixos não criam dependência com DB vazio
 const modules = [
   {
-    icon: LayoutDashboard,
-    label: "01 — Dashboard",
-    title: "Visão estratégica do setor",
-    description:
-      "KPIs em tempo real, mapa de licitações por estado e feed de atividade consolidado em um único painel.",
-  },
-  {
     icon: Newspaper,
-    label: "02 — Notícias",
-    title: "Agregador especializado",
+    tag: "Notícias",
+    title: "Hub especializado em saneamento",
     description:
-      "18+ fontes de jornalismo técnico indexadas diariamente. Apenas o que importa para o setor hídrico.",
+      "18+ fontes de jornalismo técnico monitoradas e indexadas diariamente — agências reguladoras, portais governamentais e veículos especializados.",
+    highlight: true,
   },
   {
     icon: Gavel,
-    label: "03 — Licitações",
-    title: "Inteligência de mercado",
+    tag: "Licitações",
+    title: "Radar de oportunidades públicas",
     description:
-      "PNCP, Compras.gov.br e portais estaduais em um único lugar. Filtros por UF, modalidade e valor.",
-  },
-  {
-    icon: FileBarChart,
-    label: "04 — Relatórios",
-    title: "Análise quantitativa",
-    description:
-      "Distribuição por região, tendência mensal e top órgãos licitantes. Exportação em Excel e PDF.",
+      "PNCP, Compras.gov.br e portais estaduais em um único lugar. Filtros por UF, modalidade e valor estimado. Atualizações em tempo real.",
+    highlight: true,
   },
   {
     icon: Scale,
-    label: "05 — Legislação",
+    tag: "Legislação",
     title: "Base normativa completa",
     description:
       "Leis, decretos, normas ABNT e resoluções da ANA indexados e pesquisáveis por tema ou órgão emissor.",
   },
   {
     icon: Landmark,
-    label: "06 — Agências",
+    tag: "Agências",
     title: "Diretório regulatório",
     description:
       "Agências estaduais e federais com links diretos, jurisdição e canais de contato atualizados.",
   },
-];
-
-const pillars = [
   {
-    number: "I",
-    title: "Dados em tempo real",
+    icon: FileBarChart,
+    tag: "Relatórios",
+    title: "Análise de mercado",
     description:
-      "Crawlers automáticos coletam notícias e licitações de dezenas de fontes oficiais todos os dias. Sem curadoria manual.",
+      "Distribuição por região, tendência mensal e top órgãos licitantes. Exportação em Excel e PDF.",
   },
   {
-    number: "II",
-    title: "Decisão embasada",
+    icon: LayoutDashboard,
+    tag: "Dashboard",
+    title: "Visão estratégica",
     description:
-      "Filtros avançados, busca semântica e categorização automática por relevância para o setor de saneamento.",
-  },
-  {
-    number: "III",
-    title: "Cobertura nacional",
-    description:
-      "Todos os 26 estados e o DF monitorados. Portais federais, estaduais e municipais integrados.",
+      "KPIs em tempo real, mapa de licitações por estado e feed de atividade consolidado em um único painel.",
   },
 ];
 
 export const dynamic = "force-dynamic";
 
-export default async function LandingPage() {
-  const stats = await getStats();
-
-  const displayLicitacoes =
-    stats.licitacoes > 0 ? stats.licitacoes.toLocaleString("pt-BR") : "5.000+";
-  const displayNews =
-    stats.newsArticles > 0 ? stats.newsArticles.toLocaleString("pt-BR") : "10.000+";
-  const displayAgencies = stats.agencies > 0 ? stats.agencies : 21;
-  const displaySources = stats.sources > 0 ? stats.sources : 18;
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#09090B", color: "#FAFAFA" }}>
+    <div className="min-h-screen bg-white text-slate-900">
 
       {/* ─── HEADER ─────────────────────────────────────────────── */}
-      <header
-        className="sticky top-0 z-50 border-b"
-        style={{ background: "rgba(9,9,11,0.92)", borderColor: "#1E1E24", backdropFilter: "blur(12px)" }}
-      >
+      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-10">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#F97316]">
               <Droplets className="h-4 w-4 text-white" />
             </div>
-            <span className="text-sm font-bold tracking-wide text-white">HuB — Atlântico</span>
+            <span className="text-sm font-bold tracking-wide text-slate-900">HuB — Atlântico</span>
           </div>
 
           <nav className="hidden items-center gap-8 md:flex">
             {[
+              { label: "Notícias", href: "#modulos" },
+              { label: "Licitações", href: "#modulos" },
               { label: "Plataforma", href: "#plataforma" },
-              { label: "Módulos", href: "#modulos" },
-              { label: "Como funciona", href: "#como-funciona" },
             ].map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-xs font-medium uppercase tracking-widest text-[#71717A] transition-colors hover:text-white"
+                className="text-xs font-medium uppercase tracking-widest text-slate-500 transition-colors hover:text-slate-900"
               >
                 {item.label}
               </a>
@@ -140,13 +96,13 @@ export default async function LandingPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="hidden rounded-md px-4 py-2 text-xs font-medium uppercase tracking-widest text-[#71717A] transition-colors hover:text-white md:block"
+              className="hidden rounded-md px-4 py-2 text-xs font-medium uppercase tracking-widest text-slate-500 transition-colors hover:text-slate-900 md:block"
             >
               Entrar
             </Link>
             <Link
               href="/cadastro"
-              className="flex items-center gap-1.5 rounded-md bg-[#F97316] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#FB923C]"
+              className="flex items-center gap-1.5 rounded-md bg-[#F97316] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#EA6C10]"
             >
               Criar conta
               <ArrowUpRight className="h-3 w-3" />
@@ -155,128 +111,211 @@ export default async function LandingPage() {
         </div>
       </header>
 
-      {/* ─── HERO ────────────────────────────────────────────────── */}
+      {/* ─── HERO (dark) ─────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-28 lg:py-40"
-        style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, #1E1E24 1px, transparent 0)",
-          backgroundSize: "40px 40px",
-        }}
+        style={{ background: "#111116" }}
       >
+        {/* dot grid */}
         <div
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 opacity-40"
           style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(249,115,22,0.06) 0%, transparent 70%)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, #2A2A35 1px, transparent 0)",
+            backgroundSize: "36px 36px",
           }}
         />
+        {/* orange glow top */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse 100% 50% at 50% 100%, #09090B 0%, transparent 80%)",
+            background: "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(249,115,22,0.12) 0%, transparent 65%)",
           }}
+        />
+        {/* fade to dark at bottom */}
+        <div
+          className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
+          style={{ background: "linear-gradient(to bottom, transparent, #111116)" }}
         />
 
-        <div className="relative mx-auto max-w-5xl px-6 lg:px-10">
-          <div className="mb-8 flex items-center gap-3">
-            <div className="h-px w-8 bg-[#F97316]" />
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
-              Sistema Operacional do Setor de Saneamento
+        <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-10">
+          {/* eyebrow pill */}
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#F97316]/30 bg-[#F97316]/10 px-4 py-1.5">
+            <Zap className="h-3.5 w-3.5 text-[#F97316]" />
+            <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#F97316]">
+              Hub de Notícias · Licitações · Legislação
             </span>
           </div>
 
-          <h1 className="text-5xl font-bold leading-[1.08] tracking-tight lg:text-7xl" style={{ letterSpacing: "-0.02em" }}>
-            Inteligência de mercado
+          <h1
+            className="text-5xl font-bold leading-[1.08] tracking-tight text-white lg:text-7xl"
+            style={{ letterSpacing: "-0.02em" }}
+          >
+            Tudo que acontece
             <br />
-            <span className="text-[#F97316]">para quem decide</span>
-            <br />
-            no setor hídrico.
+            no setor hídrico,{" "}
+            <span className="text-[#F97316]">em tempo real.</span>
           </h1>
 
-          <p className="mt-8 max-w-xl text-base leading-relaxed text-[#71717A]">
-            Do dado bruto à decisão estratégica — em segundos. Licitações, notícias, legislação
-            e agências reguladoras consolidados em uma única plataforma especializada.
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-slate-400">
+            O HuB — Atlântico é o hub de inteligência do saneamento brasileiro.
+            Notícias de 18+ fontes especializadas, licitações do PNCP e portais estaduais,
+            legislação e agências reguladoras — tudo consolidado em uma única plataforma.
           </p>
 
-          <div className="mt-12 flex flex-wrap items-center gap-4">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/cadastro"
-              className="flex items-center gap-2 rounded-md bg-[#F97316] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#FB923C]"
+              className="flex items-center gap-2 rounded-md bg-[#F97316] px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-900/30 transition-colors hover:bg-[#EA6C10]"
             >
-              Acessar a plataforma
+              Acessar gratuitamente
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="flex items-center gap-2 rounded-md border px-7 py-3.5 text-sm font-medium text-[#71717A] transition-colors hover:border-[#F97316] hover:text-[#F97316]"
-              style={{ borderColor: "#2E2E33" }}
+              className="flex items-center gap-2 rounded-md border border-white/10 px-8 py-3.5 text-sm font-medium text-slate-300 transition-colors hover:border-white/25 hover:text-white"
             >
               Já tenho conta
             </Link>
           </div>
+
+          {/* mini social proof */}
+          <p className="mt-8 text-xs text-slate-600">
+            Gratuito · Sem cartão de crédito · Cobertura nacional
+          </p>
         </div>
       </section>
 
-      {/* ─── STATS ───────────────────────────────────────────────── */}
-      <div className="border-y" style={{ borderColor: "#1E1E24" }}>
+      {/* ─── DESTAQUE: Notícias + Licitações ─────────────────────── */}
+      <section className="border-y border-slate-100 bg-slate-50 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <div className="grid grid-cols-2 divide-x md:grid-cols-4" style={{ borderColor: "#1E1E24" }}>
-            {[
-              { value: displayLicitacoes, label: "Licitações monitoradas" },
-              { value: displayNews, label: "Notícias indexadas" },
-              { value: String(displayAgencies), label: "Agências reguladoras" },
-              { value: `${displaySources}+`, label: "Fontes especializadas" },
-            ].map((stat, i) => (
-              <div key={i} className="flex flex-col justify-center px-6 py-10 lg:px-10">
-                <p className="text-4xl font-bold tabular-nums text-white lg:text-5xl">{stat.value}</p>
-                <p className="mt-2 text-xs uppercase tracking-widest text-[#52525B]">{stat.label}</p>
+          <div className="mb-12">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
+              O que entregamos
+            </span>
+            <h2 className="mt-3 text-3xl font-bold leading-tight text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
+              Notícias e licitações do setor de saneamento,{" "}
+              <br className="hidden lg:block" />
+              num só lugar.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            {/* Notícias card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
+                  <Newspaper className="h-5 w-5 text-blue-600" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Hub de Notícias</span>
               </div>
-            ))}
+              <h3 className="text-xl font-bold text-slate-900">
+                18+ fontes especializadas, indexadas diariamente
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                Agências reguladoras, portais governamentais, veículos de comunicação
+                do setor hídrico e de saneamento. Tudo categorizado automaticamente
+                para você encontrar o que importa em segundos.
+              </p>
+              <ul className="mt-6 space-y-2">
+                {[
+                  "ANA, FUNASA, SNSA e ministérios",
+                  "Portais estaduais de saneamento",
+                  "Busca por palavra-chave e categoria",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2.5 text-sm text-slate-600">
+                    <CheckCircle className="h-4 w-4 flex-shrink-0 text-[#F97316]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Licitações card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50">
+                  <Gavel className="h-5 w-5 text-green-600" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest text-green-600">Radar de Licitações</span>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">
+                PNCP e Compras.gov.br monitorados em tempo real
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                Licitações públicas do setor de saneamento coletadas automaticamente
+                de portais federais e estaduais. Filtros por UF, modalidade e
+                valor estimado para você não perder nenhuma oportunidade.
+              </p>
+              <ul className="mt-6 space-y-2">
+                {[
+                  "Portal Nacional de Contratações Públicas (PNCP)",
+                  "Compras.gov.br e portais estaduais",
+                  "Filtros por UF, modalidade e valor",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2.5 text-sm text-slate-600">
+                    <CheckCircle className="h-4 w-4 flex-shrink-0 text-[#F97316]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ─── PLATAFORMA ──────────────────────────────────────────── */}
-      <section id="plataforma" className="py-28 lg:py-36">
+      <section id="plataforma" className="py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
             <div>
-              <div className="mb-6 flex items-center gap-3">
-                <div className="h-px w-6 bg-[#F97316]" />
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
-                  Plataforma
-                </span>
-              </div>
-              <h2
-                className="text-4xl font-bold leading-tight text-white lg:text-5xl"
-                style={{ letterSpacing: "-0.02em" }}
-              >
-                Fundação tecnológica para o mercado de saneamento do Brasil.
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
+                Plataforma
+              </span>
+              <h2 className="mt-3 text-4xl font-bold leading-tight text-slate-900 lg:text-5xl" style={{ letterSpacing: "-0.02em" }}>
+                Sistema operacional do mercado de saneamento.
               </h2>
-              <p className="mt-6 text-base leading-relaxed text-[#71717A]">
-                O HuB — Atlântico agrega, filtra e classifica automaticamente
-                informações de dezenas de fontes oficiais. Você recebe apenas o
-                que é relevante para sua atuação — sem ruído, sem perda de tempo.
+              <p className="mt-6 text-base leading-relaxed text-slate-500">
+                O HuB — Atlântico consolida, filtra e classifica automaticamente
+                informações de dezenas de fontes oficiais. Engenheiros, gestores
+                públicos e empresas recebem apenas o que é relevante para sua
+                atuação — sem ruído, sem perda de tempo.
               </p>
               <Link
                 href="/cadastro"
-                className="mt-10 inline-flex items-center gap-2 text-sm font-semibold text-[#F97316] transition-colors hover:text-[#FB923C]"
+                className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#F97316] transition-colors hover:text-[#EA6C10]"
               >
-                Começar agora — é gratuito
+                Criar conta gratuita
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            <div className="divide-y" style={{ borderColor: "#1E1E24" }}>
-              {pillars.map((p) => (
-                <div key={p.number} className="py-8">
-                  <div className="flex items-start gap-6">
-                    <span className="mt-0.5 text-xs font-bold uppercase tracking-widest text-[#F97316]">
-                      {p.number}
-                    </span>
+            <div className="divide-y divide-slate-100">
+              {[
+                {
+                  number: "I",
+                  title: "Dados em tempo real",
+                  description:
+                    "Crawlers automáticos coletam notícias e licitações de dezenas de fontes oficiais todos os dias. Sem curadoria manual.",
+                },
+                {
+                  number: "II",
+                  title: "Inteligência filtrada",
+                  description:
+                    "Categorização automática por relevância para o setor hídrico. Busca por palavra-chave, estado e modalidade.",
+                },
+                {
+                  number: "III",
+                  title: "Cobertura nacional",
+                  description:
+                    "Todos os 26 estados e o DF monitorados. Portais federais, estaduais e municipais integrados.",
+                },
+              ].map((p) => (
+                <div key={p.number} className="py-7">
+                  <div className="flex items-start gap-5">
+                    <span className="mt-0.5 text-xs font-bold uppercase tracking-widest text-[#F97316]">{p.number}</span>
                     <div>
-                      <p className="font-semibold text-white">{p.title}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-[#71717A]">{p.description}</p>
+                      <p className="font-semibold text-slate-900">{p.title}</p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{p.description}</p>
                     </div>
                   </div>
                 </div>
@@ -286,42 +325,40 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ─── MÓDULOS ─────────────────────────────────────────────── */}
-      <section
-        id="modulos"
-        className="border-y py-28 lg:py-36"
-        style={{ borderColor: "#1E1E24", background: "#0D0D10" }}
-      >
+      {/* ─── MÓDULOS (light gray) ────────────────────────────────── */}
+      <section id="modulos" className="bg-slate-50 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <div className="mb-16">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="h-px w-6 bg-[#F97316]" />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
-                Módulos
-              </span>
-            </div>
-            <h2
-              className="max-w-xl text-4xl font-bold leading-tight text-white lg:text-5xl"
-              style={{ letterSpacing: "-0.02em" }}
-            >
-              Seis camadas de inteligência. Uma só plataforma.
+          <div className="mb-12">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Módulos</span>
+            <h2 className="mt-3 text-3xl font-bold leading-tight text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
+              Seis módulos integrados.
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3" style={{ background: "#1E1E24" }}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {modules.map((mod) => (
               <div
                 key={mod.title}
-                className="flex flex-col bg-[#0D0D10] p-8 transition-colors hover:bg-[#111113]"
+                className={`rounded-xl border p-7 transition-shadow hover:shadow-md ${
+                  mod.highlight
+                    ? "border-[#F97316]/20 bg-white"
+                    : "border-slate-200 bg-white"
+                }`}
               >
-                <div className="mb-6 flex items-center gap-3">
-                  <mod.icon className="h-5 w-5 text-[#F97316]" />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-[#52525B]">
-                    {mod.label}
+                <div className="mb-4 flex items-center gap-2.5">
+                  <mod.icon
+                    className="h-5 w-5"
+                    style={{ color: mod.highlight ? "#F97316" : "#94A3B8" }}
+                  />
+                  <span
+                    className="text-xs font-bold uppercase tracking-widest"
+                    style={{ color: mod.highlight ? "#F97316" : "#94A3B8" }}
+                  >
+                    {mod.tag}
                   </span>
                 </div>
-                <p className="text-base font-semibold text-white">{mod.title}</p>
-                <p className="mt-3 text-sm leading-relaxed text-[#71717A]">{mod.description}</p>
+                <p className="font-semibold text-slate-900">{mod.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">{mod.description}</p>
               </div>
             ))}
           </div>
@@ -329,126 +366,76 @@ export default async function LandingPage() {
       </section>
 
       {/* ─── COMO FUNCIONA ───────────────────────────────────────── */}
-      <section id="como-funciona" className="py-28 lg:py-36">
-        <div className="mx-auto max-w-5xl px-6 lg:px-10">
-          <div className="mb-16 text-center">
-            <div className="mb-6 flex items-center justify-center gap-3">
-              <div className="h-px w-6 bg-[#F97316]" />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
-                Como funciona
-              </span>
-              <div className="h-px w-6 bg-[#F97316]" />
-            </div>
-            <h2
-              className="text-4xl font-bold leading-tight text-white lg:text-5xl"
-              style={{ letterSpacing: "-0.02em" }}
-            >
-              Acesso imediato.
-              <br />
-              Sem fricção.
-            </h2>
-          </div>
+      <section className="py-20 lg:py-28">
+        <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Como funciona</span>
+          <h2 className="mt-3 text-3xl font-bold text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
+            Acesso imediato. Sem fricção.
+          </h2>
 
-          <div className="relative grid grid-cols-1 gap-0 md:grid-cols-3">
-            <div
-              className="absolute left-0 right-0 top-8 hidden h-px md:block"
-              style={{ background: "#1E1E24" }}
-            />
+          <div className="mt-14 grid grid-cols-1 gap-0 md:grid-cols-3">
+            <div className="absolute left-1/6 right-1/6 hidden" />
             {[
-              {
-                number: "01",
-                title: "Crie sua conta",
-                description: "Cadastro em menos de 30 segundos. Sem cartão de crédito, sem burocracia.",
-              },
-              {
-                number: "02",
-                title: "Monitore o setor",
-                description:
-                  "Licitações, notícias e legislação atualizados diariamente, organizados por relevância.",
-              },
-              {
-                number: "03",
-                title: "Tome decisões",
-                description:
-                  "Acesse relatórios analíticos, configure alertas e exporte dados para Excel ou PDF.",
-              },
+              { n: "01", title: "Crie sua conta", body: "Cadastro em 30 segundos. Sem cartão de crédito, sem burocracia." },
+              { n: "02", title: "Monitore o setor", body: "Notícias, licitações e legislação atualizados diariamente e organizados por relevância." },
+              { n: "03", title: "Tome decisões", body: "Relatórios analíticos, busca avançada e exportação de dados para Excel ou PDF." },
             ].map((step) => (
-              <div key={step.number} className="relative px-8 py-12 text-center">
-                <div
-                  className="relative mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border text-lg font-bold text-[#F97316]"
-                  style={{ borderColor: "#F97316", background: "#09090B" }}
-                >
-                  {step.number}
+              <div key={step.n} className="px-4 py-8">
+                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#F97316] text-base font-bold text-[#F97316]">
+                  {step.n}
                 </div>
-                <p className="font-semibold text-white">{step.title}</p>
-                <p className="mt-3 text-sm leading-relaxed text-[#71717A]">{step.description}</p>
+                <p className="font-semibold text-slate-900">{step.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">{step.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── CTA DARK ────────────────────────────────────────────── */}
+      {/* ─── CTA FINAL (dark) ────────────────────────────────────── */}
       <section
-        className="relative overflow-hidden border-y py-28 lg:py-36"
-        style={{ borderColor: "#1E1E24", background: "#0D0D10" }}
+        className="relative overflow-hidden py-28 lg:py-36"
+        style={{ background: "#111116" }}
       >
         <div
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 opacity-30"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, #1E1E24 1px, transparent 0)",
-            backgroundSize: "40px 40px",
+            backgroundImage: "radial-gradient(circle at 1px 1px, #2A2A35 1px, transparent 0)",
+            backgroundSize: "36px 36px",
           }}
         />
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background:
-              "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(249,115,22,0.05) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(249,115,22,0.07) 0%, transparent 70%)",
           }}
         />
 
         <div className="relative mx-auto max-w-3xl px-6 text-center lg:px-10">
           <h2
-            className="text-4xl font-bold leading-tight text-white lg:text-6xl"
+            className="text-4xl font-bold leading-tight text-white lg:text-5xl"
             style={{ letterSpacing: "-0.02em" }}
           >
-            Inteligência de mercado
+            O hub do setor de saneamento.
             <br />
-            <span className="text-[#F97316]">entregue hoje.</span>
+            <span className="text-[#F97316]">Gratuito. Agora.</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-[#71717A]">
-            Profissionais de engenharia, gestores públicos e empresas de
-            saneamento já usam o HuB — Atlântico para tomar decisões mais
-            rápidas e embasadas.
+          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-400">
+            Notícias, licitações, legislação e agências reguladoras em um único lugar.
+            Para engenheiros, gestores públicos e empresas do setor hídrico.
           </p>
 
-          <ul className="mx-auto mt-8 max-w-sm space-y-3">
-            {[
-              "Plataforma 100% gratuita",
-              "Sem cartão de crédito",
-              "Dados atualizados diariamente",
-              "Cobertura nacional — todos os 26 estados + DF",
-            ].map((item) => (
-              <li key={item} className="flex items-center justify-center gap-3 text-sm text-[#A1A1AA]">
-                <CheckCircle className="h-4 w-4 flex-shrink-0 text-[#F97316]" />
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/cadastro"
-              className="flex items-center gap-2 rounded-md bg-[#F97316] px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-[#FB923C]"
+              className="flex items-center gap-2 rounded-md bg-[#F97316] px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-orange-900/30 transition-colors hover:bg-[#EA6C10]"
             >
               Criar conta gratuita
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="flex items-center gap-2 rounded-md border px-8 py-4 text-sm font-medium text-[#71717A] transition-colors hover:border-[#F97316] hover:text-[#F97316]"
-              style={{ borderColor: "#2E2E33" }}
+              className="flex items-center gap-2 rounded-md border border-white/10 px-8 py-4 text-sm font-medium text-slate-300 transition-colors hover:border-white/25 hover:text-white"
             >
               Já tenho conta
             </Link>
@@ -457,30 +444,22 @@ export default async function LandingPage() {
       </section>
 
       {/* ─── FOOTER ──────────────────────────────────────────────── */}
-      <footer className="border-t py-10" style={{ borderColor: "#1E1E24" }}>
+      <footer className="border-t border-slate-100 bg-white py-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 md:flex-row lg:px-10">
           <div className="flex items-center gap-2.5">
             <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F97316]">
               <Droplets className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-sm font-bold tracking-wide text-white">HuB — Atlântico</span>
+            <span className="text-sm font-bold text-slate-800">HuB — Atlântico</span>
           </div>
-
-          <p className="text-xs text-[#3F3F46]">
-            © {new Date().getFullYear()} HuB — Atlântico. Todos os direitos reservados.
-          </p>
-
+          <p className="text-xs text-slate-400">© {new Date().getFullYear()} HuB — Atlântico. Todos os direitos reservados.</p>
           <div className="flex items-center gap-6">
             {[
               { label: "Sobre", href: "/sobre" },
               { label: "Entrar", href: "/login" },
               { label: "Cadastro", href: "/cadastro" },
             ].map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-xs uppercase tracking-widest text-[#52525B] transition-colors hover:text-white"
-              >
+              <Link key={link.label} href={link.href} className="text-xs text-slate-400 uppercase tracking-widest transition-colors hover:text-slate-700">
                 {link.label}
               </Link>
             ))}

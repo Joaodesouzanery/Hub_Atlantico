@@ -51,8 +51,7 @@ export default function CadastroPage() {
           </div>
           <h1 className="text-xl font-bold text-slate-900">Conta criada com sucesso!</h1>
           <p className="mt-2 text-sm text-slate-500">
-            Enviamos um e-mail de confirmação para <strong>{email}</strong>.
-            Clique no link para ativar sua conta e poder fazer login.
+            Sua conta foi criada. Clique abaixo para entrar na plataforma agora.
           </p>
           <Link
             href="/login"

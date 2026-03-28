@@ -28,29 +28,37 @@ export async function GET(request: NextRequest) {
     ];
   }
 
-  const [articles, total] = await Promise.all([
-    prisma.newsArticle.findMany({
-      where,
-      include: {
-        source: { select: { name: true, slug: true, logoUrl: true } },
-        category: { select: { name: true, slug: true, color: true } },
-      },
-      orderBy: { publishedAt: "desc" },
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.newsArticle.count({ where }),
-  ]);
+  try {
+    const [articles, total] = await Promise.all([
+      prisma.newsArticle.findMany({
+        where,
+        include: {
+          source: { select: { name: true, slug: true, logoUrl: true } },
+          category: { select: { name: true, slug: true, color: true } },
+        },
+        orderBy: { publishedAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.newsArticle.count({ where }),
+    ]);
 
-  return NextResponse.json({
-    articles,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  });
+    return NextResponse.json({
+      articles,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch news articles" },
+      { status: 500 }
+    );
+  }
 }
 
 export const dynamic = "force-dynamic";

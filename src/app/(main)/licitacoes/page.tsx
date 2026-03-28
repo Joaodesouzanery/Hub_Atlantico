@@ -55,29 +55,46 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
   }
 
   // Fetch data and stats in parallel
-  const [licitacoes, total, abertas, encerradas, valorAggregate] =
-    await Promise.all([
-      prisma.licitacao.findMany({
-        where,
-        include: {
-          source: { select: { name: true, slug: true } },
-          category: { select: { name: true, slug: true, color: true } },
-        },
-        orderBy: { publishedAt: "desc" },
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.licitacao.count({ where }),
-      prisma.licitacao.count({ where: { ...where, status: "ABERTA" } }),
-      prisma.licitacao.count({ where: { ...where, status: "ENCERRADA" } }),
-      prisma.licitacao.aggregate({
-        where,
-        _sum: { estimatedValue: true },
-      }),
-    ]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let licitacoes: any[] = [];
+  let total = 0;
+  let abertas = 0;
+  let encerradas = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let valorTotal: any = 0;
+
+  try {
+    const [licitacoesResult, totalResult, abertasResult, encerradasResult, valorAggregate] =
+      await Promise.all([
+        prisma.licitacao.findMany({
+          where,
+          include: {
+            source: { select: { name: true, slug: true } },
+            category: { select: { name: true, slug: true, color: true } },
+          },
+          orderBy: { publishedAt: "desc" },
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.licitacao.count({ where }),
+        prisma.licitacao.count({ where: { ...where, status: "ABERTA" } }),
+        prisma.licitacao.count({ where: { ...where, status: "ENCERRADA" } }),
+        prisma.licitacao.aggregate({
+          where,
+          _sum: { estimatedValue: true },
+        }),
+      ]);
+
+    licitacoes = licitacoesResult;
+    total = totalResult;
+    abertas = abertasResult;
+    encerradas = encerradasResult;
+    valorTotal = valorAggregate._sum.estimatedValue || 0;
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   const totalPages = Math.ceil(total / limit);
-  const valorTotal = valorAggregate._sum.estimatedValue || 0;
 
   // Build pagination query string
   function buildPageUrl(targetPage: number) {

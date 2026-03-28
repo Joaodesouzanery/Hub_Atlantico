@@ -25,7 +25,7 @@ const mobileNavSections = [
   {
     label: "Principal",
     items: [
-      { title: "Dashboard", href: "/", icon: LayoutDashboard },
+      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { title: "Notícias", href: "/noticias", icon: Newspaper },
     ],
   },
@@ -61,11 +61,11 @@ export function Header() {
   const pathname = usePathname();
 
   const pageTitle =
-    pathname === "/"
+    pathname === "/" || pathname === "/dashboard"
       ? "Dashboard"
       : allItems.find((item) =>
-          item.href === "/" ? false : pathname.startsWith(item.href)
-        )?.title || "Página";
+          item.href === "/dashboard" ? false : pathname.startsWith(item.href)
+        )?.title || "Pagina";
 
   return (
     <>
@@ -122,7 +122,7 @@ export function Header() {
                   </p>
                   <ul className="space-y-0.5">
                     {section.items.map((item) => {
-                      const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                      const isActive = item.href === "/dashboard" ? pathname === "/dashboard" || pathname === "/" : pathname.startsWith(item.href);
                       return (
                         <li key={item.href}>
                           <Link

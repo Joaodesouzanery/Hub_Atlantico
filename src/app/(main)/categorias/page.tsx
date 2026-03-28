@@ -9,12 +9,19 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function CategoriasPage() {
-  const categoriesData = await prisma.category.findMany({
-    include: {
-      _count: { select: { articles: true } },
-    },
-    orderBy: { name: "asc" },
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let categoriesData: any[] = [];
+
+  try {
+    categoriesData = await prisma.category.findMany({
+      include: {
+        _count: { select: { articles: true } },
+      },
+      orderBy: { name: "asc" },
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   return (
     <div className="p-4 lg:p-8">

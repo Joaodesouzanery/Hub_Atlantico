@@ -34,7 +34,7 @@ const navSections = [
   {
     label: "Principal",
     items: [
-      { title: "Dashboard", href: "/", icon: "layout-dashboard" },
+      { title: "Dashboard", href: "/dashboard", icon: "layout-dashboard" },
       { title: "Notícias", href: "/noticias", icon: "newspaper" },
     ],
   },
@@ -101,8 +101,8 @@ export function Sidebar() {
               {section.items.map((item) => {
                 const Icon = iconMap[item.icon] || LayoutDashboard;
                 const isActive =
-                  item.href === "/"
-                    ? pathname === "/"
+                  item.href === "/dashboard"
+                    ? pathname === "/dashboard" || pathname === "/"
                     : pathname.startsWith(item.href);
                 return (
                   <li key={item.href}>

@@ -11,12 +11,12 @@ const config: Config = {
       colors: {
         // Dark theme base
         dark: {
-          bg: "#0C0C0E",
-          surface: "#141416",
-          card: "#1A1A1D",
-          border: "#2A2A2D",
-          hover: "#222225",
-          elevated: "#1E1E21",
+          bg: "#111113",
+          surface: "#18181B",
+          card: "#1F1F23",
+          border: "#2E2E33",
+          hover: "#27272B",
+          elevated: "#242428",
         },
         // Text
         text: {

@@ -41,20 +41,28 @@ export default async function LegislacaoPage({ searchParams }: PageProps) {
     ];
   }
 
-  const [items, total] = await Promise.all([
-    prisma.legislation.findMany({
-      where,
-      include: {
-        category: {
-          select: { name: true, slug: true, color: true },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let items: any[] = [];
+  let total = 0;
+
+  try {
+    [items, total] = await Promise.all([
+      prisma.legislation.findMany({
+        where,
+        include: {
+          category: {
+            select: { name: true, slug: true, color: true },
+          },
         },
-      },
-      orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }],
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.legislation.count({ where }),
-  ]);
+        orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.legislation.count({ where }),
+    ]);
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   const totalPages = Math.ceil(total / limit);
 

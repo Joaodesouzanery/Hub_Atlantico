@@ -47,19 +47,27 @@ export default async function NoticiasPage({ searchParams }: PageProps) {
     ];
   }
 
-  const [articles, total] = await Promise.all([
-    prisma.newsArticle.findMany({
-      where,
-      include: {
-        source: { select: { name: true, slug: true, logoUrl: true } },
-        category: { select: { name: true, slug: true, color: true } },
-      },
-      orderBy: { publishedAt: "desc" },
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.newsArticle.count({ where }),
-  ]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let articles: any[] = [];
+  let total = 0;
+
+  try {
+    [articles, total] = await Promise.all([
+      prisma.newsArticle.findMany({
+        where,
+        include: {
+          source: { select: { name: true, slug: true, logoUrl: true } },
+          category: { select: { name: true, slug: true, color: true } },
+        },
+        orderBy: { publishedAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.newsArticle.count({ where }),
+    ]);
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   const totalPages = Math.ceil(total / limit);
 

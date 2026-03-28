@@ -17,23 +17,44 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function RelatoriosPage() {
-  const [
-    totalLicitacoes,
-    totalNoticias,
-    valorAggregate,
-    byUF,
-    byMonth,
-    byModalidade,
-  ] = await Promise.all([
-    prisma.licitacao.count(),
-    prisma.newsArticle.count({ where: { status: "PUBLISHED" } }),
-    prisma.licitacao.aggregate({ _avg: { estimatedValue: true } }),
-    getLicitacoesByUF(),
-    getLicitacoesByMonth(),
-    getLicitacoesByModalidade(),
-  ]);
+  let totalLicitacoes = 0;
+  let totalNoticias = 0;
+  let valorMedio = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let byUF: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let byMonth: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let byModalidade: any[] = [];
 
-  const valorMedio = valorAggregate._avg.estimatedValue || 0;
+  try {
+    const [
+      totalLicitacoesResult,
+      totalNoticiasResult,
+      valorAggregate,
+      byUFResult,
+      byMonthResult,
+      byModalidadeResult,
+    ] = await Promise.all([
+      prisma.licitacao.count(),
+      prisma.newsArticle.count({ where: { status: "PUBLISHED" } }),
+      prisma.licitacao.aggregate({ _avg: { estimatedValue: true } }),
+      getLicitacoesByUF(),
+      getLicitacoesByMonth(),
+      getLicitacoesByModalidade(),
+    ]);
+
+    totalLicitacoes = totalLicitacoesResult;
+    totalNoticias = totalNoticiasResult;
+    valorMedio = valorAggregate._avg.estimatedValue
+      ? Number(valorAggregate._avg.estimatedValue)
+      : 0;
+    byUF = byUFResult;
+    byMonth = byMonthResult;
+    byModalidade = byModalidadeResult;
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   const stats = [
     {

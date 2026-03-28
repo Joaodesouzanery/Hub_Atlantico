@@ -38,29 +38,37 @@ export async function GET(request: NextRequest) {
     ];
   }
 
-  const [licitacoes, total] = await Promise.all([
-    prisma.licitacao.findMany({
-      where,
-      include: {
-        source: { select: { name: true, slug: true } },
-        category: { select: { name: true, slug: true, color: true } },
-      },
-      orderBy: { publishedAt: "desc" },
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.licitacao.count({ where }),
-  ]);
+  try {
+    const [licitacoes, total] = await Promise.all([
+      prisma.licitacao.findMany({
+        where,
+        include: {
+          source: { select: { name: true, slug: true } },
+          category: { select: { name: true, slug: true, color: true } },
+        },
+        orderBy: { publishedAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.licitacao.count({ where }),
+    ]);
 
-  return NextResponse.json({
-    licitacoes,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  });
+    return NextResponse.json({
+      licitacoes,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch licitacoes" },
+      { status: 500 }
+    );
+  }
 }
 
 export const dynamic = "force-dynamic";

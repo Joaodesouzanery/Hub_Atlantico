@@ -48,13 +48,20 @@ interface PageProps {
 export default async function AgenciasPage({ searchParams }: PageProps) {
   const { region } = await searchParams;
 
-  const agencies = await prisma.regulatoryAgency.findMany({
-    where: {
-      isActive: true,
-      ...(region ? { region } : {}),
-    },
-    orderBy: [{ region: "asc" }, { name: "asc" }],
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let agencies: any[] = [];
+
+  try {
+    agencies = await prisma.regulatoryAgency.findMany({
+      where: {
+        isActive: true,
+        ...(region ? { region } : {}),
+      },
+      orderBy: [{ region: "asc" }, { name: "asc" }],
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   // Group agencies by region
   const grouped = new Map<string, typeof agencies>();

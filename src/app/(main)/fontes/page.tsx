@@ -16,13 +16,20 @@ const methodIcons: Record<string, typeof Rss> = {
 };
 
 export default async function FontesPage() {
-  const sources = await prisma.newsSource.findMany({
-    where: { isActive: true },
-    include: {
-      _count: { select: { articles: true } },
-    },
-    orderBy: { name: "asc" },
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let sources: any[] = [];
+
+  try {
+    sources = await prisma.newsSource.findMany({
+      where: { isActive: true },
+      include: {
+        _count: { select: { articles: true } },
+      },
+      orderBy: { name: "asc" },
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+  }
 
   return (
     <div className="p-4 lg:p-8">

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/db";
@@ -60,8 +59,7 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
   let total = 0;
   let abertas = 0;
   let encerradas = 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let valorTotal: any = 0;
+  let valorTotal = 0;
 
   try {
     const [licitacoesResult, totalResult, abertasResult, encerradasResult, valorAggregate] =
@@ -103,7 +101,7 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
     total = totalResult;
     abertas = abertasResult;
     encerradas = encerradasResult;
-    valorTotal = valorAggregate._sum.estimatedValue || 0;
+    valorTotal = Number(valorAggregate._sum.estimatedValue ?? 0);
   } catch (error) {
     console.error("Database error:", error);
   }
@@ -142,12 +140,8 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
 
       {/* Filters */}
       <div className="mb-6 space-y-3">
-        <Suspense>
-          <LicitacaoSearchBar />
-        </Suspense>
-        <Suspense>
-          <LicitacaoFilters />
-        </Suspense>
+        <LicitacaoSearchBar />
+        <LicitacaoFilters />
       </div>
 
       {/* Grid */}

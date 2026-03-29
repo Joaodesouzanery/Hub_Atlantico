@@ -1,6 +1,10 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/db";
+import { LicitacaoSearchBar } from "@/components/licitacoes/licitacao-search-bar";
+import { LicitacaoFilters } from "@/components/licitacoes/licitacao-filters";
+import { SavedFilters } from "@/components/filters/saved-filters";
 
 interface PageProps {
   searchParams: Promise<{
@@ -105,7 +109,8 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
         }),
       ]);
 
-    licitacoes = licitacoesResult;
+    // Serialize Prisma objects (Decimal, Date) to plain JSON-safe values
+    licitacoes = JSON.parse(JSON.stringify(licitacoesResult));
     total = totalResult;
     abertas = abertasResult;
     encerradas = encerradasResult;
@@ -143,6 +148,23 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
         <p className="mt-1 text-sm text-text-muted">
           Licitações públicas de saneamento, engenharia e infraestrutura
         </p>
+      </div>
+
+      {/* Filters */}
+      <div className="mb-6 space-y-3">
+        <Suspense fallback={null}>
+          <LicitacaoSearchBar />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LicitacaoFilters />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SavedFilters
+            moduleKey="licitacoes"
+            basePath="/licitacoes"
+            filterKeys={["status", "uf", "modalidade", "search"]}
+          />
+        </Suspense>
       </div>
 
       {/* Stats */}

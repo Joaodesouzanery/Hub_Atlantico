@@ -68,8 +68,8 @@ export async function fetchFromPNCP(
   const pageSize = Math.max(config.defaultPageSize || DEFAULT_PAGE_SIZE, 10);
   const keywords = config.keywords || DEFAULT_SANITATION_KEYWORDS;
 
-  // Use 365-day window on initial fetch (full year 2025-2026), 7-day rolling otherwise
-  const dayWindow = isInitialFetch ? 365 : 60;
+  // PNCP API rejects windows > ~90 days. Use 90 for initial, 60 for rolling.
+  const dayWindow = isInitialFetch ? 90 : 60;
   const { dataInicial, dataFinal } = getDateRange(dayWindow);
 
   const allResults: RawLicitacao[] = [];

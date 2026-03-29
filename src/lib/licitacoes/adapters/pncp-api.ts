@@ -1,9 +1,9 @@
 import type { RawLicitacao, LicitacaoFetchConfig } from "../types";
 
 const PNCP_BASE_URL = "https://pncp.gov.br/api/consulta";
-const FETCH_TIMEOUT = 30_000; // 30 seconds
+const FETCH_TIMEOUT = 15_000; // 15 seconds
 const DEFAULT_PAGE_SIZE = 100;
-const MAX_PAGES_PER_MODALIDADE = 10;
+const MAX_PAGES_PER_MODALIDADE = 3;
 
 /** Modalidade codes to search across */
 const MODALIDADE_CODES = [8, 6, 1, 2, 4, 5, 7];

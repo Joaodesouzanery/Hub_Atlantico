@@ -24,17 +24,15 @@ export const newsSources = [
   { name: "AESBE", slug: "aesbe", url: "https://aesbe.org.br", feedUrl: "https://aesbe.org.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
   { name: "SINDAE", slug: "sindae", url: "https://sindae.org.br", feedUrl: "https://sindae.org.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
 
-  // ── RSS novas fontes ────────────────────────────────────────────────────
+  // ── RSS novas fontes (testadas com curl 2026-03-29) ──────────────────────
   { name: "G1 — Natureza", slug: "g1-natureza", url: "https://g1.globo.com/natureza", feedUrl: "https://g1.globo.com/rss/g1/natureza/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
-  { name: "CNI — Infraestrutura", slug: "cni-infra", url: "https://noticias.portaldaindustria.com.br", feedUrl: "https://noticias.portaldaindustria.com.br/rss/noticias/infraestrutura/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
   { name: "CEBDS", slug: "cebds", url: "https://cebds.org", feedUrl: "https://cebds.org/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
   { name: "O Eco", slug: "oeco", url: "https://oeco.org.br", feedUrl: "https://oeco.org.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
   { name: "ABHA — Águas do Brasil", slug: "abha", url: "https://www.aguasdobrasil.org", feedUrl: "https://www.aguasdobrasil.org/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
   { name: "Portal Tratamento de Água", slug: "portal-tratamento-agua", url: "https://tratamentodeagua.com.br", feedUrl: "https://tratamentodeagua.com.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
   { name: "Agência Brasil — Geral", slug: "agencia-brasil-geral", url: "https://agenciabrasil.ebc.com.br", feedUrl: "https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml", fetchMethod: "RSS", isActive: true, fetchConfig: null },
-  { name: "Revista DAE", slug: "revista-dae", url: "https://revistadae.com.br", feedUrl: "https://revistadae.com.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
-  { name: "Infraestrutura e Meio Ambiente SP", slug: "infraestrutura-sp", url: "https://www.infraestruturameioambiente.sp.gov.br", feedUrl: "https://www.infraestruturameioambiente.sp.gov.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
-  { name: "CNM — Confederação Nacional de Municípios", slug: "cnm", url: "https://www.cnm.org.br", feedUrl: "https://www.cnm.org.br/index.php?option=com_content&view=category&layout=blog&id=139&Itemid=101&format=feed&type=rss", fetchMethod: "RSS", isActive: true, fetchConfig: null },
+  { name: "IBAMA", slug: "ibama", url: "https://www.gov.br/ibama", feedUrl: "https://www.gov.br/ibama/pt-br/assuntos/noticias/RSS", fetchMethod: "RSS", isActive: true, fetchConfig: null },
+  { name: "Poder360", slug: "poder360", url: "https://www.poder360.com.br", feedUrl: "https://www.poder360.com.br/feed/", fetchMethod: "RSS", isActive: true, fetchConfig: null },
 
   // ── RSS inativo (feed inválido ou site fora do ar) ───────────────────────
   { name: "Saneamento Básico", slug: "saneamento-basico", url: "https://saneamentobasico.com.br", feedUrl: "https://saneamentobasico.com.br/feed/", fetchMethod: "RSS", isActive: false, fetchConfig: null },

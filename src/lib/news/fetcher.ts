@@ -22,54 +22,69 @@ export async function fetchAllNews(): Promise<FetchSummary> {
 
   console.log(`Fetching news from ${sources.length} active sources...`);
 
-  // Run all adapters in parallel
-  const promises = sources.map(async (source): Promise<FetchResult> => {
-    const start = Date.now();
-    const adapter = createAdapter(source);
+  // Process sources in batches of 6 with 10s timeout per source to fit in 60s
+  const BATCH_SIZE = 6;
+  const SOURCE_TIMEOUT = 10_000;
+  const fetchResults: FetchResult[] = [];
 
-    try {
-      const articles = await adapter.fetch();
-      const duration = Date.now() - start;
+  for (let i = 0; i < sources.length; i += BATCH_SIZE) {
+    const batch = sources.slice(i, i + BATCH_SIZE);
 
-      console.log(
-        `[${source.name}] Fetched ${articles.length} articles in ${duration}ms`
-      );
+    const batchPromises = batch.map(async (source): Promise<FetchResult> => {
+      const start = Date.now();
+      const adapter = createAdapter(source);
 
-      return {
-        sourceSlug: source.slug,
-        sourceName: source.name,
-        articles,
-        duration,
-      };
-    } catch (error) {
-      const duration = Date.now() - start;
-      const errorMsg =
-        error instanceof Error ? error.message : String(error);
+      try {
+        const articles = await Promise.race([
+          adapter.fetch(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Source timeout (10s)")), SOURCE_TIMEOUT)
+          ),
+        ]);
+        const duration = Date.now() - start;
 
-      console.error(`[${source.name}] Error: ${errorMsg}`);
+        console.log(
+          `[${source.name}] Fetched ${articles.length} articles in ${duration}ms`
+        );
 
-      return {
-        sourceSlug: source.slug,
-        sourceName: source.name,
-        articles: [],
-        error: errorMsg,
-        duration,
-      };
-    }
-  });
+        return {
+          sourceSlug: source.slug,
+          sourceName: source.name,
+          articles,
+          duration,
+        };
+      } catch (error) {
+        const duration = Date.now() - start;
+        const errorMsg =
+          error instanceof Error ? error.message : String(error);
 
-  const results = await Promise.allSettled(promises);
-  const fetchResults: FetchResult[] = results.map((r) =>
-    r.status === "fulfilled"
-      ? r.value
-      : {
-          sourceSlug: "unknown",
-          sourceName: "unknown",
+        console.error(`[${source.name}] Error: ${errorMsg}`);
+
+        return {
+          sourceSlug: source.slug,
+          sourceName: source.name,
           articles: [],
-          error: r.reason?.message || "Unknown error",
-          duration: 0,
-        }
-  );
+          error: errorMsg,
+          duration,
+        };
+      }
+    });
+
+    const results = await Promise.allSettled(batchPromises);
+    for (const r of results) {
+      fetchResults.push(
+        r.status === "fulfilled"
+          ? r.value
+          : {
+              sourceSlug: "unknown",
+              sourceName: "unknown",
+              articles: [],
+              error: r.reason?.message || "Unknown error",
+              duration: 0,
+            }
+      );
+    }
+  }
 
   // Collect all articles and deduplicate
   const allArticles = fetchResults.flatMap((r) => r.articles);

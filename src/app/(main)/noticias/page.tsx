@@ -6,6 +6,7 @@ import { NewsGrid } from "@/components/news/news-grid";
 import { CategoryFilter } from "@/components/news/category-filter";
 import { SearchBar } from "@/components/news/search-bar";
 import { SavedFilters } from "@/components/filters/saved-filters";
+import { PremiumPageGate } from "@/components/paywall/premium-page-gate";
 
 interface PageProps {
   searchParams: Promise<{
@@ -82,6 +83,9 @@ export default async function NoticiasPage({ searchParams }: PageProps) {
         </p>
       </div>
 
+      {/* Premium gate — FREE users see blurred preview */}
+      <PremiumPageGate feature="notícias completas do setor">
+
       {/* Filters */}
       <div className="mb-6 space-y-3">
         <Suspense fallback={null}>
@@ -130,6 +134,7 @@ export default async function NoticiasPage({ searchParams }: PageProps) {
           )}
         </div>
       )}
+      </PremiumPageGate>
     </div>
   );
 }

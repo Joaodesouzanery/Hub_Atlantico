@@ -15,7 +15,7 @@ export async function scrapeHtml(
 ): Promise<RawArticle[]> {
   const response = await fetch(url, {
     headers: DEFAULT_HEADERS,
-    signal: AbortSignal.timeout(20000),
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!response.ok) {

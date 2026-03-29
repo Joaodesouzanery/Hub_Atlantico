@@ -26,7 +26,7 @@ export function createLicitacaoAdapter(
     async fetch(): Promise<RawLicitacao[]> {
       switch (source.fetchMethod) {
         case "PNCP_API":
-          return fetchFromPNCP(config, source.name);
+          return fetchFromPNCP(config, source.name, !source.lastFetchAt);
 
         case "COMPRAS_GOV_API":
           return fetchFromComprasGov(config, source.name);

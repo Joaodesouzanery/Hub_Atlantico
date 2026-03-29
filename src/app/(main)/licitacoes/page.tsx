@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { LicitacaoSearchBar } from "@/components/licitacoes/licitacao-search-bar";
 import { LicitacaoFilters } from "@/components/licitacoes/licitacao-filters";
 import { SavedFilters } from "@/components/filters/saved-filters";
+import { PremiumPageGate } from "@/components/paywall/premium-page-gate";
 
 interface PageProps {
   searchParams: Promise<{
@@ -150,6 +151,9 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
         </p>
       </div>
 
+      {/* Premium gate */}
+      <PremiumPageGate feature="licitações completas de saneamento">
+
       {/* Filters */}
       <div className="mb-6 space-y-3">
         <Suspense fallback={null}>
@@ -278,6 +282,7 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
           )}
         </div>
       )}
+      </PremiumPageGate>
     </div>
   );
 }

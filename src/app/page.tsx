@@ -20,24 +20,7 @@ import {
   MapPin,
   Bell,
 } from "lucide-react";
-import { prisma } from "@/lib/db";
-
-export const dynamic = "force-dynamic";
-
-async function getStats() {
-  try {
-    const [noticias, licitacoes, legislacoes, fontes, agencias] = await Promise.all([
-      prisma.newsArticle.count({ where: { status: "PUBLISHED" } }),
-      prisma.licitacao.count(),
-      prisma.legislation.count({ where: { isActive: true } }),
-      prisma.newsSource.count({ where: { isActive: true } }),
-      prisma.regulatoryAgency.count({ where: { isActive: true } }),
-    ]);
-    return { noticias, licitacoes, legislacoes, fontes, agencias };
-  } catch {
-    return { noticias: 100, licitacoes: 100, legislacoes: 49, fontes: 30, agencias: 20 };
-  }
-}
+// Stats removidos da landing page — sem números exatos para não dar impressão de "poucos" dados
 
 const modules = [
   {
@@ -102,8 +85,6 @@ const features = [
 ];
 
 export default async function LandingPage() {
-  const stats = await getStats();
-
   return (
     <div className="min-h-screen bg-white text-slate-900">
 
@@ -194,23 +175,21 @@ export default async function LandingPage() {
 
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-slate-400">
             O HuB — Atlantico centraliza noticias, licitacoes, legislacao e agencias
-            reguladoras do saneamento brasileiro. {stats.fontes}+ fontes monitoradas,
-            atualizacao diaria, filtros avancados e exportacao de dados.
+            reguladoras do saneamento brasileiro. Dezenas de fontes monitoradas diariamente,
+            filtros avancados e exportacao de dados.
           </p>
 
-          {/* Live stats */}
-          <div className="mx-auto mt-10 flex max-w-xl flex-wrap items-center justify-center gap-8">
+          {/* Qualitative highlights — sem números exatos */}
+          <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-6">
             {[
-              { label: "Noticias", value: stats.noticias },
-              { label: "Licitacoes", value: stats.licitacoes },
-              { label: "Legislacoes", value: stats.legislacoes },
-              { label: "Fontes", value: stats.fontes },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-2xl font-bold text-white lg:text-3xl">
-                  {stat.value.toLocaleString("pt-BR")}
-                </p>
-                <p className="mt-0.5 text-xs text-slate-500 uppercase tracking-wider">{stat.label}</p>
+              { icon: Newspaper, label: "Notícias atualizadas diariamente" },
+              { icon: Gavel, label: "Licitações de todo o Brasil" },
+              { icon: Scale, label: "Legislação completa do setor" },
+              { icon: Globe, label: "Dezenas de fontes monitoradas" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
+                <item.icon className="h-4 w-4 text-[#F97316]" />
+                <span className="text-sm text-slate-300">{item.label}</span>
               </div>
             ))}
           </div>
@@ -232,7 +211,7 @@ export default async function LandingPage() {
           </div>
 
           <p className="mt-8 text-xs text-slate-600">
-            Gratuito · Sem cartao de credito · Cobertura nacional · LGPD compliant
+            Comece gratuito ou assine o Pro por R$ 14,99/mes · Cobertura nacional · LGPD compliant
           </p>
         </div>
       </section>
@@ -261,7 +240,7 @@ export default async function LandingPage() {
                 <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Hub de Noticias</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900">
-                {stats.fontes}+ fontes especializadas, indexadas diariamente
+                Dezenas de fontes especializadas, indexadas diariamente
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
                 Companhias de saneamento (Sabesp, Aegea, BRK, Sanepar), agencias reguladoras (ANA, IBAMA),
@@ -294,7 +273,7 @@ export default async function LandingPage() {
                 <span className="text-xs font-bold uppercase tracking-widest text-green-600">Radar de Licitacoes</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900">
-                {stats.licitacoes.toLocaleString("pt-BR")}+ licitacoes do PNCP monitoradas
+                Milhares de licitacoes do PNCP monitoradas
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
                 Licitacoes publicas de saneamento com dados completos: orgao, CNPJ, valor,
@@ -466,8 +445,8 @@ export default async function LandingPage() {
             <span className="text-[#F97316]">Gratuito. Agora.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-400">
-            {stats.noticias.toLocaleString("pt-BR")} noticias, {stats.licitacoes.toLocaleString("pt-BR")} licitacoes,
-            {" "}{stats.legislacoes} legislacoes e {stats.agencias} agencias reguladoras em um unico lugar.
+            Noticias, licitacoes, legislacao e agencias reguladoras do saneamento brasileiro
+            em um unico lugar — atualizado diariamente com cobertura nacional.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -484,6 +463,58 @@ export default async function LandingPage() {
             >
               Ja tenho conta
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PATROCINADORES ──────────────────────────────────────── */}
+      <section className="border-t border-slate-100 bg-slate-50 py-12">
+        <div className="mx-auto max-w-7xl px-6 lg:px-10">
+          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+            Patrocinadores
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-12">
+            {/* ConstruData */}
+            <a
+              href="https://www.instagram.com/construdata_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-3 transition-opacity hover:opacity-80"
+            >
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#0F172A] shadow-lg">
+                <svg width={40} height={40} viewBox="0 0 40 40" fill="none">
+                  <rect x="4" y="18" width="8" height="18" rx="2" fill="#3B82F6" opacity="0.7" />
+                  <rect x="15" y="8" width="8" height="28" rx="2" fill="#3B82F6" opacity="0.85" />
+                  <rect x="26" y="12" width="8" height="24" rx="2" fill="#3B82F6" />
+                  <path d="M8 15 L19 6 L30 10" stroke="#60A5FA" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+                  <circle cx="30" cy="10" r="3" fill="#60A5FA" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-bold text-slate-800">ConstruData</p>
+                <p className="text-xs text-slate-500">Intelig&ecirc;ncia Operacional</p>
+              </div>
+            </a>
+
+            {/* Engelfer */}
+            <a
+              href="https://www.instagram.com/engelfer_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-3 transition-opacity hover:opacity-80"
+            >
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1B3A2B] shadow-lg">
+                <svg width={40} height={40} viewBox="0 0 40 40" fill="none">
+                  <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" stroke="white" strokeWidth="1.5" fill="none" />
+                  <polygon points="20,10 30,16 30,24 20,30 10,24 10,16" stroke="white" strokeWidth="1" fill="none" opacity="0.6" />
+                  <rect x="15" y="15" width="10" height="10" stroke="white" strokeWidth="1" fill="none" transform="rotate(45 20 20)" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-bold text-slate-800">Engelfer Engenharia</p>
+                <p className="text-xs text-slate-500">Saneamento e Infraestrutura</p>
+              </div>
+            </a>
           </div>
         </div>
       </section>

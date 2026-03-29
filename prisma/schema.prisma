@@ -26,11 +26,32 @@ model User {
   updatedAt      DateTime @updatedAt @map("updated_at")
   cookieConsent  Boolean  @default(false) @map("cookie_consent")
 
+  // Stripe subscription fields
+  stripeCustomerId     String?  @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?  @unique @map("stripe_subscription_id")
+  stripePriceId        String?  @map("stripe_price_id")
+  subscriptionStatus   String?  @map("subscription_status") // active, canceled, past_due, trialing
+  subscriptionEndsAt   DateTime? @map("subscription_ends_at")
+
   savedArticles   SavedArticle[]
   savedLicitacoes SavedLicitacao[]
   licitacaoAlerts LicitacaoAlert[]
+  feedbacks       Feedback[]
 
   @@map("users")
+}
+
+model Feedback {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  rating     Int      // 1-5
+  comment    String
+  suggestion String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("feedbacks")
 }
 
 // ==================== NEWS ====================

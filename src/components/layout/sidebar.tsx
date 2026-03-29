@@ -18,7 +18,7 @@ import {
   Droplets,
   LogOut,
 } from "lucide-react";
-import { AdEngelferSidebar } from "@/components/ads/ad-engelfer-sidebar";
+import { AdSponsorSidebar } from "@/components/ads/ad-sponsor-sidebar";
 import { createClient } from "@/lib/supabase/client";
 
 const iconMap: Record<string, typeof LayoutDashboard> = {
@@ -72,6 +72,7 @@ export function Sidebar() {
   const router = useRouter();
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string>("FREE");
 
   useEffect(() => {
     const supabase = createClient();
@@ -81,12 +82,30 @@ export function Sidebar() {
         setUserEmail(user.email ?? null);
       }
     });
+    // Fetch role from DB
+    fetch("/api/auth/me").then((r) => r.json()).then((data) => {
+      if (data.role) setUserRole(data.role);
+    }).catch(() => {});
   }, []);
 
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/login");
+  }
+
+  function handleUpgrade() {
+    window.open("https://buy.stripe.com/5kQ00i93i1thcZY7p7cV204", "_blank");
+  }
+
+  async function handleManageSubscription() {
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch {
+      alert("Erro ao abrir portal. Tente novamente.");
+    }
   }
 
   return (
@@ -178,17 +197,39 @@ export function Sidebar() {
 
       {/* Bottom section */}
       <div className="border-t p-4 space-y-3" style={{ borderColor: "#334155" }}>
-        {/* Upgrade para Pro */}
+        {/* Upgrade para Pro / Gerenciar Assinatura */}
         <div className="rounded-xl p-4" style={{ background: "#253449" }}>
-          <p className="text-sm font-semibold text-white">
-            Upgrade para Pro
-          </p>
-          <p className="mt-1 text-xs" style={{ color: "#7C8CA3" }}>
-            Acesso ilimitado a todas as funcionalidades.
-          </p>
-          <button className="mt-3 w-full rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-500">
-            Assinar Agora
-          </button>
+          {userRole === "PREMIUM" || userRole === "ADMIN" ? (
+            <>
+              <p className="text-sm font-semibold text-accent">
+                Plano Premium ativo
+              </p>
+              <p className="mt-1 text-xs" style={{ color: "#7C8CA3" }}>
+                Acesso completo a todas as funcionalidades.
+              </p>
+              <button
+                onClick={handleManageSubscription}
+                className="mt-3 w-full rounded-lg border border-accent/30 px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"
+              >
+                Gerenciar Assinatura
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-white">
+                Upgrade para Pro
+              </p>
+              <p className="mt-1 text-xs" style={{ color: "#7C8CA3" }}>
+                Acesso ilimitado a todas as funcionalidades.
+              </p>
+              <button
+                onClick={handleUpgrade}
+                className="mt-3 w-full rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-500"
+              >
+                Assinar — R$ 14,99/mês
+              </button>
+            </>
+          )}
         </div>
 
         {/* User info + logout */}
@@ -219,8 +260,8 @@ export function Sidebar() {
           </button>
         </div>
 
-        {/* Anúncio Engelfer — após o usuário para não bloquear navegação */}
-        <AdEngelferSidebar />
+        {/* Anúncio patrocinado (alterna Engelfer ↔ ConstruData) */}
+        <AdSponsorSidebar isPremium={userRole === "PREMIUM" || userRole === "ADMIN"} />
       </div>
     </aside>
   );

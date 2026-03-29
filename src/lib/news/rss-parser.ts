@@ -2,7 +2,7 @@ import Parser from "rss-parser";
 import type { RawArticle } from "./sources/types";
 
 const parser = new Parser({
-  timeout: 15000,
+  timeout: 8000,
   headers: {
     "User-Agent":
       "Mozilla/5.0 (compatible; HubAtlantico/1.0; +https://hubatlantico.com.br)",

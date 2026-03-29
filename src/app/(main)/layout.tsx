@@ -2,6 +2,8 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { AdEngelferMobileFooter } from "@/components/ads/ad-engelfer-mobile-footer";
+import { FeedbackWidget } from "@/components/feedback/feedback-widget";
+import { PlanProvider } from "@/components/paywall/premium-gate";
 
 export default function MainLayout({
   children,
@@ -9,6 +11,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
+    <PlanProvider>
     <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
       <Sidebar />
@@ -23,6 +26,10 @@ export default function MainLayout({
 
       {/* Barra fixa de anúncio no rodapé — somente mobile */}
       <AdEngelferMobileFooter />
+
+      {/* Feedback widget + LinkedIn support — lateral direita */}
+      <FeedbackWidget />
     </div>
+    </PlanProvider>
   );
 }

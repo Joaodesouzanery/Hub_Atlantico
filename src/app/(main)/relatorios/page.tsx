@@ -10,6 +10,7 @@ import { ExportButton } from "@/components/export/export-button";
 import { ChartsSection } from "@/components/export/charts-section";
 import { ReportFilters } from "@/components/filters/report-filters";
 import { Briefcase, Newspaper, DollarSign } from "lucide-react";
+import { PremiumPageGate } from "@/components/paywall/premium-page-gate";
 
 export const metadata: Metadata = {
   title: "Relatórios",
@@ -92,6 +93,9 @@ export default async function RelatoriosPage() {
         </p>
       </div>
 
+      {/* Premium gate */}
+      <PremiumPageGate feature="relatórios e exportação de dados">
+
       {/* Filters */}
       <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-5">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-text-muted">
@@ -160,6 +164,7 @@ export default async function RelatoriosPage() {
           </div>
         </div>
       </div>
+      </PremiumPageGate>
     </div>
   );
 }

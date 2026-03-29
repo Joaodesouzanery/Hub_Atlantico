@@ -18,16 +18,16 @@ const config: Config = {
           hover: "#F8FAFC",     // slate-50   — hover state
           elevated: "#FFFFFF",  // white elevated
         },
-        // ─── Sidebar/Header (always dark) ────────────────────────────
+        // ─── Sidebar/Header (dark blue-gray) ─────────────────────────
         sidebar: {
-          bg: "#18181B",
-          surface: "#141417",
-          card: "#1F1F23",
-          border: "#2E2E33",
-          hover: "#27272B",
-          text: "#F5F5F5",
-          muted: "#6B6B73",
-          secondary: "#A0A0A8",
+          bg: "#1E293B",
+          surface: "#1A2332",
+          card: "#253449",
+          border: "#334155",
+          hover: "#2D3D53",
+          text: "#F1F5F9",
+          muted: "#7C8CA3",
+          secondary: "#94A3B8",
         },
         // ─── Text (on light background) ──────────────────────────────
         text: {

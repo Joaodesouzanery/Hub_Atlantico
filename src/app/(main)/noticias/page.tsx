@@ -77,16 +77,16 @@ export default async function NoticiasPage({ searchParams }: PageProps) {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-text-primary">Notícias</h1>
         <p className="mt-1 text-sm text-text-muted">
-          {total} notícias encontradas
+          Últimas notícias do setor de saneamento
         </p>
       </div>
 
       {/* Filters */}
       <div className="mb-6 space-y-3">
-        <Suspense>
+        <Suspense fallback={null}>
           <SearchBar />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={null}>
           <CategoryFilter />
         </Suspense>
       </div>

@@ -92,12 +92,12 @@ export function Sidebar() {
   return (
     <aside
       className="fixed left-0 top-0 z-40 hidden h-screen w-[260px] flex-col border-r lg:flex"
-      style={{ background: "#18181B", borderColor: "#2E2E33" }}
+      style={{ background: "#1E293B", borderColor: "#334155" }}
     >
       {/* Logo */}
       <div
         className="flex h-16 items-center gap-3 border-b px-6"
-        style={{ borderColor: "#2E2E33" }}
+        style={{ borderColor: "#334155" }}
       >
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
           <Droplets className="h-5 w-5 text-white" />
@@ -111,10 +111,10 @@ export function Sidebar() {
       <div className="px-4 pt-5 pb-2">
         <div
           className="flex items-center gap-2 rounded-lg border px-3 py-2"
-          style={{ background: "#1F1F23", borderColor: "#2E2E33" }}
+          style={{ background: "#253449", borderColor: "#334155" }}
         >
-          <Search className="h-4 w-4" style={{ color: "#6B6B73" }} />
-          <span className="text-sm" style={{ color: "#6B6B73" }}>Buscar</span>
+          <Search className="h-4 w-4" style={{ color: "#7C8CA3" }} />
+          <span className="text-sm" style={{ color: "#7C8CA3" }}>Buscar</span>
           <div
             className="ml-auto flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px]"
             style={{ borderColor: "#2E2E33", color: "#6B6B73" }}
@@ -131,7 +131,7 @@ export function Sidebar() {
           <div key={section.label} className="mb-4">
             <p
               className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider"
-              style={{ color: "#6B6B73" }}
+              style={{ color: "#7C8CA3" }}
             >
               {section.label}
             </p>
@@ -150,18 +150,18 @@ export function Sidebar() {
                       style={
                         isActive
                           ? { background: "rgba(249,115,22,0.12)", color: "#F97316" }
-                          : { color: "#A0A0A8" }
+                          : { color: "#94A3B8" }
                       }
                       onMouseEnter={(e) => {
                         if (!isActive) {
-                          (e.currentTarget as HTMLElement).style.background = "#27272B";
-                          (e.currentTarget as HTMLElement).style.color = "#F5F5F5";
+                          (e.currentTarget as HTMLElement).style.background = "#2D3D53";
+                          (e.currentTarget as HTMLElement).style.color = "#F1F5F9";
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isActive) {
                           (e.currentTarget as HTMLElement).style.background = "transparent";
-                          (e.currentTarget as HTMLElement).style.color = "#A0A0A8";
+                          (e.currentTarget as HTMLElement).style.color = "#94A3B8";
                         }
                       }}
                     >
@@ -177,13 +177,13 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t p-4 space-y-3" style={{ borderColor: "#2E2E33" }}>
+      <div className="border-t p-4 space-y-3" style={{ borderColor: "#334155" }}>
         {/* Upgrade para Pro */}
-        <div className="rounded-xl p-4" style={{ background: "#1F1F23" }}>
+        <div className="rounded-xl p-4" style={{ background: "#253449" }}>
           <p className="text-sm font-semibold text-white">
             Upgrade para Pro
           </p>
-          <p className="mt-1 text-xs" style={{ color: "#6B6B73" }}>
+          <p className="mt-1 text-xs" style={{ color: "#7C8CA3" }}>
             Acesso ilimitado a todas as funcionalidades.
           </p>
           <button className="mt-3 w-full rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-500">
@@ -194,7 +194,7 @@ export function Sidebar() {
         {/* User info + logout */}
         <div
           className="flex items-center gap-3 rounded-xl p-3"
-          style={{ background: "#1F1F23" }}
+          style={{ background: "#253449" }}
         >
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
             {userName ? userName.charAt(0).toUpperCase() : "?"}
@@ -203,14 +203,14 @@ export function Sidebar() {
             <p className="truncate text-sm font-medium text-white">
               {userName ?? "Usuário"}
             </p>
-            <p className="truncate text-xs" style={{ color: "#6B6B73" }}>
+            <p className="truncate text-xs" style={{ color: "#7C8CA3" }}>
               {userEmail ?? ""}
             </p>
           </div>
           <button
             onClick={handleLogout}
             className="rounded-lg p-1.5 transition-colors"
-            style={{ color: "#6B6B73" }}
+            style={{ color: "#7C8CA3" }}
             title="Sair"
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#F97316"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#6B6B73"; }}

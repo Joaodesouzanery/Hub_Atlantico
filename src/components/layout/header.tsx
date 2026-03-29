@@ -132,11 +132,11 @@ export function Header() {
           />
           <div
             className="fixed left-0 top-0 z-50 h-full w-[280px] border-r lg:hidden"
-            style={{ background: "#18181B", borderColor: "#2E2E33" }}
+            style={{ background: "#1E293B", borderColor: "#334155" }}
           >
             <div
               className="flex h-16 items-center gap-3 border-b px-6"
-              style={{ borderColor: "#2E2E33" }}
+              style={{ borderColor: "#334155" }}
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
                 <Droplets className="h-5 w-5 text-white" />
@@ -144,7 +144,7 @@ export function Header() {
               <span className="text-lg font-bold text-white">HuB - Atlântico</span>
               <button
                 className="ml-auto rounded-lg p-1"
-                style={{ color: "#A0A0A8" }}
+                style={{ color: "#94A3B8" }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <X className="h-5 w-5" />
@@ -155,7 +155,7 @@ export function Header() {
                 <div key={section.label} className="mb-4">
                   <p
                     className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider"
-                    style={{ color: "#6B6B73" }}
+                    style={{ color: "#7C8CA3" }}
                   >
                     {section.label}
                   </p>

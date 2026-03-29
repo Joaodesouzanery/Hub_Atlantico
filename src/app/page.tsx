@@ -114,13 +114,13 @@ export default function LandingPage() {
       {/* ─── HERO (dark) ─────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-28 lg:py-40"
-        style={{ background: "#111116" }}
+        style={{ background: "#1E293B" }}
       >
         {/* dot grid */}
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, #2A2A35 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, #334155 1px, transparent 0)",
             backgroundSize: "36px 36px",
           }}
         />
@@ -134,7 +134,7 @@ export default function LandingPage() {
         {/* fade to dark at bottom */}
         <div
           className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
-          style={{ background: "linear-gradient(to bottom, transparent, #111116)" }}
+          style={{ background: "linear-gradient(to bottom, transparent, #1E293B)" }}
         />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-10">
@@ -395,12 +395,12 @@ export default function LandingPage() {
       {/* ─── CTA FINAL (dark) ────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-28 lg:py-36"
-        style={{ background: "#111116" }}
+        style={{ background: "#1E293B" }}
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-30"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, #2A2A35 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, #334155 1px, transparent 0)",
             backgroundSize: "36px 36px",
           }}
         />

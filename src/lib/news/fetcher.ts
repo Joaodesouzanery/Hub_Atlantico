@@ -86,12 +86,13 @@ export async function fetchAllNews(): Promise<FetchSummary> {
     }
   }
 
-  // Collect all articles and deduplicate
+  // Collect all articles, filter for relevance, then deduplicate
   const allArticles = fetchResults.flatMap((r) => r.articles);
-  const deduplicated = deduplicateArticles(allArticles);
+  const relevant = filterRelevantArticles(allArticles);
+  const deduplicated = deduplicateArticles(relevant);
 
   console.log(
-    `Total: ${allArticles.length} articles, ${deduplicated.length} after dedup`
+    `Total: ${allArticles.length} articles, ${relevant.length} relevant, ${deduplicated.length} after dedup`
   );
 
   // Store new articles in database
@@ -188,6 +189,38 @@ async function storeArticles(
 
   console.log(`Stored ${newCount} new articles`);
   return newCount;
+}
+
+// Keywords that an article must contain at least one of to be considered relevant
+const RELEVANCE_KEYWORDS = [
+  // Core
+  "saneamento", "água", "esgoto", "hídric", "hidric",
+  // Infrastructure
+  "abastecimento", "adutora", "reservatório", "elevatória", "drenagem",
+  "tratamento de água", "tratamento de esgoto", "eta ", "ete ",
+  "estação de tratamento", "rede coletora", "rede de distribuição",
+  // Companies
+  "sabesp", "copasa", "sanepar", "cagece", "embasa", "cedae", "corsan",
+  "casan", "caesb", "aegea", "brk ambiental", "iguá", "caern", "compesa",
+  // Regulatory
+  "ana ", "agência nacional de águas", "marco legal", "concessão",
+  "regulação", "tarifa", "universalização",
+  // Engineering
+  "engenharia sanitária", "engenharia civil", "infraestrutura",
+  "tubulação", "bomba", "hidrômetro", "licitação", "licitações",
+  // Environment
+  "recursos hídricos", "manancial", "captação", "efluente",
+  "resíduos sólidos", "coleta de lixo", "aterro",
+  // Unaccented
+  "agua", "esgotamento", "hidrometro", "saneamento basico",
+];
+
+/** Filter articles to keep only those relevant to sanitation/water/engineering */
+function filterRelevantArticles(articles: RawArticle[]): RawArticle[] {
+  return articles.filter((article) => {
+    const text = `${article.title} ${article.summary}`.toLowerCase();
+    return RELEVANCE_KEYWORDS.some((kw) => text.includes(kw));
+  });
 }
 
 async function logFetchResults(results: FetchResult[]): Promise<void> {

@@ -172,7 +172,7 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
       </div>
 
       {/* Stats */}
-      <div className="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <div className="rounded-xl border border-dark-border bg-dark-card p-5">
           <p className="text-sm text-text-muted">Total</p>
           <p className="mt-1 text-2xl font-bold text-text-primary">{total}</p>

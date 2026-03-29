@@ -91,7 +91,7 @@ export function NotificationsMenu() {
           {/* Overlay to close */}
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
 
-          <div className="absolute right-0 top-12 z-50 w-[380px] rounded-xl border border-dark-border bg-dark-card shadow-2xl">
+          <div className="absolute right-0 top-12 z-50 w-[calc(100vw-2rem)] max-w-[380px] rounded-xl border border-dark-border bg-dark-card shadow-2xl sm:w-[380px]">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-dark-border px-4 py-3">
               <h3 className="text-sm font-semibold text-text-primary">

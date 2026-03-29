@@ -72,8 +72,8 @@ export function FeedbackWidget() {
 
   return (
     <>
-      {/* Fixed side buttons */}
-      <div className="fixed right-0 top-1/2 z-40 flex -translate-y-1/2 flex-col gap-2">
+      {/* Fixed side buttons — higher on mobile to not overlap footer ad */}
+      <div className="fixed right-0 z-40 flex flex-col gap-2 bottom-[80px] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2">
         {/* Feedback button */}
         <button
           onClick={handleOpen}
@@ -120,8 +120,8 @@ export function FeedbackWidget() {
 
       {/* Feedback modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-dark-border bg-dark-card shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4">
+          <div className="w-full max-h-[90vh] overflow-y-auto rounded-t-2xl border border-dark-border bg-dark-card shadow-2xl sm:max-w-md sm:rounded-2xl">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-dark-border px-6 py-4">
               <h3 className="text-lg font-semibold text-text-primary">

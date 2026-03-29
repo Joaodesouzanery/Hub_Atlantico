@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { AdEngelferMobileFooter } from "@/components/ads/ad-engelfer-mobile-footer";
 import { FeedbackWidget } from "@/components/feedback/feedback-widget";
 import { PlanProvider } from "@/components/paywall/premium-gate";
+import { InlineSponsor } from "@/components/ads/ad-inline-sponsor";
 
 export default function MainLayout({
   children,
@@ -20,7 +21,13 @@ export default function MainLayout({
       <div className="flex min-h-screen flex-1 flex-col lg:ml-[260px]">
         <Header />
         {/* pb-[60px] no mobile para não esconder conteúdo atrás da barra fixa do anúncio */}
-        <main className="flex-1 bg-dark-bg pb-[60px] lg:pb-0">{children}</main>
+        <main className="flex-1 bg-dark-bg pb-[60px] lg:pb-0">
+          {children}
+          {/* Sponsor inline — aparece em todas as páginas */}
+          <div className="px-4 py-4 lg:px-8">
+            <InlineSponsor />
+          </div>
+        </main>
         <Footer />
       </div>
 

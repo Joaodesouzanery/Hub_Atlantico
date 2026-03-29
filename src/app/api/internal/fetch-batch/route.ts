@@ -37,7 +37,6 @@ export async function POST(request: NextRequest) {
       const config = {
         searchEndpoint: "/v1/contratacoes/publicacao",
         defaultPageSize: 100,
-        keywords: [],
         modalidades: batch,
       };
 

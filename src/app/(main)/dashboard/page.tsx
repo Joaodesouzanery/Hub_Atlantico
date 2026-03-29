@@ -9,6 +9,7 @@ import {
   DashboardChartsRow3,
 } from "@/components/dashboard/dashboard-charts";
 import { AdEngelferDashboard } from "@/components/ads/ad-engelfer-dashboard";
+import { AutoFetch } from "@/components/dashboard/auto-fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6 p-4 lg:p-8">
+      {/* Auto-fetch: triggers data population if DB is empty */}
+      <AutoFetch hasData={data.kpis.totalNoticias > 0 || data.kpis.totalLicitacoes > 0} />
+
       {/* Page header */}
       <div>
         <h2 className="text-2xl font-bold text-text-primary">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ExternalLink, X, ChevronDown, Ticket } from "lucide-react";
 
 interface Sponsor {
@@ -95,19 +96,20 @@ function ConstruDataBadge() {
 }
 
 export function AdSponsorSidebar({ isPremium = false }: { isPremium?: boolean }) {
+  const pathname = usePathname();
   const [index, setIndex] = useState(0);
   const [dismissed, setDismissed] = useState(false);
 
+  // Rotate sponsor on every page navigation
   useEffect(() => {
     const stored = parseInt(localStorage.getItem(ROTATION_KEY) || "0", 10);
+    setIndex(stored);
     const next = (stored + 1) % SPONSORS.length;
     localStorage.setItem(ROTATION_KEY, String(next));
-    setIndex(stored);
 
-    // Check if dismissed (expires after page reload)
     const wasDismissed = sessionStorage.getItem(DISMISSED_KEY) === "true";
     setDismissed(wasDismissed);
-  }, []);
+  }, [pathname]);
 
   const sponsor = SPONSORS[index] || SPONSORS[0];
 

@@ -10,8 +10,20 @@ const PUBLIC_PATHS = [
   "/redefinir-senha",
 ];
 
-// Prefixos públicos (API routes e assets)
-const PUBLIC_PREFIXES = ["/api/", "/_next/", "/favicon", "/images/", "/fonts/"];
+// Prefixos públicos (conteúdo, API routes e assets)
+const PUBLIC_PREFIXES = [
+  "/api/",
+  "/_next/",
+  "/favicon",
+  "/images/",
+  "/fonts/",
+  // Conteúdo da plataforma — acessível sem login
+  "/dashboard",
+  "/licitacoes",
+  "/noticias",
+  "/legislacao",
+  "/relatorios",
+];
 
 function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;
@@ -35,9 +47,13 @@ export async function middleware(request: NextRequest) {
 
   // Cria o cliente Supabase e atualiza a sessão a cada request
   const supabase = createMiddlewareClient(request, response);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Supabase auth failed — treat as unauthenticated
+  }
 
   const isPublic = isPublicPath(pathname);
 

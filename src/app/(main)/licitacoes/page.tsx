@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/db";
@@ -140,8 +141,12 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
 
       {/* Filters */}
       <div className="mb-6 space-y-3">
-        <LicitacaoSearchBar />
-        <LicitacaoFilters />
+        <Suspense fallback={null}>
+          <LicitacaoSearchBar />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LicitacaoFilters />
+        </Suspense>
       </div>
 
       {/* Grid */}

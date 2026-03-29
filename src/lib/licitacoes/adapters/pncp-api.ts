@@ -74,7 +74,8 @@ export async function fetchFromPNCP(
 
   const allResults: RawLicitacao[] = [];
 
-  for (const modalidade of MODALIDADE_CODES) {
+  const modalidades = (config as Record<string, unknown>).modalidades as number[] | undefined;
+  for (const modalidade of (modalidades ?? MODALIDADE_CODES)) {
     let page = 1;
     let hasMorePages = true;
 

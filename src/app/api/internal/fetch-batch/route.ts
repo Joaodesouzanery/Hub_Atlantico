@@ -22,10 +22,73 @@ export async function POST(request: NextRequest) {
 
   try {
     if (type === "licitacoes") {
-      // Import dynamically to avoid loading everything
-      const { fetchAllLicitacoes } = await import("@/lib/licitacoes/fetcher");
-      const result = await fetchAllLicitacoes();
-      return NextResponse.json({ success: true, ...result });
+      // Fetch PNCP directly with limited modalidades per batch
+      const { fetchFromPNCP } = await import("@/lib/licitacoes/adapters/pncp-api");
+      const modalidadeOffset = parseInt(searchParams.get("mod") || "0", 10);
+
+      // PNCP has 7 modalidades (codes: 8,6,1,2,4,5,7). Fetch 2 at a time.
+      const allModalidades = [8, 6, 1, 2, 4, 5, 7];
+      const batch = allModalidades.slice(modalidadeOffset, modalidadeOffset + 2);
+
+      if (batch.length === 0) {
+        return NextResponse.json({ done: true, message: "All modalidades fetched" });
+      }
+
+      const config = {
+        searchEndpoint: "/v1/contratacoes/publicacao",
+        defaultPageSize: 100,
+        keywords: [],
+        modalidades: batch,
+      };
+
+      const licitacoes = await fetchFromPNCP(config, "PNCP", true);
+
+      // Store them
+      const { prisma: db } = await import("@/lib/db");
+      const slugify = (await import("slugify")).default;
+
+      const sources = await db.licitacaoSource.findMany({ where: { isActive: true } });
+      const sourceMap = new Map(sources.map((s) => [s.name, s.id]));
+      const pncpSourceId = sourceMap.get("PNCP") || sourceMap.get("PNCP — Obras Hídricas");
+
+      const existingUrls = new Set(
+        (await db.licitacao.findMany({ select: { originalUrl: true } })).map((l) => l.originalUrl)
+      );
+
+      let newCount = 0;
+      for (const lic of licitacoes) {
+        if (existingUrls.has(lic.originalUrl)) continue;
+        const baseSlug = slugify(lic.title, { lower: true, strict: true, locale: "pt" }).slice(0, 100);
+        try {
+          await db.licitacao.create({
+            data: {
+              slug: `${baseSlug}-${Date.now().toString(36)}`,
+              title: lic.title, description: lic.description, process: lic.process,
+              modalidade: lic.modalidade, status: lic.status,
+              estimatedValue: lic.estimatedValue, currency: "BRL",
+              uf: lic.uf, city: lic.city, organ: lic.organ, organCnpj: lic.organCnpj,
+              originalUrl: lic.originalUrl, editalUrl: lic.editalUrl,
+              sourceId: pncpSourceId!, openDate: lic.openDate, closeDate: lic.closeDate,
+              publishedAt: lic.publishedAt, relevanceScore: 50,
+              itemCount: lic.itemCount, srp: lic.srp ?? false,
+              amparoLegal: lic.amparoLegal, contactEmail: lic.contactEmail,
+              contactPhone: lic.contactPhone, bidSubmissionEnd: lic.bidSubmissionEnd,
+              resultDate: lic.resultDate,
+            },
+          });
+          newCount++;
+          existingUrls.add(lic.originalUrl);
+        } catch { /* skip duplicates */ }
+      }
+
+      return NextResponse.json({
+        success: true,
+        modalidades: batch,
+        nextMod: modalidadeOffset + 2,
+        hasMore: modalidadeOffset + 2 < allModalidades.length,
+        fetched: licitacoes.length,
+        newLicitacoes: newCount,
+      });
     }
 
     // News: fetch a batch of sources

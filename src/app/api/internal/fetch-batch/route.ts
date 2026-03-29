@@ -40,7 +40,24 @@ export async function POST(request: NextRequest) {
         modalidades: batch,
       };
 
-      const licitacoes = await fetchFromPNCP(config, "PNCP", true);
+      let licitacoes;
+      let fetchError: string | undefined;
+      try {
+        licitacoes = await fetchFromPNCP(config, "PNCP", true);
+      } catch (e) {
+        fetchError = e instanceof Error ? e.message : String(e);
+        licitacoes = [];
+      }
+
+      if (licitacoes.length === 0) {
+        return NextResponse.json({
+          success: false,
+          modalidades: batch,
+          fetched: 0,
+          error: fetchError || "No licitações matched keywords",
+          debug: { dayWindow: 90, pageSize: 100, maxPages: 3 },
+        });
+      }
 
       // Store them
       const { prisma: db } = await import("@/lib/db");

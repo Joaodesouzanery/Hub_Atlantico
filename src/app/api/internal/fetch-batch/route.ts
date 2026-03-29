@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         modalidades: batch,
       };
 
-      let licitacoes;
+      let licitacoes: Awaited<ReturnType<typeof fetchFromPNCP>> = [];
       let fetchError: string | undefined;
       try {
         licitacoes = await fetchFromPNCP(config, "PNCP", true);

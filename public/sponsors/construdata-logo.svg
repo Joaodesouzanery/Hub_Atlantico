@@ -1,0 +1,9 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" rx="20" fill="#0F172A"/>
+  <!-- Outer drop -->
+  <path d="M100 35 C100 35 55 90 55 120 C55 148 75 170 100 170 C125 170 145 148 145 120 C145 90 100 35 100 35Z" stroke="#67E8F9" stroke-width="4" fill="none"/>
+  <!-- Middle drop -->
+  <path d="M100 60 C100 60 72 100 72 118 C72 136 84 150 100 150 C116 150 128 136 128 118 C128 100 100 60 100 60Z" stroke="#22D3EE" stroke-width="3.5" fill="none"/>
+  <!-- Inner drop -->
+  <path d="M100 82 C100 82 86 108 86 118 C86 130 92 138 100 138 C108 138 114 130 114 118 C114 108 100 82 100 82Z" stroke="#67E8F9" stroke-width="3" fill="none"/>
+</svg>

@@ -20,6 +20,7 @@ import {
   MapPin,
   Bell,
 } from "lucide-react";
+import { SponsorCarousel } from "@/components/ads/sponsor-carousel";
 // Stats removidos da landing page — sem números exatos para não dar impressão de "poucos" dados
 
 const modules = [
@@ -467,55 +468,13 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ─── PATROCINADORES ──────────────────────────────────────── */}
+      {/* ─── PATROCINADORES (carrossel auto-scroll) ─────────────── */}
       <section className="border-t border-slate-100 bg-slate-50 py-12">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="mb-6 text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
             Patrocinadores
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-12">
-            {/* ConstruData */}
-            <a
-              href="https://www.instagram.com/construdata_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col items-center gap-3 transition-opacity hover:opacity-80"
-            >
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#0F172A] shadow-lg">
-                <svg width={40} height={40} viewBox="0 0 40 40" fill="none">
-                  <rect x="4" y="18" width="8" height="18" rx="2" fill="#3B82F6" opacity="0.7" />
-                  <rect x="15" y="8" width="8" height="28" rx="2" fill="#3B82F6" opacity="0.85" />
-                  <rect x="26" y="12" width="8" height="24" rx="2" fill="#3B82F6" />
-                  <path d="M8 15 L19 6 L30 10" stroke="#60A5FA" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-                  <circle cx="30" cy="10" r="3" fill="#60A5FA" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-slate-800">ConstruData</p>
-                <p className="text-xs text-slate-500">Intelig&ecirc;ncia Operacional</p>
-              </div>
-            </a>
-
-            {/* Engelfer */}
-            <a
-              href="https://www.instagram.com/engelfer_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col items-center gap-3 transition-opacity hover:opacity-80"
-            >
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1B3A2B] shadow-lg">
-                <svg width={40} height={40} viewBox="0 0 40 40" fill="none">
-                  <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" stroke="white" strokeWidth="1.5" fill="none" />
-                  <polygon points="20,10 30,16 30,24 20,30 10,24 10,16" stroke="white" strokeWidth="1" fill="none" opacity="0.6" />
-                  <rect x="15" y="15" width="10" height="10" stroke="white" strokeWidth="1" fill="none" transform="rotate(45 20 20)" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-slate-800">Engelfer Engenharia</p>
-                <p className="text-xs text-slate-500">Saneamento e Infraestrutura</p>
-              </div>
-            </a>
-          </div>
+          <SponsorCarousel />
         </div>
       </section>
 

@@ -3,7 +3,7 @@ import type { RawLicitacao, LicitacaoFetchConfig } from "../types";
 const PNCP_BASE_URL = "https://pncp.gov.br/api/consulta";
 const FETCH_TIMEOUT = 30_000; // 30 seconds
 const DEFAULT_PAGE_SIZE = 100;
-const MAX_PAGES_PER_MODALIDADE = 5;
+const MAX_PAGES_PER_MODALIDADE = 10;
 
 /** Modalidade codes to search across */
 const MODALIDADE_CODES = [8, 6, 1, 2, 4, 5, 7];
@@ -11,60 +11,48 @@ const MODALIDADE_CODES = [8, 6, 1, 2, 4, 5, 7];
 // 5=Credenciamento, 7=Chamada Pública
 
 const DEFAULT_SANITATION_KEYWORDS: string[] = [
-  // Saneamento core
-  "saneamento",
-  "água",
-  "esgoto",
-  "abastecimento",
-  "tratamento de água",
-  "tratamento de esgoto",
-  "drenagem",
-  "adutora",
-  "reservatório",
-  "estação elevatória",
-  "rede de distribuição",
-  "hidrômetro",
-  "tubulação",
-  "esgotamento sanitário",
-  "eta ",
-  "ete ",
-  "residuos",
-  "coleta de lixo",
-  // Engenharia e infraestrutura
-  "engenharia civil",
-  "obras de saneamento",
-  "infraestrutura hídrica",
-  "abastecimento de água",
-  "sistema de esgoto",
-  "rede coletora",
-  "captação de água",
-  "macrodrenagem",
-  "microdrenagem",
-  // Equipamentos e insumos
-  "bomba submersível",
-  "bomba submersa",
-  "cloracao",
-  "fluoretacao",
-  "hidrometro",
-  "macromedidor",
-  "tubo pead",
-  "tubo pvc esgoto",
-  "valvula gaveta",
-  "medidor de vazao",
-  // Autarquias municipais
-  "saae",
-  "dae ",
-  "dmae",
-  "semae",
-  "sanasa",
-  "samae",
-  // Unaccented variants for matching
-  "agua",
-  "esgotamento sanitario",
-  "estacao elevatoria",
-  "abastecimento de agua",
-  "tratamento de esgoto",
-  "residuos solidos",
+  // ── Core saneamento ────────────────────────────────────────────
+  "saneamento", "água", "esgoto", "abastecimento", "drenagem",
+  "tratamento de água", "tratamento de esgoto", "esgotamento sanitário",
+  "saneamento básico", "saneamento ambiental",
+  // ── Infraestrutura hídrica ─────────────────────────────────────
+  "adutora", "reservatório", "estação elevatória", "elevatória",
+  "rede de distribuição", "rede coletora", "captação de água",
+  "macrodrenagem", "microdrenagem", "interceptor",
+  "eta ", "ete ", "etas ", "etes ",
+  "estação de tratamento", "sistema de água", "sistema de esgoto",
+  "emissário", "poço tubular", "poço artesiano", "poço profundo",
+  // ── Equipamentos e insumos ─────────────────────────────────────
+  "tubulação", "hidrômetro", "bomba submersível", "bomba submersa",
+  "bomba centrífuga", "bomba dosadora", "conjunto motobomba",
+  "tubo pead", "tubo pvc", "tubo ferro dúctil", "tubo defofo",
+  "válvula gaveta", "válvula borboleta", "válvula retenção",
+  "registro de gaveta", "medidor de vazão", "macromedidor",
+  "cloração", "fluoretação", "hipoclorito", "cloro",
+  "sulfato de alumínio", "polímero", "coagulante", "floculante",
+  "calha parshall", "decantador", "filtro de areia",
+  // ── Resíduos e limpeza urbana ──────────────────────────────────
+  "resíduos sólidos", "coleta de lixo", "aterro sanitário",
+  "limpeza urbana", "varrição", "coleta seletiva", "compostagem",
+  "manejo de resíduos", "transbordo",
+  // ── Serviços e engenharia ──────────────────────────────────────
+  "engenharia civil", "obras de saneamento", "infraestrutura hídrica",
+  "licenciamento ambiental", "projeto executivo", "estudo de viabilidade",
+  "plano de saneamento", "plano diretor de água", "plano diretor de esgoto",
+  "outorga de água", "perfuração de poço",
+  "manutenção de rede", "manutenção preventiva",
+  "reforma de estação", "ampliação de eta", "ampliação de ete",
+  "implantação de sistema", "operação de sistema",
+  // ── Autarquias e companhias ────────────────────────────────────
+  "saae", "dae ", "dmae", "semae", "sanasa", "samae",
+  "sabesp", "copasa", "sanepar", "cagece", "embasa", "cedae",
+  "corsan", "casan", "caesb", "caern", "compesa", "deso",
+  "caema", "cosanpa", "saneatins", "agespisa",
+  "aegea", "brk ambiental", "iguá",
+  // ── Termos sem acento (fallback) ───────────────────────────────
+  "agua", "esgotamento sanitario", "estacao elevatoria",
+  "abastecimento de agua", "residuos solidos", "hidrometro",
+  "cloracao", "fluoretacao", "tubulacao", "reservatorio",
 ];
 
 /**
@@ -81,7 +69,7 @@ export async function fetchFromPNCP(
   const keywords = config.keywords || DEFAULT_SANITATION_KEYWORDS;
 
   // Use 365-day window on initial fetch (full year 2025-2026), 7-day rolling otherwise
-  const dayWindow = isInitialFetch ? 365 : 30;
+  const dayWindow = isInitialFetch ? 365 : 60;
   const { dataInicial, dataFinal } = getDateRange(dayWindow);
 
   const allResults: RawLicitacao[] = [];

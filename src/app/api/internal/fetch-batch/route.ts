@@ -8,6 +8,15 @@ import slugify from "slugify";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
+function getDateStr(daysAgo: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}`;
+}
+
 /**
  * POST /api/internal/fetch-batch?type=news&offset=0&limit=5
  * POST /api/internal/fetch-batch?type=licitacoes
@@ -34,19 +43,35 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ done: true, message: "All modalidades fetched" });
       }
 
-      const config = {
+      const config: Record<string, unknown> = {
         searchEndpoint: "/v1/contratacoes/publicacao",
         defaultPageSize: 100,
         modalidades: batch,
       };
+      // Explicitly do NOT set keywords — let fetchFromPNCP use its DEFAULT_SANITATION_KEYWORDS
+
+      // Direct PNCP API test — fetch one page to verify
+      const testUrl = `https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao?dataInicial=${getDateStr(90)}&dataFinal=${getDateStr(0)}&codigoModalidadeContratacao=${batch[0]}&pagina=1&tamanhoPagina=20`;
+      let testInfo = "";
+      try {
+        const testRes = await fetch(testUrl, {
+          headers: { Accept: "application/json", "User-Agent": "HubAtlantico/1.0" },
+          signal: AbortSignal.timeout(10000),
+        });
+        const testBody = await testRes.json();
+        const testItems = testBody?.data || [];
+        const sampleTexts = testItems.slice(0, 3).map((i: { objetoCompra?: string }) => (i.objetoCompra || "").slice(0, 80));
+        testInfo = `API returned ${testItems.length} items. Sample: ${JSON.stringify(sampleTexts)}`;
+      } catch (e) {
+        testInfo = `API test failed: ${e instanceof Error ? e.message : String(e)}`;
+      }
 
       let licitacoes: Awaited<ReturnType<typeof fetchFromPNCP>> = [];
       let fetchError: string | undefined;
       try {
-        licitacoes = await fetchFromPNCP(config, "PNCP", true);
+        licitacoes = await fetchFromPNCP(config as Parameters<typeof fetchFromPNCP>[0], "PNCP", true);
       } catch (e) {
         fetchError = e instanceof Error ? e.message : String(e);
-        licitacoes = [];
       }
 
       if (licitacoes.length === 0) {
@@ -54,8 +79,8 @@ export async function POST(request: NextRequest) {
           success: false,
           modalidades: batch,
           fetched: 0,
-          error: fetchError || "No licitações matched keywords",
-          debug: { dayWindow: 90, pageSize: 100, maxPages: 3 },
+          error: fetchError || "No licitações matched keywords after filter",
+          apiTest: testInfo,
         });
       }
 

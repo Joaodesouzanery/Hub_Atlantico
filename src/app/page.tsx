@@ -11,59 +11,99 @@ import {
   ArrowUpRight,
   CheckCircle,
   Zap,
+  Shield,
+  Globe,
+  TrendingUp,
+  Clock,
+  Filter,
+  Download,
+  MapPin,
+  Bell,
 } from "lucide-react";
+import { prisma } from "@/lib/db";
 
-// Sem busca no banco — números fixos não criam dependência com DB vazio
+export const dynamic = "force-dynamic";
+
+async function getStats() {
+  try {
+    const [noticias, licitacoes, legislacoes, fontes, agencias] = await Promise.all([
+      prisma.newsArticle.count({ where: { status: "PUBLISHED" } }),
+      prisma.licitacao.count(),
+      prisma.legislation.count({ where: { isActive: true } }),
+      prisma.newsSource.count({ where: { isActive: true } }),
+      prisma.regulatoryAgency.count({ where: { isActive: true } }),
+    ]);
+    return { noticias, licitacoes, legislacoes, fontes, agencias };
+  } catch {
+    return { noticias: 100, licitacoes: 100, legislacoes: 49, fontes: 30, agencias: 20 };
+  }
+}
+
 const modules = [
   {
     icon: Newspaper,
     tag: "Notícias",
     title: "Hub especializado em saneamento",
     description:
-      "18+ fontes de jornalismo técnico monitoradas e indexadas diariamente — agências reguladoras, portais governamentais e veículos especializados.",
+      "30+ fontes de jornalismo técnico monitoradas diariamente — agências reguladoras, portais governamentais, companhias estaduais e veículos especializados.",
     highlight: true,
+    href: "/noticias",
   },
   {
     icon: Gavel,
     tag: "Licitações",
     title: "Radar de oportunidades públicas",
     description:
-      "PNCP, Compras.gov.br e portais estaduais em um único lugar. Filtros por UF, modalidade e valor estimado. Atualizações em tempo real.",
+      "PNCP e portais estaduais em um único lugar. Filtros por UF, modalidade, valor, SRP. Dados completos: contato do órgão, amparo legal, prazos.",
     highlight: true,
+    href: "/licitacoes",
   },
   {
     icon: Scale,
     tag: "Legislação",
     title: "Base normativa completa",
     description:
-      "Leis, decretos, normas ABNT e resoluções da ANA indexados e pesquisáveis por tema ou órgão emissor.",
+      "Leis, decretos, normas ABNT, resoluções ANA e portarias. Filtros por tipo, categoria, órgão emissor e ano. Busca inteligente.",
+    href: "/legislacao",
   },
   {
     icon: Landmark,
     tag: "Agências",
     title: "Diretório regulatório",
     description:
-      "Agências estaduais e federais com links diretos, jurisdição e canais de contato atualizados.",
+      "Agências reguladoras estaduais e federais com jurisdição, contatos e links diretos para cada portal.",
+    href: "/agencias",
   },
   {
     icon: FileBarChart,
     tag: "Relatórios",
     title: "Análise de mercado",
     description:
-      "Distribuição por região, tendência mensal e top órgãos licitantes. Exportação em Excel e PDF.",
+      "Gráficos por região, tendência mensal, modalidade e top órgãos. Exportação em Excel e PDF. Filtros salvos.",
+    href: "/relatorios",
   },
   {
     icon: LayoutDashboard,
     tag: "Dashboard",
     title: "Visão estratégica",
     description:
-      "KPIs em tempo real, mapa de licitações por estado e feed de atividade consolidado em um único painel.",
+      "KPIs em tempo real, mapa coroplético do Brasil por estado, prazos próximos e feed de atividade consolidado.",
+    href: "/dashboard",
   },
 ];
 
-export const dynamic = "force-dynamic";
+const features = [
+  { icon: Clock, title: "Atualização diária", description: "Crawlers automáticos coletam dados de dezenas de fontes oficiais todos os dias." },
+  { icon: Filter, title: "Filtros avançados", description: "Busca por palavra-chave, UF, modalidade, categoria, ano. Salve seus filtros favoritos." },
+  { icon: Download, title: "Exportação completa", description: "Exporte licitações e notícias em PDF ou Excel para análise offline e relatórios." },
+  { icon: MapPin, title: "Cobertura nacional", description: "Todos os 26 estados + DF monitorados. Portais federais e estaduais integrados." },
+  { icon: Shield, title: "LGPD compliant", description: "Apenas dados públicos de portais de transparência. Sem coleta de dados pessoais." },
+  { icon: Bell, title: "Tudo centralizado", description: "Notícias, licitações, legislação e agências em uma única plataforma integrada." },
+];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const stats = await getStats();
+
   return (
     <div className="min-h-screen bg-white text-slate-900">
 
@@ -74,22 +114,22 @@ export default function LandingPage() {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#F97316]">
               <Droplets className="h-4 w-4 text-white" />
             </div>
-            <span className="text-sm font-bold tracking-wide text-slate-900">HuB — Atlântico</span>
+            <span className="text-sm font-bold tracking-wide text-slate-900">HuB — Atlantico</span>
           </div>
 
           <nav className="hidden items-center gap-8 md:flex">
             {[
-              { label: "Notícias", href: "#modulos" },
-              { label: "Licitações", href: "#modulos" },
-              { label: "Plataforma", href: "#plataforma" },
+              { label: "Noticias", href: "/noticias" },
+              { label: "Licitacoes", href: "/licitacoes" },
+              { label: "Legislacao", href: "/legislacao" },
             ].map((item) => (
-              <a
+              <Link
                 key={item.label}
                 href={item.href}
                 className="text-xs font-medium uppercase tracking-widest text-slate-500 transition-colors hover:text-slate-900"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -111,12 +151,11 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* ─── HERO (dark) ─────────────────────────────────────────── */}
+      {/* ─── HERO ─────────────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-28 lg:py-40"
         style={{ background: "#1E293B" }}
       >
-        {/* dot grid */}
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -124,25 +163,22 @@ export default function LandingPage() {
             backgroundSize: "36px 36px",
           }}
         />
-        {/* orange glow top */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background: "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(249,115,22,0.12) 0%, transparent 65%)",
           }}
         />
-        {/* fade to dark at bottom */}
         <div
           className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
           style={{ background: "linear-gradient(to bottom, transparent, #1E293B)" }}
         />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-10">
-          {/* eyebrow pill */}
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#F97316]/30 bg-[#F97316]/10 px-4 py-1.5">
             <Zap className="h-3.5 w-3.5 text-[#F97316]" />
             <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#F97316]">
-              Hub de Notícias · Licitações · Legislação
+              Noticias · Licitacoes · Legislacao · Agencias
             </span>
           </div>
 
@@ -152,15 +188,32 @@ export default function LandingPage() {
           >
             Tudo que acontece
             <br />
-            no setor hídrico,{" "}
+            no setor hidrico,{" "}
             <span className="text-[#F97316]">em tempo real.</span>
           </h1>
 
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-slate-400">
-            O HuB — Atlântico é o hub de inteligência do saneamento brasileiro.
-            Notícias de 18+ fontes especializadas, licitações do PNCP e portais estaduais,
-            legislação e agências reguladoras — tudo consolidado em uma única plataforma.
+            O HuB — Atlantico centraliza noticias, licitacoes, legislacao e agencias
+            reguladoras do saneamento brasileiro. {stats.fontes}+ fontes monitoradas,
+            atualizacao diaria, filtros avancados e exportacao de dados.
           </p>
+
+          {/* Live stats */}
+          <div className="mx-auto mt-10 flex max-w-xl flex-wrap items-center justify-center gap-8">
+            {[
+              { label: "Noticias", value: stats.noticias },
+              { label: "Licitacoes", value: stats.licitacoes },
+              { label: "Legislacoes", value: stats.legislacoes },
+              { label: "Fontes", value: stats.fontes },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-2xl font-bold text-white lg:text-3xl">
+                  {stat.value.toLocaleString("pt-BR")}
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500 uppercase tracking-wider">{stat.label}</p>
+              </div>
+            ))}
+          </div>
 
           <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             <Link
@@ -171,21 +224,20 @@ export default function LandingPage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/login"
+              href="/noticias"
               className="flex items-center gap-2 rounded-md border border-white/10 px-8 py-3.5 text-sm font-medium text-slate-300 transition-colors hover:border-white/25 hover:text-white"
             >
-              Já tenho conta
+              Ver noticias agora
             </Link>
           </div>
 
-          {/* mini social proof */}
           <p className="mt-8 text-xs text-slate-600">
-            Gratuito · Sem cartão de crédito · Cobertura nacional
+            Gratuito · Sem cartao de credito · Cobertura nacional · LGPD compliant
           </p>
         </div>
       </section>
 
-      {/* ─── DESTAQUE: Notícias + Licitações ─────────────────────── */}
+      {/* ─── DESTAQUE: Noticias + Licitacoes ─────────────────────── */}
       <section className="border-y border-slate-100 bg-slate-50 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="mb-12">
@@ -193,34 +245,34 @@ export default function LandingPage() {
               O que entregamos
             </span>
             <h2 className="mt-3 text-3xl font-bold leading-tight text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
-              Notícias e licitações do setor de saneamento,{" "}
+              Noticias e licitacoes do setor de saneamento,{" "}
               <br className="hidden lg:block" />
-              num só lugar.
+              num so lugar.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Notícias card */}
+            {/* Noticias card */}
             <div className="rounded-2xl border border-slate-200 bg-white p-8">
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
                   <Newspaper className="h-5 w-5 text-blue-600" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Hub de Notícias</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Hub de Noticias</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900">
-                18+ fontes especializadas, indexadas diariamente
+                {stats.fontes}+ fontes especializadas, indexadas diariamente
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                Agências reguladoras, portais governamentais, veículos de comunicação
-                do setor hídrico e de saneamento. Tudo categorizado automaticamente
-                para você encontrar o que importa em segundos.
+                Companhias de saneamento (Sabesp, Aegea, BRK, Sanepar), agencias reguladoras (ANA, IBAMA),
+                portais governamentais e veiculos especializados. Tudo categorizado automaticamente.
               </p>
               <ul className="mt-6 space-y-2">
                 {[
-                  "ANA, FUNASA, SNSA e ministérios",
-                  "Portais estaduais de saneamento",
-                  "Busca por palavra-chave e categoria",
+                  "ANA, FUNASA, Ministerio das Cidades e portais gov.br",
+                  "Sabesp, Aegea, BRK, Copasa, CAGECE, Sanepar e mais",
+                  "G1, Agencia Brasil, Poder360, O Eco e especializados",
+                  "Busca por palavra-chave, categoria e fonte",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm text-slate-600">
                     <CheckCircle className="h-4 w-4 flex-shrink-0 text-[#F97316]" />
@@ -228,29 +280,32 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
+              <Link href="/noticias" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F97316] hover:text-[#EA6C10]">
+                Ver noticias <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
-            {/* Licitações card */}
+            {/* Licitacoes card */}
             <div className="rounded-2xl border border-slate-200 bg-white p-8">
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50">
                   <Gavel className="h-5 w-5 text-green-600" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-widest text-green-600">Radar de Licitações</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-green-600">Radar de Licitacoes</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900">
-                PNCP e Compras.gov.br monitorados em tempo real
+                {stats.licitacoes.toLocaleString("pt-BR")}+ licitacoes do PNCP monitoradas
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                Licitações públicas do setor de saneamento coletadas automaticamente
-                de portais federais e estaduais. Filtros por UF, modalidade e
-                valor estimado para você não perder nenhuma oportunidade.
+                Licitacoes publicas de saneamento com dados completos: orgao, CNPJ, valor,
+                modalidade, prazos, contato, amparo legal e link para o edital original.
               </p>
               <ul className="mt-6 space-y-2">
                 {[
-                  "Portal Nacional de Contratações Públicas (PNCP)",
-                  "Compras.gov.br e portais estaduais",
-                  "Filtros por UF, modalidade e valor",
+                  "Portal Nacional de Contratacoes Publicas (PNCP)",
+                  "7 modalidades: pregao, concorrencia, dispensa e mais",
+                  "Filtros por UF, modalidade, valor e status",
+                  "Dados LGPD-safe: CNPJ, contato institucional, SRP",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm text-slate-600">
                     <CheckCircle className="h-4 w-4 flex-shrink-0 text-[#F97316]" />
@@ -258,88 +313,54 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── PLATAFORMA ──────────────────────────────────────────── */}
-      <section id="plataforma" className="py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">
-                Plataforma
-              </span>
-              <h2 className="mt-3 text-4xl font-bold leading-tight text-slate-900 lg:text-5xl" style={{ letterSpacing: "-0.02em" }}>
-                Sistema operacional do mercado de saneamento.
-              </h2>
-              <p className="mt-6 text-base leading-relaxed text-slate-500">
-                O HuB — Atlântico consolida, filtra e classifica automaticamente
-                informações de dezenas de fontes oficiais. Engenheiros, gestores
-                públicos e empresas recebem apenas o que é relevante para sua
-                atuação — sem ruído, sem perda de tempo.
-              </p>
-              <Link
-                href="/cadastro"
-                className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#F97316] transition-colors hover:text-[#EA6C10]"
-              >
-                Criar conta gratuita
-                <ArrowRight className="h-4 w-4" />
+              <Link href="/licitacoes" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F97316] hover:text-[#EA6C10]">
+                Ver licitacoes <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
-
-            <div className="divide-y divide-slate-100">
-              {[
-                {
-                  number: "I",
-                  title: "Dados em tempo real",
-                  description:
-                    "Crawlers automáticos coletam notícias e licitações de dezenas de fontes oficiais todos os dias. Sem curadoria manual.",
-                },
-                {
-                  number: "II",
-                  title: "Inteligência filtrada",
-                  description:
-                    "Categorização automática por relevância para o setor hídrico. Busca por palavra-chave, estado e modalidade.",
-                },
-                {
-                  number: "III",
-                  title: "Cobertura nacional",
-                  description:
-                    "Todos os 26 estados e o DF monitorados. Portais federais, estaduais e municipais integrados.",
-                },
-              ].map((p) => (
-                <div key={p.number} className="py-7">
-                  <div className="flex items-start gap-5">
-                    <span className="mt-0.5 text-xs font-bold uppercase tracking-widest text-[#F97316]">{p.number}</span>
-                    <div>
-                      <p className="font-semibold text-slate-900">{p.title}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{p.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── MÓDULOS (light gray) ────────────────────────────────── */}
+      {/* ─── FUNCIONALIDADES ─────────────────────────────────────── */}
+      <section className="py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-10">
+          <div className="mb-12 text-center">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Funcionalidades</span>
+            <h2 className="mt-3 text-3xl font-bold text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
+              Feito para quem trabalha com saneamento.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feat) => (
+              <div key={feat.title} className="rounded-xl border border-slate-200 bg-white p-6">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50">
+                  <feat.icon className="h-5 w-5 text-[#F97316]" />
+                </div>
+                <p className="font-semibold text-slate-900">{feat.title}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{feat.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── MODULOS ─────────────────────────────────────────────── */}
       <section id="modulos" className="bg-slate-50 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="mb-12">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Módulos</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Modulos</span>
             <h2 className="mt-3 text-3xl font-bold leading-tight text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
-              Seis módulos integrados.
+              Seis modulos integrados.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {modules.map((mod) => (
-              <div
+              <Link
                 key={mod.title}
-                className={`rounded-xl border p-7 transition-shadow hover:shadow-md ${
+                href={mod.href}
+                className={`group rounded-xl border p-7 transition-all hover:shadow-md ${
                   mod.highlight
                     ? "border-[#F97316]/20 bg-white"
                     : "border-slate-200 bg-white"
@@ -357,9 +378,9 @@ export default function LandingPage() {
                     {mod.tag}
                   </span>
                 </div>
-                <p className="font-semibold text-slate-900">{mod.title}</p>
+                <p className="font-semibold text-slate-900 group-hover:text-[#F97316] transition-colors">{mod.title}</p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500">{mod.description}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -370,15 +391,14 @@ export default function LandingPage() {
         <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Como funciona</span>
           <h2 className="mt-3 text-3xl font-bold text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
-            Acesso imediato. Sem fricção.
+            Acesso imediato. Sem friccao.
           </h2>
 
           <div className="mt-14 grid grid-cols-1 gap-0 md:grid-cols-3">
-            <div className="absolute left-1/6 right-1/6 hidden" />
             {[
-              { n: "01", title: "Crie sua conta", body: "Cadastro em 30 segundos. Sem cartão de crédito, sem burocracia." },
-              { n: "02", title: "Monitore o setor", body: "Notícias, licitações e legislação atualizados diariamente e organizados por relevância." },
-              { n: "03", title: "Tome decisões", body: "Relatórios analíticos, busca avançada e exportação de dados para Excel ou PDF." },
+              { n: "01", title: "Crie sua conta", body: "Cadastro em 30 segundos. Sem cartao de credito, sem burocracia. Login com e-mail salvo." },
+              { n: "02", title: "Monitore o setor", body: "Noticias, licitacoes e legislacao atualizados diariamente. Filtre, busque e salve suas preferencias." },
+              { n: "03", title: "Tome decisoes", body: "Relatorios analiticos, graficos interativos e exportacao para Excel ou PDF. Dados em suas maos." },
             ].map((step) => (
               <div key={step.n} className="px-4 py-8">
                 <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#F97316] text-base font-bold text-[#F97316]">
@@ -392,7 +412,32 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── CTA FINAL (dark) ────────────────────────────────────── */}
+      {/* ─── QUEM USA ────────────────────────────────────────────── */}
+      <section className="border-y border-slate-100 bg-slate-50 py-16">
+        <div className="mx-auto max-w-5xl px-6 text-center lg:px-10">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F97316]">Para quem?</span>
+          <h2 className="mt-3 text-2xl font-bold text-slate-900 lg:text-3xl">
+            Projetado para profissionais do setor
+          </h2>
+          <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-4">
+            {[
+              { icon: Globe, label: "Engenheiros sanitaristas" },
+              { icon: Landmark, label: "Gestores publicos" },
+              { icon: TrendingUp, label: "Empresas de saneamento" },
+              { icon: Scale, label: "Consultorias e escritorios" },
+            ].map((p) => (
+              <div key={p.label} className="flex flex-col items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white border border-slate-200">
+                  <p.icon className="h-5 w-5 text-[#F97316]" />
+                </div>
+                <p className="text-sm font-medium text-slate-700">{p.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CTA FINAL ───────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-28 lg:py-36"
         style={{ background: "#1E293B" }}
@@ -421,8 +466,8 @@ export default function LandingPage() {
             <span className="text-[#F97316]">Gratuito. Agora.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-400">
-            Notícias, licitações, legislação e agências reguladoras em um único lugar.
-            Para engenheiros, gestores públicos e empresas do setor hídrico.
+            {stats.noticias.toLocaleString("pt-BR")} noticias, {stats.licitacoes.toLocaleString("pt-BR")} licitacoes,
+            {" "}{stats.legislacoes} legislacoes e {stats.agencias} agencias reguladoras em um unico lugar.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -437,7 +482,7 @@ export default function LandingPage() {
               href="/login"
               className="flex items-center gap-2 rounded-md border border-white/10 px-8 py-4 text-sm font-medium text-slate-300 transition-colors hover:border-white/25 hover:text-white"
             >
-              Já tenho conta
+              Ja tenho conta
             </Link>
           </div>
         </div>
@@ -450,14 +495,14 @@ export default function LandingPage() {
             <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F97316]">
               <Droplets className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-sm font-bold text-slate-800">HuB — Atlântico</span>
+            <span className="text-sm font-bold text-slate-800">HuB — Atlantico</span>
           </div>
-          <p className="text-xs text-slate-400">© {new Date().getFullYear()} HuB — Atlântico. Todos os direitos reservados.</p>
+          <p className="text-xs text-slate-400">&copy; {new Date().getFullYear()} HuB — Atlantico. Todos os direitos reservados.</p>
           <div className="flex items-center gap-6">
             {[
               { label: "Sobre", href: "/sobre" },
+              { label: "Noticias", href: "/noticias" },
               { label: "Entrar", href: "/login" },
-              { label: "Cadastro", href: "/cadastro" },
             ].map((link) => (
               <Link key={link.label} href={link.href} className="text-xs text-slate-400 uppercase tracking-widest transition-colors hover:text-slate-700">
                 {link.label}

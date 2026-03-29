@@ -14,8 +14,17 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load saved email on mount
+  useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("hub-saved-email");
+      if (saved) setEmail(saved);
+    }
+  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,6 +45,13 @@ function LoginForm() {
       setError(translateError(authError.message));
       setLoading(false);
       return;
+    }
+
+    // Save or clear email based on "remember me"
+    if (rememberMe) {
+      localStorage.setItem("hub-saved-email", email);
+    } else {
+      localStorage.removeItem("hub-saved-email");
     }
 
     router.push(next);
@@ -95,6 +111,20 @@ function LoginForm() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+          </div>
+
+          {/* Lembrar-me */}
+          <div className="flex items-center gap-2">
+            <input
+              id="remember"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent"
+            />
+            <label htmlFor="remember" className="text-sm text-slate-600">
+              Lembrar meu e-mail
+            </label>
           </div>
 
           {error && (

@@ -194,6 +194,14 @@ model Licitacao {
   fetchedAt      DateTime  @default(now()) @map("fetched_at")
   viewCount      Int       @default(0) @map("view_count")
   relevanceScore Float     @default(0) @map("relevance_score")
+  // Campos adicionais de informação pública (LGPD-safe)
+  itemCount        Int?       @map("item_count")
+  srp              Boolean    @default(false)
+  amparoLegal      String?    @map("amparo_legal")
+  contactEmail     String?    @map("contact_email")
+  contactPhone     String?    @map("contact_phone")
+  bidSubmissionEnd DateTime?  @map("bid_submission_end")
+  resultDate       DateTime?  @map("result_date")
 
   savedBy SavedLicitacao[]
 

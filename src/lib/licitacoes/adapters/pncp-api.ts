@@ -3,7 +3,7 @@ import type { RawLicitacao, LicitacaoFetchConfig } from "../types";
 const PNCP_BASE_URL = "https://pncp.gov.br/api/consulta";
 const FETCH_TIMEOUT = 30_000; // 30 seconds
 const DEFAULT_PAGE_SIZE = 100;
-const MAX_PAGES_PER_MODALIDADE = 8;
+const MAX_PAGES_PER_MODALIDADE = 20;
 
 /** Modalidade codes to search across */
 const MODALIDADE_CODES = [8, 6, 1, 2, 4, 5, 7];
@@ -62,8 +62,8 @@ export async function fetchFromPNCP(
   const pageSize = Math.max(config.defaultPageSize || DEFAULT_PAGE_SIZE, 10);
   const keywords = config.keywords || DEFAULT_SANITATION_KEYWORDS;
 
-  // Use 90-day window on initial fetch (to populate DB), 7-day rolling otherwise
-  const dayWindow = isInitialFetch ? 90 : 7;
+  // Use 365-day window on initial fetch (full year 2025-2026), 7-day rolling otherwise
+  const dayWindow = isInitialFetch ? 365 : 7;
   const { dataInicial, dataFinal } = getDateRange(dayWindow);
 
   const allResults: RawLicitacao[] = [];
@@ -237,6 +237,15 @@ function mapToRawLicitacao(item: any, sourceName: string): RawLicitacao {
     ? new Date(item.dataEncerramentoProposta)
     : undefined;
 
+  // Campos adicionais de informação pública
+  const itemCount = typeof item.quantidadeItens === "number" ? item.quantidadeItens : undefined;
+  const srp = item.srp === true || item.srp === "Sim";
+  const amparoLegal = item.amparoLegal || undefined;
+  const contactEmail = item.contatoResponsavel?.email || undefined;
+  const contactPhone = item.contatoResponsavel?.telefone || undefined;
+  const bidSubmissionEnd = item.dataInclusaoProposta ? new Date(item.dataInclusaoProposta) : undefined;
+  const resultDate = item.dataResultado ? new Date(item.dataResultado) : undefined;
+
   return {
     title: title.slice(0, 500),
     description: description.slice(0, 2000),
@@ -254,6 +263,13 @@ function mapToRawLicitacao(item: any, sourceName: string): RawLicitacao {
     closeDate,
     publishedAt,
     sourceName,
+    itemCount,
+    srp,
+    amparoLegal,
+    contactEmail,
+    contactPhone,
+    bidSubmissionEnd,
+    resultDate,
   };
 }
 

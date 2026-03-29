@@ -15,6 +15,14 @@ export interface RawLicitacao {
   closeDate?: Date;
   publishedAt: Date;
   sourceName: string;
+  // Campos adicionais
+  itemCount?: number;
+  srp?: boolean;
+  amparoLegal?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  bidSubmissionEnd?: Date;
+  resultDate?: Date;
 }
 
 export interface LicitacaoFetchConfig {

@@ -10,6 +10,11 @@ import {
   DollarSign,
   Hash,
   Layers,
+  Package,
+  Shield,
+  Mail,
+  Phone,
+  Clock,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
@@ -116,6 +121,41 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
         ? formatDate(licitacao.publishedAt)
         : "Não informado",
     },
+    ...(licitacao.bidSubmissionEnd
+      ? [{
+          icon: Clock,
+          label: "Prazo Envio de Propostas",
+          value: formatDate(licitacao.bidSubmissionEnd),
+        }]
+      : []),
+    ...(licitacao.resultDate
+      ? [{
+          icon: Calendar,
+          label: "Data do Resultado",
+          value: formatDate(licitacao.resultDate),
+        }]
+      : []),
+    ...(licitacao.itemCount
+      ? [{
+          icon: Package,
+          label: "Itens/Lotes",
+          value: `${licitacao.itemCount} ${licitacao.itemCount === 1 ? "item" : "itens"}`,
+        }]
+      : []),
+    ...(licitacao.srp
+      ? [{
+          icon: Shield,
+          label: "Sistema de Registro de Preços",
+          value: "Sim — SRP",
+        }]
+      : []),
+    ...(licitacao.amparoLegal
+      ? [{
+          icon: Layers,
+          label: "Amparo Legal",
+          value: licitacao.amparoLegal,
+        }]
+      : []),
   ];
 
   return (
@@ -194,15 +234,34 @@ export default async function LicitacaoDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* CNPJ */}
-          {licitacao.organCnpj && (
-            <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-4">
-              <p className="text-xs text-text-muted">
-                CNPJ do Órgão:{" "}
-                <span className="font-mono text-text-secondary">
-                  {licitacao.organCnpj}
-                </span>
-              </p>
+          {/* CNPJ + Contato */}
+          {(licitacao.organCnpj || licitacao.contactEmail || licitacao.contactPhone) && (
+            <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-4 space-y-2">
+              {licitacao.organCnpj && (
+                <p className="text-xs text-text-muted flex items-center gap-2">
+                  <Building2 className="h-3.5 w-3.5" />
+                  CNPJ do Órgão:{" "}
+                  <span className="font-mono text-text-secondary">
+                    {licitacao.organCnpj}
+                  </span>
+                </p>
+              )}
+              {licitacao.contactEmail && (
+                <p className="text-xs text-text-muted flex items-center gap-2">
+                  <Mail className="h-3.5 w-3.5" />
+                  Email:{" "}
+                  <a href={`mailto:${licitacao.contactEmail}`} className="text-accent hover:underline">
+                    {licitacao.contactEmail}
+                  </a>
+                </p>
+              )}
+              {licitacao.contactPhone && (
+                <p className="text-xs text-text-muted flex items-center gap-2">
+                  <Phone className="h-3.5 w-3.5" />
+                  Telefone:{" "}
+                  <span className="text-text-secondary">{licitacao.contactPhone}</span>
+                </p>
+              )}
             </div>
           )}
 

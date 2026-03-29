@@ -185,6 +185,13 @@ async function storeLicitacoes(
           closeDate: licitacao.closeDate,
           publishedAt: licitacao.publishedAt,
           relevanceScore,
+          itemCount: licitacao.itemCount,
+          srp: licitacao.srp ?? false,
+          amparoLegal: licitacao.amparoLegal,
+          contactEmail: licitacao.contactEmail,
+          contactPhone: licitacao.contactPhone,
+          bidSubmissionEnd: licitacao.bidSubmissionEnd,
+          resultDate: licitacao.resultDate,
         },
       });
       newCount++;

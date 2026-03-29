@@ -58,7 +58,7 @@ export default async function FontesPage() {
                   {source.name}
                 </h3>
                 <p className="mt-0.5 text-xs text-text-muted">
-                  {source._count.articles} notícias
+                  Fonte ativa · {source.fetchMethod === "RSS" ? "RSS" : "Portal"}
                 </p>
                 <a
                   href={source.url}

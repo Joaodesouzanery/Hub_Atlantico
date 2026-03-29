@@ -45,10 +45,9 @@ export async function POST(request: NextRequest) {
 
       const config: Record<string, unknown> = {
         searchEndpoint: "/v1/contratacoes/publicacao",
-        defaultPageSize: 100,
+        defaultPageSize: 50,
         modalidades: batch,
       };
-      // Explicitly do NOT set keywords — let fetchFromPNCP use its DEFAULT_SANITATION_KEYWORDS
 
       // Direct PNCP API test — fetch one page to verify
       const testUrl = `https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao?dataInicial=${getDateStr(90)}&dataFinal=${getDateStr(0)}&codigoModalidadeContratacao=${batch[0]}&pagina=1&tamanhoPagina=20`;

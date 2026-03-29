@@ -6,6 +6,7 @@ import { LicitacaoGrid } from "@/components/licitacoes/licitacao-grid";
 import { LicitacaoFilters } from "@/components/licitacoes/licitacao-filters";
 import { LicitacaoSearchBar } from "@/components/licitacoes/licitacao-search-bar";
 import { LicitacaoStats } from "@/components/licitacoes/licitacao-stats";
+import { SavedFilters } from "@/components/filters/saved-filters";
 
 interface PageProps {
   searchParams: Promise<{
@@ -146,6 +147,13 @@ export default async function LicitacoesPage({ searchParams }: PageProps) {
         </Suspense>
         <Suspense fallback={null}>
           <LicitacaoFilters />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SavedFilters
+            moduleKey="licitacoes"
+            basePath="/licitacoes"
+            filterKeys={["status", "uf", "modalidade", "search"]}
+          />
         </Suspense>
       </div>
 

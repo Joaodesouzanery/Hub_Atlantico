@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { LegislationGrid } from "@/components/legislation/legislation-grid";
 import { LegislationTypeFilter } from "@/components/legislation/legislation-type-filter";
+import { LegislationSearchBar } from "@/components/legislation/legislation-search-bar";
+import { SavedFilters } from "@/components/filters/saved-filters";
 
 interface PageProps {
   searchParams: Promise<{
@@ -78,8 +80,18 @@ export default async function LegislacaoPage({ searchParams }: PageProps) {
 
       {/* Filters */}
       <div className="mb-6 space-y-3">
-        <Suspense>
+        <Suspense fallback={null}>
+          <LegislationSearchBar />
+        </Suspense>
+        <Suspense fallback={null}>
           <LegislationTypeFilter />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SavedFilters
+            moduleKey="legislacao"
+            basePath="/legislacao"
+            filterKeys={["type", "search"]}
+          />
         </Suspense>
       </div>
 

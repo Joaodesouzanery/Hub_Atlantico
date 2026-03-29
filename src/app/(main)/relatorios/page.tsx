@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import {
@@ -7,6 +8,7 @@ import {
 } from "@/lib/export/chart-data";
 import { ExportButton } from "@/components/export/export-button";
 import { ChartsSection } from "@/components/export/charts-section";
+import { ReportFilters } from "@/components/filters/report-filters";
 import { Briefcase, Newspaper, DollarSign } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -88,6 +90,16 @@ export default async function RelatoriosPage() {
         <p className="mt-1 text-sm text-text-muted">
           Análises e exportações de dados
         </p>
+      </div>
+
+      {/* Filters */}
+      <div className="mb-8 rounded-xl border border-dark-border bg-dark-card p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-text-muted">
+          Filtros do Relatório
+        </h2>
+        <Suspense fallback={null}>
+          <ReportFilters />
+        </Suspense>
       </div>
 
       {/* Stats Cards */}

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { NewsGrid } from "@/components/news/news-grid";
 import { CategoryFilter } from "@/components/news/category-filter";
 import { SearchBar } from "@/components/news/search-bar";
+import { SavedFilters } from "@/components/filters/saved-filters";
 
 interface PageProps {
   searchParams: Promise<{
@@ -88,6 +89,13 @@ export default async function NoticiasPage({ searchParams }: PageProps) {
         </Suspense>
         <Suspense fallback={null}>
           <CategoryFilter />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SavedFilters
+            moduleKey="noticias"
+            basePath="/noticias"
+            filterKeys={["category", "source", "search"]}
+          />
         </Suspense>
       </div>
 

@@ -94,24 +94,21 @@ export async function getDashboardData(): Promise<DashboardData> {
       value: r._count.id,
     }));
 
-    // Licitações por mês (últimos 6 meses)
+    // Licitações por mês (últimos 6 meses) — use count per month instead of fetching all rows
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    const recentLicitacoes = await prisma.licitacao.findMany({
-      where: { publishedAt: { gte: sixMonthsAgo } },
-      select: { publishedAt: true },
-    });
-    const monthCounts: Record<string, number> = {};
-    for (const l of recentLicitacoes) {
-      const key = l.publishedAt.toLocaleDateString("pt-BR", {
-        month: "short",
-        year: "2-digit",
-      });
-      monthCounts[key] = (monthCounts[key] || 0) + 1;
-    }
-    defaults.licitacoesPorMes = Object.entries(monthCounts).map(
-      ([name, value]) => ({ name, value })
+    const monthlyRaw = await prisma.$queryRawUnsafe<{ month: string; count: bigint }[]>(
+      `SELECT to_char(published_at, 'Mon/YY') as month, COUNT(*) as count
+       FROM licitacoes
+       WHERE published_at >= $1
+       GROUP BY to_char(published_at, 'Mon/YY'), date_trunc('month', published_at)
+       ORDER BY date_trunc('month', published_at) ASC`,
+      sixMonthsAgo
     );
+    defaults.licitacoesPorMes = monthlyRaw.map((r) => ({
+      name: r.month,
+      value: Number(r.count),
+    }));
 
     // Licitações por modalidade
     const byMod = await prisma.licitacao.groupBy({
@@ -227,5 +224,6 @@ export async function getDashboardData(): Promise<DashboardData> {
     console.error("Dashboard query error:", error);
   }
 
-  return defaults;
+  // Serialize to plain JSON to avoid RSC boundary issues with Date/Decimal objects
+  return JSON.parse(JSON.stringify(defaults));
 }

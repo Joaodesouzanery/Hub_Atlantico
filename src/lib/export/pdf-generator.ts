@@ -2,22 +2,37 @@ import { jsPDF } from "jspdf";
 
 interface LicitacaoRow {
   title: string;
+  description?: string | null;
   organ?: string | null;
+  organCnpj?: string | null;
   uf?: string | null;
+  city?: string | null;
+  modalidade?: string | null;
   estimatedValue?: number | null;
   status: string;
   publishedAt: Date | string;
+  closeDate?: Date | string | null;
+  originalUrl?: string | null;
+  source?: { name: string } | null;
+  category?: { name: string } | null;
+}
+
+interface NewsRow {
+  title: string;
+  summary?: string | null;
+  source?: { name: string } | null;
+  category?: { name: string } | null;
+  publishedAt: Date | string;
+  originalUrl?: string | null;
 }
 
 function formatCurrency(value: number | null | undefined): string {
   if (value == null) return "N/I";
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 
-function formatDate(date: Date | string): string {
+function formatDate(date: Date | string | null | undefined): string {
+  if (!date) return "N/I";
   const d = typeof date === "string" ? new Date(date) : date;
   return d.toLocaleDateString("pt-BR");
 }
@@ -27,147 +42,186 @@ function truncate(text: string, max: number): string {
   return text.slice(0, max - 3) + "...";
 }
 
+function formatModalidade(mod: string | null | undefined): string {
+  if (!mod) return "N/I";
+  return mod.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Draw the standard report header with LGPD notice */
+function drawReportHeader(doc: jsPDF, title: string, subtitle: string, totalRecords: number) {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 14;
+
+  // Dark header band
+  doc.setFillColor(15, 23, 42); // slate-900
+  doc.rect(0, 0, pageWidth, 32, "F");
+
+  // Orange accent line
+  doc.setFillColor(249, 115, 22);
+  doc.rect(0, 32, pageWidth, 1.5, "F");
+
+  // Logo text
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(249, 115, 22);
+  doc.text("HuB \u2014 Atl\u00e2ntico", margin, 13);
+
+  // Report title
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(255, 255, 255);
+  doc.text(title, margin, 22);
+
+  // Subtitle
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(148, 163, 184); // slate-400
+  doc.text(subtitle, margin, 28);
+
+  // Right side: metadata
+  doc.setFontSize(8);
+  doc.setTextColor(148, 163, 184);
+  const now = new Date();
+  doc.text(`Gerado em: ${now.toLocaleDateString("pt-BR")} \u00e0s ${now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`, pageWidth - margin, 13, { align: "right" });
+  doc.text(`Total: ${totalRecords.toLocaleString("pt-BR")} registros`, pageWidth - margin, 19, { align: "right" });
+  doc.text("Documento gerado automaticamente", pageWidth - margin, 25, { align: "right" });
+
+  // LGPD notice bar
+  doc.setFillColor(30, 41, 59); // slate-800
+  doc.rect(0, 33.5, pageWidth, 8, "F");
+  doc.setFontSize(6.5);
+  doc.setTextColor(100, 116, 139); // slate-500
+  doc.text(
+    "AVISO LGPD: Este relat\u00f3rio cont\u00e9m apenas dados de \u00f3rg\u00e3os p\u00fablicos e pessoas jur\u00eddicas, conforme a Lei 13.709/2018. Nenhum dado pessoal sens\u00edvel \u00e9 coletado ou armazenado.",
+    pageWidth / 2, 38.5,
+    { align: "center" }
+  );
+
+  return 45; // Y position after header
+}
+
+/** Draw page footer */
+function drawPageFooter(doc: jsPDF) {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const totalPages = doc.getNumberOfPages();
+
+  doc.setDrawColor(30, 41, 59);
+  doc.line(14, pageHeight - 12, pageWidth - 14, pageHeight - 12);
+
+  doc.setFontSize(6.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text("HuB \u2014 Atl\u00e2ntico | Plataforma de Monitoramento de Saneamento e \u00c1gua", 14, pageHeight - 7);
+  doc.text(`P\u00e1gina ${doc.getCurrentPageInfo().pageNumber} de ${totalPages}`, pageWidth - 14, pageHeight - 7, { align: "right" });
+}
+
 export function generateLicitacoesPDF(data: LicitacaoRow[]): ArrayBuffer {
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 14;
 
-  // --- Header ---
-  doc.setFillColor(12, 12, 14); // #0C0C0E
-  doc.rect(0, 0, pageWidth, 28, "F");
+  let tableY = drawReportHeader(doc, "Relat\u00f3rio de Licita\u00e7\u00f5es", "Licita\u00e7\u00f5es p\u00fablicas do setor de saneamento e \u00e1gua", data.length);
 
+  // Summary stats
+  const totalValue = data.reduce((sum, r) => sum + (r.estimatedValue || 0), 0);
+  const abertas = data.filter((r) => r.status === "ABERTA").length;
+  const ufs = new Set(data.map((r) => r.uf).filter(Boolean)).size;
+
+  doc.setFillColor(20, 25, 35);
+  doc.rect(margin, tableY, pageWidth - margin * 2, 10, "F");
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.setTextColor(249, 115, 22); // #F97316
-  doc.text("HuB - Atlântico", margin, 14);
+  doc.setTextColor(249, 115, 22);
+  doc.text(`Valor Total Estimado: ${formatCurrency(totalValue)}`, margin + 4, tableY + 6.5);
+  doc.text(`Abertas: ${abertas}`, margin + 80, tableY + 6.5);
+  doc.text(`Estados: ${ufs}`, margin + 110, tableY + 6.5);
+  doc.text(`Per\u00edodo: \u00daltimos 90 dias`, margin + 140, tableY + 6.5);
+  tableY += 14;
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(160, 160, 168); // #A0A0A8
-  doc.text("Relatório de Licitações", margin, 22);
-
-  doc.setFontSize(9);
-  doc.text(
-    `Gerado em: ${new Date().toLocaleDateString("pt-BR")} | Total: ${data.length} registros`,
-    pageWidth - margin,
-    22,
-    { align: "right" }
-  );
-
-  // --- Table setup ---
+  // Table columns
   const columns = [
-    { header: "Título", width: 80 },
-    { header: "Órgão", width: 55 },
-    { header: "UF", width: 15 },
-    { header: "Valor", width: 35 },
-    { header: "Status", width: 28 },
-    { header: "Data", width: 25 },
+    { header: "T\u00edtulo", width: 70 },
+    { header: "\u00d3rg\u00e3o / CNPJ", width: 50 },
+    { header: "UF", width: 12 },
+    { header: "Modalidade", width: 30 },
+    { header: "Valor Estimado", width: 30 },
+    { header: "Status", width: 22 },
+    { header: "Publica\u00e7\u00e3o", width: 22 },
+    { header: "Encerramento", width: 22 },
   ];
 
-  const tableX = margin;
-  let tableY = 34;
-  const rowHeight = 8;
-  const headerHeight = 9;
+  const tableWidth = columns.reduce((s, c) => s + c.width, 0);
+  const rowHeight = 7.5;
+  const headerHeight = 8;
 
   function drawTableHeader() {
-    doc.setFillColor(26, 26, 29); // #1A1A1D
-    doc.rect(
-      tableX,
-      tableY,
-      columns.reduce((sum, c) => sum + c.width, 0),
-      headerHeight,
-      "F"
-    );
-
+    doc.setFillColor(30, 41, 59);
+    doc.rect(margin, tableY, tableWidth, headerHeight, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
-    doc.setTextColor(249, 115, 22); // accent
-    let colX = tableX + 2;
+    doc.setFontSize(7);
+    doc.setTextColor(249, 115, 22);
+    let colX = margin + 2;
     for (const col of columns) {
-      doc.text(col.header, colX, tableY + 6);
+      doc.text(col.header, colX, tableY + 5.5);
       colX += col.width;
     }
     tableY += headerHeight;
   }
 
   function drawRow(row: LicitacaoRow, index: number) {
-    // Alternating row background
     if (index % 2 === 0) {
-      doc.setFillColor(20, 20, 22); // #141416
-      doc.rect(
-        tableX,
-        tableY,
-        columns.reduce((sum, c) => sum + c.width, 0),
-        rowHeight,
-        "F"
-      );
+      doc.setFillColor(15, 23, 42);
+      doc.rect(margin, tableY, tableWidth, rowHeight, "F");
+    } else {
+      doc.setFillColor(20, 27, 45);
+      doc.rect(margin, tableY, tableWidth, rowHeight, "F");
     }
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(245, 245, 245); // #F5F5F5
+    doc.setFontSize(6.5);
+    doc.setTextColor(226, 232, 240);
 
-    let colX = tableX + 2;
+    const organText = [row.organ, row.organCnpj].filter(Boolean).join(" - ");
+
+    let colX = margin + 2;
     const values = [
-      truncate(row.title || "", 55),
-      truncate(row.organ || "N/I", 35),
+      truncate(row.title || "", 48),
+      truncate(organText || "N/I", 32),
       row.uf || "N/I",
+      formatModalidade(row.modalidade),
       formatCurrency(row.estimatedValue),
       row.status || "N/I",
       formatDate(row.publishedAt),
+      formatDate(row.closeDate),
     ];
 
     for (let i = 0; i < columns.length; i++) {
-      doc.text(values[i], colX, tableY + 5.5);
+      doc.text(values[i], colX, tableY + 5);
       colX += columns[i].width;
     }
-
     tableY += rowHeight;
   }
 
   drawTableHeader();
 
-  for (let i = 0; i < data.length; i++) {
-    // Check if we need a new page
-    if (tableY + rowHeight > pageHeight - 15) {
-      // Footer on current page
-      doc.setFontSize(7);
-      doc.setTextColor(107, 107, 115); // muted
-      doc.text(
-        `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
-        pageWidth / 2,
-        pageHeight - 8,
-        { align: "center" }
-      );
-
+  for (let i = 0; i < Math.min(data.length, 2000); i++) {
+    if (tableY + rowHeight > pageHeight - 16) {
       doc.addPage();
       tableY = 14;
       drawTableHeader();
     }
-
     drawRow(data[i], i);
   }
 
-  // Footer on last page
-  doc.setFontSize(7);
-  doc.setTextColor(107, 107, 115);
-  doc.text(
-    `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
-    pageWidth / 2,
-    pageHeight - 8,
-    { align: "center" }
-  );
+  // Add footers to all pages
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    drawPageFooter(doc);
+  }
 
   return doc.output("arraybuffer");
-}
-
-interface NewsRow {
-  title: string;
-  summary?: string | null;
-  source?: { name: string } | null;
-  category?: { name: string } | null;
-  publishedAt: Date | string;
 }
 
 export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
@@ -176,58 +230,43 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 14;
 
-  // --- Header ---
-  doc.setFillColor(12, 12, 14);
-  doc.rect(0, 0, pageWidth, 28, "F");
+  let tableY = drawReportHeader(doc, "Relat\u00f3rio de Not\u00edcias", "Not\u00edcias do setor de saneamento e \u00e1gua do Brasil", data.length);
 
+  // Summary
+  const sources = new Set(data.map((r) => r.source?.name).filter(Boolean)).size;
+  const categories = new Set(data.map((r) => r.category?.name).filter(Boolean)).size;
+
+  doc.setFillColor(20, 25, 35);
+  doc.rect(margin, tableY, pageWidth - margin * 2, 10, "F");
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
   doc.setTextColor(249, 115, 22);
-  doc.text("HuB - Atlântico", margin, 14);
+  doc.text(`Fontes: ${sources}`, margin + 4, tableY + 6.5);
+  doc.text(`Categorias: ${categories}`, margin + 40, tableY + 6.5);
+  doc.text(`Total: ${data.length.toLocaleString("pt-BR")} not\u00edcias`, margin + 80, tableY + 6.5);
+  tableY += 14;
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(160, 160, 168);
-  doc.text("Relatório de Notícias", margin, 22);
-
-  doc.setFontSize(9);
-  doc.text(
-    `Gerado em: ${new Date().toLocaleDateString("pt-BR")} | Total: ${data.length} registros`,
-    pageWidth - margin,
-    22,
-    { align: "right" }
-  );
-
-  // --- Table setup ---
   const columns = [
-    { header: "Título", width: 90 },
+    { header: "T\u00edtulo", width: 90 },
     { header: "Resumo", width: 80 },
     { header: "Fonte", width: 35 },
     { header: "Categoria", width: 30 },
     { header: "Data", width: 25 },
   ];
 
-  const tableX = margin;
-  let tableY = 34;
-  const rowHeight = 8;
-  const headerHeight = 9;
+  const tableWidth = columns.reduce((s, c) => s + c.width, 0);
+  const rowHeight = 7.5;
+  const headerHeight = 8;
 
   function drawTableHeader() {
-    doc.setFillColor(26, 26, 29);
-    doc.rect(
-      tableX,
-      tableY,
-      columns.reduce((sum, c) => sum + c.width, 0),
-      headerHeight,
-      "F"
-    );
-
+    doc.setFillColor(30, 41, 59);
+    doc.rect(margin, tableY, tableWidth, headerHeight, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.setTextColor(249, 115, 22);
-    let colX = tableX + 2;
+    let colX = margin + 2;
     for (const col of columns) {
-      doc.text(col.header, colX, tableY + 6);
+      doc.text(col.header, colX, tableY + 5.5);
       colX += col.width;
     }
     tableY += headerHeight;
@@ -235,21 +274,18 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
 
   function drawRow(row: NewsRow, index: number) {
     if (index % 2 === 0) {
-      doc.setFillColor(20, 20, 22);
-      doc.rect(
-        tableX,
-        tableY,
-        columns.reduce((sum, c) => sum + c.width, 0),
-        rowHeight,
-        "F"
-      );
+      doc.setFillColor(15, 23, 42);
+      doc.rect(margin, tableY, tableWidth, rowHeight, "F");
+    } else {
+      doc.setFillColor(20, 27, 45);
+      doc.rect(margin, tableY, tableWidth, rowHeight, "F");
     }
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(245, 245, 245);
+    doc.setFontSize(6.5);
+    doc.setTextColor(226, 232, 240);
 
-    let colX = tableX + 2;
+    let colX = margin + 2;
     const values = [
       truncate(row.title || "", 60),
       truncate(row.summary || "N/I", 50),
@@ -259,42 +295,28 @@ export function generateNoticiasPDF(data: NewsRow[]): ArrayBuffer {
     ];
 
     for (let i = 0; i < columns.length; i++) {
-      doc.text(values[i], colX, tableY + 5.5);
+      doc.text(values[i], colX, tableY + 5);
       colX += columns[i].width;
     }
-
     tableY += rowHeight;
   }
 
   drawTableHeader();
 
-  for (let i = 0; i < data.length; i++) {
-    if (tableY + rowHeight > pageHeight - 15) {
-      doc.setFontSize(7);
-      doc.setTextColor(107, 107, 115);
-      doc.text(
-        `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
-        pageWidth / 2,
-        pageHeight - 8,
-        { align: "center" }
-      );
-
+  for (let i = 0; i < Math.min(data.length, 2000); i++) {
+    if (tableY + rowHeight > pageHeight - 16) {
       doc.addPage();
       tableY = 14;
       drawTableHeader();
     }
-
     drawRow(data[i], i);
   }
 
-  doc.setFontSize(7);
-  doc.setTextColor(107, 107, 115);
-  doc.text(
-    `HuB - Atlântico | Página ${doc.getNumberOfPages()}`,
-    pageWidth / 2,
-    pageHeight - 8,
-    { align: "center" }
-  );
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    drawPageFooter(doc);
+  }
 
   return doc.output("arraybuffer");
 }

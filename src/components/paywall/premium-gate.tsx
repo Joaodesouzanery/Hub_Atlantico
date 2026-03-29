@@ -65,7 +65,7 @@ export function PremiumGate({
           </div>
 
           <h3 className="text-lg font-bold text-text-primary">
-            Conte&uacute;do Premium
+            Conteúdo Premium
           </h3>
           <p className="mt-2 text-sm text-text-secondary">
             Acesse {feature} e todas as funcionalidades com o plano Pro.
@@ -91,7 +91,7 @@ export function PremiumGate({
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-bold text-dark-bg transition-colors hover:bg-accent/90"
           >
             <Crown size={16} />
-            Assinar Pro — R$ 14,99/m&ecirc;s
+            Assinar Pro — R$ 14,99/mês
             <ArrowRight size={16} />
           </button>
 

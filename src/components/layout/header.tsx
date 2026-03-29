@@ -21,6 +21,7 @@ import {
   Info,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { NotificationsMenu } from "@/components/notifications/notifications-menu";
 
 const mobileNavSections = [
   {
@@ -113,10 +114,7 @@ export function Header() {
           <button className="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
             <Search className="h-4.5 w-4.5 h-5 w-5" />
           </button>
-          <button className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100">
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
-          </button>
+          <NotificationsMenu />
           <div className="ml-1 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
             {userInitial}
           </div>

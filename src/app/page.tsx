@@ -96,14 +96,14 @@ export default async function LandingPage() {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#F97316]">
               <Droplets className="h-4 w-4 text-white" />
             </div>
-            <span className="text-sm font-bold tracking-wide text-slate-900">HuB — Atlantico</span>
+            <span className="text-sm font-bold tracking-wide text-slate-900">HuB — Atlântico</span>
           </div>
 
           <nav className="hidden items-center gap-8 md:flex">
             {[
-              { label: "Noticias", href: "/noticias" },
-              { label: "Licitacoes", href: "/licitacoes" },
-              { label: "Legislacao", href: "/legislacao" },
+              { label: "Notícias", href: "/noticias" },
+              { label: "Licitações", href: "/licitacoes" },
+              { label: "Legislação", href: "/legislacao" },
             ].map((item) => (
               <Link
                 key={item.label}
@@ -160,7 +160,7 @@ export default async function LandingPage() {
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#F97316]/30 bg-[#F97316]/10 px-4 py-1.5">
             <Zap className="h-3.5 w-3.5 text-[#F97316]" />
             <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#F97316]">
-              Noticias · Licitacoes · Legislacao · Agencias
+              Notícias · Licitações · Legislação · Agências
             </span>
           </div>
 
@@ -170,14 +170,14 @@ export default async function LandingPage() {
           >
             Tudo que acontece
             <br />
-            no setor hidrico,{" "}
+            no setor hídrico,{" "}
             <span className="text-[#F97316]">em tempo real.</span>
           </h1>
 
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-slate-400">
-            O HuB — Atlantico centraliza noticias, licitacoes, legislacao e agencias
+            O HuB — Atlântico centraliza notícias, licitações, legislação e agências
             reguladoras do saneamento brasileiro. Dezenas de fontes monitoradas diariamente,
-            filtros avancados e exportacao de dados.
+            filtros avançados e exportação de dados.
           </p>
 
           {/* Qualitative highlights — sem números exatos */}
@@ -186,7 +186,7 @@ export default async function LandingPage() {
               { icon: Newspaper, label: "Notícias atualizadas diariamente" },
               { icon: Gavel, label: "Licitações de todo o Brasil" },
               { icon: Scale, label: "Legislação completa do setor" },
-              { icon: Globe, label: "Dezenas de fontes monitoradas" },
+              { icon: Globe, label: "Dezenas de fontes verificadas" },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
                 <item.icon className="h-4 w-4 text-[#F97316]" />
@@ -207,17 +207,17 @@ export default async function LandingPage() {
               href="/noticias"
               className="flex items-center gap-2 rounded-md border border-white/10 px-8 py-3.5 text-sm font-medium text-slate-300 transition-colors hover:border-white/25 hover:text-white"
             >
-              Ver noticias agora
+              Ver notícias agora
             </Link>
           </div>
 
           <p className="mt-8 text-xs text-slate-600">
-            Comece gratuito ou assine o Pro por R$ 14,99/mes · Cobertura nacional · LGPD compliant
+            Comece gratuito ou assine o Pro por R$ 14,99/mês · Cobertura nacional · Em conformidade com a LGPD
           </p>
         </div>
       </section>
 
-      {/* ─── DESTAQUE: Noticias + Licitacoes ─────────────────────── */}
+      {/* ─── DESTAQUE: Notícias + Licitações ─────────────────────── */}
       <section className="border-y border-slate-100 bg-slate-50 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="mb-12">
@@ -225,26 +225,26 @@ export default async function LandingPage() {
               O que entregamos
             </span>
             <h2 className="mt-3 text-3xl font-bold leading-tight text-slate-900 lg:text-4xl" style={{ letterSpacing: "-0.01em" }}>
-              Noticias e licitacoes do setor de saneamento,{" "}
+              Notícias e licitações do setor de saneamento,{" "}
               <br className="hidden lg:block" />
-              num so lugar.
+              num só lugar.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Noticias card */}
+            {/* Notícias card */}
             <div className="rounded-2xl border border-slate-200 bg-white p-8">
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
                   <Newspaper className="h-5 w-5 text-blue-600" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Hub de Noticias</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Hub de Notícias</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900">
                 Dezenas de fontes especializadas, indexadas diariamente
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                Companhias de saneamento (Sabesp, Aegea, BRK, Sanepar), agencias reguladoras (ANA, IBAMA),
+                Companhias de saneamento (Sabesp, Aegea, BRK, Sanepar), agências reguladoras (ANA, IBAMA),
                 portais governamentais e veiculos especializados. Tudo categorizado automaticamente.
               </p>
               <ul className="mt-6 space-y-2">
@@ -261,28 +261,28 @@ export default async function LandingPage() {
                 ))}
               </ul>
               <Link href="/noticias" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F97316] hover:text-[#EA6C10]">
-                Ver noticias <ArrowRight className="h-3.5 w-3.5" />
+                Ver notícias <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-            {/* Licitacoes card */}
+            {/* Licitações card */}
             <div className="rounded-2xl border border-slate-200 bg-white p-8">
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50">
                   <Gavel className="h-5 w-5 text-green-600" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-widest text-green-600">Radar de Licitacoes</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-green-600">Radar de Licitações</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900">
-                Milhares de licitacoes do PNCP monitoradas
+                Milhares de licitações do PNCP monitoradas
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                Licitacoes publicas de saneamento com dados completos: orgao, CNPJ, valor,
+                Licitações públicas de saneamento com dados completos: órgão, CNPJ, valor,
                 modalidade, prazos, contato, amparo legal e link para o edital original.
               </p>
               <ul className="mt-6 space-y-2">
                 {[
-                  "Portal Nacional de Contratacoes Publicas (PNCP)",
+                  "Portal Nacional de Contratações Públicas (PNCP)",
                   "7 modalidades: pregao, concorrencia, dispensa e mais",
                   "Filtros por UF, modalidade, valor e status",
                   "Dados LGPD-safe: CNPJ, contato institucional, SRP",
@@ -294,7 +294,7 @@ export default async function LandingPage() {
                 ))}
               </ul>
               <Link href="/licitacoes" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F97316] hover:text-[#EA6C10]">
-                Ver licitacoes <ArrowRight className="h-3.5 w-3.5" />
+                Ver licitações <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </div>
@@ -376,9 +376,9 @@ export default async function LandingPage() {
 
           <div className="mt-14 grid grid-cols-1 gap-0 md:grid-cols-3">
             {[
-              { n: "01", title: "Crie sua conta", body: "Cadastro em 30 segundos. Sem cartao de credito, sem burocracia. Login com e-mail salvo." },
-              { n: "02", title: "Monitore o setor", body: "Noticias, licitacoes e legislacao atualizados diariamente. Filtre, busque e salve suas preferencias." },
-              { n: "03", title: "Tome decisoes", body: "Relatorios analiticos, graficos interativos e exportacao para Excel ou PDF. Dados em suas maos." },
+              { n: "01", title: "Crie sua conta", body: "Cadastro em 30 segundos. Sem cartão de crédito, sem burocracia. Login com e-mail salvo." },
+              { n: "02", title: "Monitore o setor", body: "Notícias, licitações e legislação atualizados diariamente. Filtre, busque e salve suas preferências." },
+              { n: "03", title: "Tome decisões", body: "Relatórios analíticos, gráficos interativos e exportação para Excel ou PDF. Dados em suas mãos." },
             ].map((step) => (
               <div key={step.n} className="px-4 py-8">
                 <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#F97316] text-base font-bold text-[#F97316]">
@@ -446,8 +446,8 @@ export default async function LandingPage() {
             <span className="text-[#F97316]">Gratuito. Agora.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-400">
-            Noticias, licitacoes, legislacao e agencias reguladoras do saneamento brasileiro
-            em um unico lugar — atualizado diariamente com cobertura nacional.
+            Notícias, licitações, legislação e agências reguladoras do saneamento brasileiro
+            em um único lugar — atualizado diariamente com cobertura nacional.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -485,13 +485,13 @@ export default async function LandingPage() {
             <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F97316]">
               <Droplets className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-sm font-bold text-slate-800">HuB — Atlantico</span>
+            <span className="text-sm font-bold text-slate-800">HuB — Atlântico</span>
           </div>
-          <p className="text-xs text-slate-400">&copy; {new Date().getFullYear()} HuB — Atlantico. Todos os direitos reservados.</p>
+          <p className="text-xs text-slate-400">&copy; {new Date().getFullYear()} HuB — Atlântico. Todos os direitos reservados.</p>
           <div className="flex items-center gap-6">
             {[
               { label: "Sobre", href: "/sobre" },
-              { label: "Noticias", href: "/noticias" },
+              { label: "Notícias", href: "/noticias" },
               { label: "Entrar", href: "/login" },
             ].map((link) => (
               <Link key={link.label} href={link.href} className="text-xs text-slate-400 uppercase tracking-widest transition-colors hover:text-slate-700">

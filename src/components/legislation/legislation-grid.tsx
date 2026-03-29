@@ -24,7 +24,7 @@ interface LegislationGridProps {
 
 export function LegislationGrid({
   items,
-  emptyMessage = "Nenhuma legislacao encontrada.",
+  emptyMessage = "Nenhuma legislação encontrada.",
 }: LegislationGridProps) {
   if (items.length === 0) {
     return (

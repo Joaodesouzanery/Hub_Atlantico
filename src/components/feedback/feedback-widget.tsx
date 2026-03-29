@@ -107,7 +107,7 @@ export function FeedbackWidget() {
             <X size={16} />
           </button>
           <p className="mb-3 pr-4 text-sm text-text-primary">
-            Como est&aacute; sua experi&ecirc;ncia com o HuB? Sua opini&atilde;o nos ajuda a melhorar!
+            Como está sua experiência com o HuB? Sua opinião nos ajuda a melhorar!
           </p>
           <button
             onClick={handleOpen}
@@ -125,7 +125,7 @@ export function FeedbackWidget() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-dark-border px-6 py-4">
               <h3 className="text-lg font-semibold text-text-primary">
-                {step === "thanks" ? "Obrigado!" : "Pesquisa de Satisfa\u00e7\u00e3o"}
+                {step === "thanks" ? "Obrigado!" : "Pesquisa de Satisfação"}
               </h3>
               <button onClick={handleClose} className="text-text-muted hover:text-text-primary">
                 <X size={20} />
@@ -136,7 +136,7 @@ export function FeedbackWidget() {
               {step === "rating" && (
                 <div className="space-y-5">
                   <p className="text-sm text-text-secondary">
-                    Como voc&ecirc; avalia a plataforma HuB - Atl&acirc;ntico?
+                    Como você avalia a plataforma HuB - Atlântico?
                   </p>
 
                   {/* Star rating */}
@@ -164,10 +164,10 @@ export function FeedbackWidget() {
                   {rating > 0 && (
                     <p className="text-center text-sm text-text-muted">
                       {rating <= 2
-                        ? "Entendemos. Nos conte como melhorar."
+                        ? "Entendemos. Conte-nos como melhorar."
                         : rating <= 4
-                          ? "\u00d3timo! O que podemos melhorar?"
-                          : "Incr\u00edvel! Ficamos felizes!"}
+                          ? "Ótimo! O que podemos melhorar?"
+                          : "Incrível! Ficamos felizes!"}
                     </p>
                   )}
 
@@ -185,12 +185,12 @@ export function FeedbackWidget() {
                 <div className="space-y-4">
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-text-secondary">
-                      O que achou da plataforma? (obrigat&oacute;rio)
+                      O que achou da plataforma? (obrigatório)
                     </label>
                     <textarea
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
-                      placeholder="Conte-nos sua experi\u00eancia..."
+                      placeholder="Conte-nos sua experiência..."
                       rows={3}
                       className="w-full rounded-lg border border-dark-border bg-dark-bg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none"
                     />
@@ -198,7 +198,7 @@ export function FeedbackWidget() {
 
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-text-secondary">
-                      Alguma sugest&atilde;o de melhoria?
+                      Alguma sugestão de melhoria?
                     </label>
                     <textarea
                       value={suggestion}
@@ -229,7 +229,7 @@ export function FeedbackWidget() {
                     Obrigado pelo seu feedback!
                   </p>
                   <p className="mt-1 text-sm text-text-muted">
-                    Sua opini&atilde;o &eacute; muito importante para n&oacute;s.
+                    Sua opinião é muito importante para nós.
                   </p>
                 </div>
               )}

@@ -23,7 +23,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 p-4 lg:p-8">
       {/* Auto-fetch: triggers data population if DB is empty */}
-      <AutoFetch hasData={data.kpis.totalNoticias > 0 || data.kpis.totalLicitacoes > 0} />
+      <AutoFetch totalNoticias={data.kpis.totalNoticias} totalLicitacoes={data.kpis.totalLicitacoes} />
 
       {/* Page header */}
       <div>

@@ -18,14 +18,14 @@ export async function POST() {
       prisma.licitacao.count(),
     ]);
 
-    // Only fetch if DB has fewer items than expected (won't re-fetch if fully populated)
-    if (newsCount > 100 && licCount > 200) {
+    // Only skip if DB is already well-populated
+    if (newsCount > 500 && licCount > 400) {
       return NextResponse.json({ skipped: true, newsCount, licCount });
     }
 
     const results: Record<string, unknown> = {};
 
-    if (newsCount <= 100) {
+    if (newsCount <= 500) {
       try {
         results.news = await fetchAllNews();
       } catch (e) {
@@ -33,7 +33,7 @@ export async function POST() {
       }
     }
 
-    if (licCount <= 200) {
+    if (licCount <= 400) {
       try {
         results.licitacoes = await fetchAllLicitacoes();
       } catch (e) {
